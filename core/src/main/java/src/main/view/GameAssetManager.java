@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import src.main.model.KnightAnimationType;
+import src.main.model.knight.KnightAnimationType;
 
 import java.util.HashMap;
 import java.util.Map;

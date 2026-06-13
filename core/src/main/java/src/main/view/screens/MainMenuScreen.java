@@ -52,7 +52,7 @@ public class MainMenuScreen extends AbstractScreen{
         Listeners(quitBtn, settingsBtn, guideBtn, startBtn, achiveBtn);
     }
 
-    private void Listeners(TextButton quitBtn, TextButton settingsBtn, TextButton guideBtn, TextButton startBtn, TextButton achiveBtn) {
+    private void Listeners(TextButton quitBtn, TextButton settingsBtn, TextButton guideBtn, TextButton startBtn, TextButton achieveBtn) {
         quitBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -78,7 +78,7 @@ public class MainMenuScreen extends AbstractScreen{
                 UiManager.setScreen(new StartGameMenuScreen());
             }
         });
-        achiveBtn.addListener(new ClickListener() {
+        achieveBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 UiManager.setScreen(new AchievementMenuScreen());

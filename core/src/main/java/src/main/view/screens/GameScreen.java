@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import src.main.controller.GameController;
 import src.main.model.Game;
-import src.main.model.Knight;
-import src.main.view.GameProcessor;
+import src.main.model.knight.Knight;
 
 public class GameScreen extends AbstractScreen {
     private Game game;
@@ -31,7 +31,7 @@ public class GameScreen extends AbstractScreen {
 
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);
-        multiplexer.addProcessor(new GameProcessor(game));
+        multiplexer.addProcessor(new GameController(game, game.keyBindings));
         Gdx.input.setInputProcessor(multiplexer);
     }
 
@@ -52,10 +52,8 @@ public class GameScreen extends AbstractScreen {
         batch.draw(frame, x, y,
             frame.getRegionWidth() / 2f, 0,
             frame.getRegionWidth(), frame.getRegionHeight(),
-            knight.movingRight ? -1 : 1, 1, 0);
-        /*
-            knight.movingLeft ? -1 : 1
-         */
+            knight.facingRight ? -1 : 1, 1, 0);
+
         batch.end();
 
 
@@ -74,7 +72,10 @@ public class GameScreen extends AbstractScreen {
             frame.getRegionWidth(), frame.getRegionHeight());
         shapeRenderer.end();
 
-
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.GREEN);
+        shapeRenderer.line(0, 0, 0, 100);
+        shapeRenderer.end();
 
         // Stage رو جدا رندر می‌کنه (UI دکمه‌ها + PauseModal)
         stage.act(delta);
