@@ -49,10 +49,10 @@ public class MainMenuScreen extends AbstractScreen{
 
         rootTable.add(stack).grow();
 
-        Listeners(quitBtn, settingsBtn, guideBtn, startBtn, achiveBtn);
+        listeners(quitBtn, settingsBtn, guideBtn, startBtn, achiveBtn);
     }
 
-    private void Listeners(TextButton quitBtn, TextButton settingsBtn, TextButton guideBtn, TextButton startBtn, TextButton achieveBtn) {
+    private void listeners(TextButton quitBtn, TextButton settingsBtn, TextButton guideBtn, TextButton startBtn, TextButton achieveBtn) {
         quitBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

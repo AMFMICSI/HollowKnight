@@ -25,20 +25,20 @@ public class GameController implements InputProcessor {
                 @Override public void onExit() {UiManager.setScreen(new MainMenuScreen());}
             };
             pauseModal.show();
-            return false;
+            return true;
         }
 
-        if (keycode == keys.get("MOVE_RIGHT")) { game.knight.movingRight = true; game.knight.movingLeft = false; game.knight.facingRight = true; }
-        else if (keycode == keys.get("MOVE_LEFT")) { game.knight.movingLeft = true; game.knight.movingRight = false; game.knight.facingRight = false;}
-        else if (keycode == keys.get("JUMP")) game.knight.jump();
-        else if (keycode == keys.get("DASH")) game.knight.dash();
+        if (keycode == keys.get("MOVE_RIGHT")) { game.knight.movingRight = true; game.knight.movingLeft = false; game.knight.facingRight = true; return true; }
+        else if (keycode == keys.get("MOVE_LEFT")) { game.knight.movingLeft = true; game.knight.movingRight = false; game.knight.facingRight = false; return true; }
+        else if (keycode == keys.get("JUMP")) { game.knight.jump(); return true; }
+        else if (keycode == keys.get("DASH")) { game.knight.dash(); return true; }
         else if (keycode == keys.get("ATTACK")) {
             if (Gdx.input.isKeyPressed(keys.get("POGO"))) {
-                // پوگو: ↓ + X
                 game.knight.pogo();
             } else {
                 game.knight.attack();
             }
+            return true;
         }
 
         return false;
@@ -46,10 +46,9 @@ public class GameController implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        if (keycode == keys.get("MOVE_RIGHT")) {game.knight.movingRight = false; }
-        if (keycode == keys.get("MOVE_LEFT")) {game.knight.movingLeft = false; }
-        else if (keycode == keys.get("JUMP"))
-            game.knight.jumpReleased();
+        if (keycode == keys.get("MOVE_RIGHT")) { game.knight.movingRight = false; return true; }
+        if (keycode == keys.get("MOVE_LEFT")) { game.knight.movingLeft = false; return true; }
+        else if (keycode == keys.get("JUMP")) { game.knight.jumpReleased(); return true; }
         return false;
     }
 

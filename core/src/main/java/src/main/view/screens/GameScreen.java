@@ -7,9 +7,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import src.main.controller.GameController;
 import src.main.model.Game;
-import src.main.model.knight.Knight;
+import src.main.model.enviroment.SolidBlock;
+import src.main.model.entity.knight.Knight;
 
 public class GameScreen extends AbstractScreen {
     private Game game;
@@ -17,6 +23,10 @@ public class GameScreen extends AbstractScreen {
     private OrthographicCamera camera;
 
     private ShapeRenderer shapeRenderer;
+
+    private OrthogonalTiledMapRenderer mapRenderer;
+
+    private Viewport gameViewport;
 
     @Override
     public void show() {
@@ -27,7 +37,14 @@ public class GameScreen extends AbstractScreen {
         camera = new OrthographicCamera();
         shapeRenderer = new ShapeRenderer();
 
-        camera.setToOrtho(false, 800, 600);
+        TiledMap map = game.mapLoader.tiledMap;
+        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("main");
+        float mapW = layer.getWidth() * layer.getTileWidth();
+        float mapH = layer.getHeight() * layer.getTileHeight();
+
+
+        gameViewport = new ExtendViewport(mapW/10f, mapH/20f, camera);
+        mapRenderer = new OrthogonalTiledMapRenderer(map);
 
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);
@@ -37,11 +54,17 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void render(float delta) {
+        gameViewport.apply();
         game.update(delta);
         camera.position.set(game.knight.getPosition(), 0);
         camera.update();
 
         batch.setProjectionMatrix(camera.combined);
+        shapeRenderer.setProjectionMatrix(camera.combined);
+
+        mapRenderer.setView(camera);
+        mapRenderer.render(new int[]{1});
+        mapRenderer.render(new int[]{0});
 
         batch.begin();
         Knight knight = game.knight;
@@ -53,42 +76,36 @@ public class GameScreen extends AbstractScreen {
             frame.getRegionWidth() / 2f, 0,
             frame.getRegionWidth(), frame.getRegionHeight(),
             knight.facingRight ? -1 : 1, 1, 0);
-
         batch.end();
+        // 4. "back" (index 3) = foreground overlay
+        mapRenderer.render(new int[]{2});
 
-
-// کف زمین
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.LIGHT_GRAY);
-        shapeRenderer.rect(-2000, -5, 4000, 10);
-        shapeRenderer.end();
-
-// bounding box نایت
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
-        Knight k = game.knight;
-        shapeRenderer.rect(k.getPosition().x, k.getPosition().y,
-            frame.getRegionWidth(), frame.getRegionHeight());
-        shapeRenderer.end();
-
+        // Debug: SolidBlock ها و boundingBox Knight
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.GREEN);
-        shapeRenderer.line(0, 0, 0, 100);
+        for (SolidBlock sb : game.mapLoader.solidBlocks) {
+            shapeRenderer.rect(sb.bounds.x, sb.bounds.y,
+                sb.bounds.width, sb.bounds.height);
+        }
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(knight.getBoundingBox().x, knight.getBoundingBox().y,
+            knight.getBoundingBox().width, knight.getBoundingBox().height);
         shapeRenderer.end();
 
-        // Stage رو جدا رندر می‌کنه (UI دکمه‌ها + PauseModal)
         stage.act(delta);
         stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
+        gameViewport.update(width, height, true);
         stage.getViewport().update(width, height, true);
     }
 
     @Override
     public void dispose() {
+        if (mapRenderer != null) mapRenderer.dispose();
         batch.dispose();
+        game.mapLoader.dispose();
     }
 }

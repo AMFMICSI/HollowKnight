@@ -7,8 +7,7 @@ buildscript {
     maven { url = 'https://central.sonatype.com/repository/maven-snapshots/' }
   }
   dependencies {
-
-
+    classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
   }
 }
 
@@ -23,6 +22,43 @@ allprojects {
       testOutputDir = file('build/classes/java/test')
     }
   }
+}
+
+task packTextures {
+    dependsOn buildscript.configurations.classpath
+    def animDir = file("assets/animation")
+    def outputDir = file("assets/animation")
+    inputs.dir animDir
+    outputs.file file("$outputDir/knight.atlas")
+    outputs.file file("$outputDir/knight.png")
+    doLast {
+        def tmpDir = new File(project.buildDir, "tmp/knight-frames")
+
+        // Clean and recreate temp directory
+        delete tmpDir
+        tmpDir.mkdirs()
+
+        // Copy only individual frame PNGs (those with _NNN pattern), skip combined spritesheets
+        animDir.eachFileMatch(~".*_\\d{3}\\.png") { file ->
+            copy {
+                from file
+                into tmpDir
+            }
+        }
+
+        // Pack only the knight frames
+        def settings = new com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings()
+        settings.maxWidth = 4096
+        settings.maxHeight = 4096
+        settings.alias = false
+        settings.pot = false
+        settings.bleed = false
+        settings.useIndexes = false
+        settings.duplicatePadding = true
+        settings.edgePadding = false
+        com.badlogic.gdx.tools.texturepacker.TexturePacker.process(settings,
+            tmpDir.absolutePath, outputDir.absolutePath, "knight")
+    }
 }
 
 configure(subprojects) {

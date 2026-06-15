@@ -1,4 +1,4 @@
-package src.main.model.knight;
+package src.main.model.entity.knight;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,13 +22,13 @@ public class Knight extends Entity {
     private boolean jumpKeyHeld = false;
     private float dashTimer = 0;
     private boolean isDashing = false;
-
     private int jumpCount = 0;    // 0 = on ground, 1 = one jump used, 2 = both used
-
     private float attackTimer = 0;
 
-    public Knight(){
+    public Knight(float x, float y) {
         animationSet = new AnimationSet(GameAssetManager.knightAnimations);
+        position.set(x, y);
+        boundingBox.setSize(50,70);
     }
     @Override
     public void update(float delta) {
@@ -58,15 +58,15 @@ public class Knight extends Entity {
         }
 
         // gravity:
-        isOnGround = position.y <= 0.001f;
-        if (!isOnGround) {
-            velocity.y -= GRAVITY * delta;
-        } else if (velocity.y <= 0) {
-            velocity.y = 0;
-            position.y = 0;
-            jumpCount = 0;         // ریست دابل جامپ
-        }
+        velocity.y -= GRAVITY * delta;
 
+        // animation and boundingBox:
+        updateAnimationState();
+        animationSet.getFrame(delta);
+        boundingBox.setPosition(position.x, position.y);
+    }
+
+    public void updateAnimationState(){
         // current state update
         if (isDashing) {
             currentState = KnightState.DASHING;
@@ -82,16 +82,6 @@ public class Knight extends Entity {
             currentState = KnightState.IDLE;
         }
 
-        //update position:
-        position.add(velocity.x * delta, velocity.y * delta);
-
-        // animation and boudingbox:
-        updateAnimationState();
-        animationSet.getFrame(delta);
-        boundingBox.setPosition(position.x, position.y);
-    }
-
-    private void updateAnimationState(){
         KnightAnimationType animType;
         switch (currentState) {
             case RUNNING:   animType = KnightAnimationType.RUN;       break;
@@ -105,20 +95,6 @@ public class Knight extends Entity {
         animationSet.setAnimation(animType);
     }
 
-    public void moveLeft(){
-        movingLeft = true;
-        movingRight = false;
-        facingRight = false;
-    }
-    public void moveRight(){
-        movingRight = true;
-        movingLeft = false;
-        facingRight = true;
-    }
-    public void stop(){
-        movingLeft = false;
-        movingRight = false;
-    }
     public void jump(){
         if (isOnGround) {
             velocity.y = JUMP_VELOCITY;
@@ -150,19 +126,18 @@ public class Knight extends Entity {
         if(!isDashing){
             isDashing = true;
             dashTimer = DASH_DURATION;
-            velocity.x = movingRight ? DASH_SPEED : -DASH_SPEED;
+            velocity.x = facingRight ? DASH_SPEED : -DASH_SPEED;
             velocity.y = 0;
         }
     }
 
     public void pogo() {
         velocity.y = JUMP_VELOCITY * 0.7f;
-        // شاید انیمیشن خاص یا کمی delay
     }
 
     public Vector2 getPosition() { return position; }
     @Override
-    public TextureRegion getFrame(float delta) { return animationSet.getFrame(0); }
+    public TextureRegion getFrame(float delta) { return animationSet.getFrame(delta); }
     public Rectangle getBoundingBox() { return boundingBox; }
     public void setVelocityY(float vy) { velocity.y = vy; }
     public float getVelocityY() { return velocity.y; }

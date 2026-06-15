@@ -2,9 +2,6 @@ package src.main.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -27,14 +24,8 @@ public abstract class AbstractScreen implements Screen {
     private Stack modalStack;
     private Stack toastStack;
 
-    private TiledMap map;
-    private OrthogonalTiledMapRenderer renderer;
-
-
     @Override
     public void show() {
-        TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("maps/map.tmx");
         ScreenViewport viewport = new ScreenViewport();
         viewport.setUnitsPerPixel(0.5f);
         stage = new Stage(viewport);

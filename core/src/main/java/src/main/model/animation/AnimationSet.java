@@ -2,7 +2,7 @@ package src.main.model.animation;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import src.main.model.knight.KnightAnimationType;
+import src.main.model.entity.knight.KnightAnimationType;
 
 import java.util.Map;
 
@@ -26,11 +26,4 @@ public class AnimationSet {
             stateTime = 0;
         }
     }
-    public boolean isCurrentAnimationFinished(){
-        return animations.get(currentType).isAnimationFinished(stateTime);
-    }
-    public KnightAnimationType getCurrentType() {
-        return currentType;
-    }
-
 }
