@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -16,6 +17,8 @@ import src.main.controller.GameController;
 import src.main.model.Game;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.entity.knight.Knight;
+import src.main.view.GameMusic;
+import src.main.view.GameSettings;
 
 public class GameScreen extends AbstractScreen {
     private Game game;
@@ -30,7 +33,8 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void show() {
-        super.show();    // stage, skin, mainStack, modalStack, toastStack می‌سازه
+        super.show();
+        GameMusic.MENU.stop();
 
         game = new Game();
         batch = new SpriteBatch();
@@ -63,9 +67,9 @@ public class GameScreen extends AbstractScreen {
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         mapRenderer.setView(camera);
-        mapRenderer.render(new int[]{1});
-        mapRenderer.render(new int[]{0});
-
+//        mapRenderer.render(new int[]{1});
+//        mapRenderer.render(new int[]{0});
+        mapRenderer.render();
         batch.begin();
         Knight knight = game.knight;
         TextureRegion frame = knight.getFrame(delta);
@@ -78,7 +82,7 @@ public class GameScreen extends AbstractScreen {
             knight.facingRight ? -1 : 1, 1, 0);
         batch.end();
         // 4. "back" (index 3) = foreground overlay
-        mapRenderer.render(new int[]{2});
+//        mapRenderer.render(new int[]{2});
 
         // Debug: SolidBlock ها و boundingBox Knight
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

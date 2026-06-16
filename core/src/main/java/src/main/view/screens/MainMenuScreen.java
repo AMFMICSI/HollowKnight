@@ -6,13 +6,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import src.main.view.GameMusic;
 import src.main.view.UiManager;
+import src.main.view.screens.settings.SettingMenuScreen;
 
 public class MainMenuScreen extends AbstractScreen{
 
     @Override
     public void show() {
         super.show();
+        setBackground("menus/mainBackGround.png");
         Stack stack = new Stack();
 
         Table quitBtnWrapper = new Table();
@@ -48,8 +51,9 @@ public class MainMenuScreen extends AbstractScreen{
         stack.add(playBtnsWrapper);
 
         rootTable.add(stack).grow();
-
+        setupMenuPointer(quitBtn, settingsBtn, guideBtn, startBtn, achiveBtn);
         listeners(quitBtn, settingsBtn, guideBtn, startBtn, achiveBtn);
+        GameMusic.MENU.play();
     }
 
     private void listeners(TextButton quitBtn, TextButton settingsBtn, TextButton guideBtn, TextButton startBtn, TextButton achieveBtn) {

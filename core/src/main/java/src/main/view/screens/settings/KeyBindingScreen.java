@@ -1,4 +1,4 @@
-package src.main.view.screens;
+package src.main.view.screens.settings;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -8,8 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import src.main.model.data.KeyBindings;
 import src.main.view.UiManager;
+import src.main.view.screens.AbstractScreen;
 
-public class SettingMenuScreen extends AbstractScreen implements InputProcessor {
+public class KeyBindingScreen extends AbstractScreen implements InputProcessor {
     private final KeyBindings keys = new KeyBindings();
     private String pendingAction = null;
     private TextButton pendingButton = null;
@@ -17,23 +18,23 @@ public class SettingMenuScreen extends AbstractScreen implements InputProcessor 
     @Override
     public void show() {
         super.show();
+        setBackground("menus/mainBackGround.png");
         buildUI();
     }
 
     private void buildUI() {
         rootTable.clear();
 
-        Label title = new Label("Settings", skin);
+        Label title = new Label("Key Bindings", skin);
         rootTable.add(title).padBottom(20).row();
 
-        // هر ردیف: [نام فارسی | نام انگلیسی | دکمه کلید]
         String[][] actions = {
             {"Move Left",           "MOVE_LEFT"},
             {"Move Right",          "MOVE_RIGHT"},
             {"Jump",                "JUMP"},
             {"Dash",                "DASH"},
             {"Attack (Nail)",       "ATTACK"},
-            {"Pogo (↓ + Attack)",   "POGO"},
+            {"Pogo (\u2193 + Attack)",   "POGO"},
             {"Focus / Heal",        "FOCUS"},
             {"Vengeful Spirit",     "SPELL_VENGEFUL"},
             {"Howling Wraiths",     "SPELL_WRAITHS"},
@@ -43,65 +44,63 @@ public class SettingMenuScreen extends AbstractScreen implements InputProcessor 
             {"Dialogue Next",       "DIALOGUE_NEXT"},
         };
 
-        // جدول داخلی برای اسکرول
         Table scrollContent = new Table();
 
         for (String[] pair : actions) {
             String label = pair[0];
             String action = pair[1];
-
             Label actionLabel = new Label(label, skin);
             TextButton keyBtn = new TextButton(KeyBindings.keyName(keys.get(action)), skin);
 
             keyBtn.addListener(new ClickListener() {
-                @Override public void clicked(InputEvent e, float x, float y) {
+                @Override
+                public void clicked(InputEvent e, float x, float y) {
                     pendingAction = action;
                     pendingButton = keyBtn;
                     pendingButton.setText("...");
-                    Gdx.input.setInputProcessor(SettingMenuScreen.this);
+                    Gdx.input.setInputProcessor(KeyBindingScreen.this);
                 }
             });
 
             scrollContent.add(actionLabel).width(200).padRight(10);
             scrollContent.add(keyBtn).width(120);
             scrollContent.row().padBottom(8);
-            scrollContent.add().height(4).row(); // فاصله بین ردیف‌ها
+            scrollContent.add().height(4).row();
         }
 
-        // ScrollPane
         ScrollPane scrollPane = new ScrollPane(scrollContent, skin);
         scrollPane.setFadeScrollBars(false);
-        scrollPane.setScrollingDisabled(true, false); // فقط عمودی اسکرول
-
+        scrollPane.setScrollingDisabled(true, false);
         rootTable.add(scrollPane).width(400).height(350).padBottom(20).row();
 
-        // دکمه‌های پایین
         Table bottomRow = new Table();
         TextButton resetBtn = new TextButton("Reset to Defaults", skin);
         resetBtn.addListener(new ClickListener() {
-            @Override public void clicked(InputEvent e, float x, float y) {
+            @Override
+            public void clicked(InputEvent e, float x, float y) {
                 keys.resetToDefaults();
                 keys.save();
                 buildUI();
             }
         });
 
-        TextButton backBtn = new TextButton("Back", skin);
+        TextButton backBtn = new TextButton("Back to Settings", skin);
         backBtn.addListener(new ClickListener() {
-            @Override public void clicked(InputEvent e, float x, float y) {
-                UiManager.setScreen(new MainMenuScreen());
+            @Override
+            public void clicked(InputEvent e, float x, float y) {
+                UiManager.setScreen(new SettingMenuScreen());
             }
         });
 
         bottomRow.add(resetBtn).width(180).padRight(20);
-        bottomRow.add(backBtn).width(120);
+        bottomRow.add(backBtn).width(180);
         rootTable.add(bottomRow);
     }
 
-    @Override public boolean keyDown(int keycode) {
+    @Override
+    public boolean keyDown(int keycode) {
         if (pendingAction != null && pendingButton != null) {
             if (keycode == Input.Keys.ESCAPE) {
-                // کنسل — برگردون به قبلی
                 pendingButton.setText(KeyBindings.keyName(keys.get(pendingAction)));
             } else {
                 keys.set(pendingAction, keycode);

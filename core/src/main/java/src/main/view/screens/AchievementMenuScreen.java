@@ -12,7 +12,7 @@ public class AchievementMenuScreen extends AbstractScreen {
     @Override
     public void show() {
         super.show();
-
+        setBackground("menus/mainBackGround.png");
         Label title = new Label("Achievements", skin);
         Label empty = new Label("No achievements yet!", skin);
 
@@ -26,7 +26,7 @@ public class AchievementMenuScreen extends AbstractScreen {
         centerTable.add(backBtn).width(200);
 
         rootTable.add(centerTable).grow();
-
+        setupMenuPointer(backBtn);
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

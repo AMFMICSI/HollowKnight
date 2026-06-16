@@ -12,7 +12,7 @@ public class StartGameMenuScreen extends AbstractScreen {
     @Override
     public void show() {
         super.show();
-
+        setBackground("menus/mainBackGround.png");
         Label title = new Label("New Game", skin);
         TextButton newGameBtn = new TextButton("New Game", skin);
         TextButton loadGameBtn = new TextButton("Load Game", skin);
@@ -28,7 +28,7 @@ public class StartGameMenuScreen extends AbstractScreen {
         centerTable.add(backBtn).row();
 
         rootTable.add(centerTable).grow();
-
+        setupMenuPointer(newGameBtn, loadGameBtn, backBtn);
         newGameBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
