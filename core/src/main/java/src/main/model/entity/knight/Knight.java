@@ -25,14 +25,26 @@ public class Knight extends Entity {
     private int jumpCount = 0;    // 0 = on ground, 1 = one jump used, 2 = both used
     private float attackTimer = 0;
 
+
+    private int hp = 5;
+    private int maxHp = 5;
+    private float invincibleTimer = 0;
+    private static final  float  INVINCIBLE_DURATION = 1.0f;
+    private  float spawnX, spawnY;
     public Knight(float x, float y) {
         animationSet = new AnimationSet(GameAssetManager.knightAnimations);
         position.set(x, y);
-        boundingBox.setSize(50,70);
+        spawnX = x;
+        spawnY = y;
+        boundingBox.setSize(24,52);
     }
+
     @Override
     public void update(float delta) {
         //Timers:
+        if (invincibleTimer > 0) {
+            invincibleTimer -= delta;
+        }
         if (isDashing) {
             dashTimer -= delta;
             if (dashTimer <= 0) isDashing = false;
@@ -135,6 +147,33 @@ public class Knight extends Entity {
         velocity.y = JUMP_VELOCITY * 0.7f;
     }
 
+
+    public void takeDamage() {
+        if (invincibleTimer > 0) return;
+
+        hp--;
+        invincibleTimer = INVINCIBLE_DURATION;
+
+        // knockback
+        velocity.x = facingRight ? -200f : 200f;
+        velocity.y = 100f;
+
+        if (hp <= 0) {
+            respawn();
+        }
+    }
+
+    public void respawn() {
+        position.set(spawnX, spawnY);
+        velocity.set(0, 0);
+        hp = maxHp;
+        isOnGround = false;
+        jumpCount = 0;
+        isDashing = false;
+        dashTimer = 0;
+        invincibleTimer = INVINCIBLE_DURATION;
+    }
+
     public Vector2 getPosition() { return position; }
     @Override
     public TextureRegion getFrame(float delta) { return animationSet.getFrame(delta); }
@@ -144,4 +183,6 @@ public class Knight extends Entity {
     public void setVelocityX(float vx) { velocity.x = vx; }
     public float getVelocityX(){return velocity.x;}
     public void resetJump() { jumpCount = 0; }
+    public int getHp() { return hp; }
+    public int getMaxHp() { return maxHp; }
 }

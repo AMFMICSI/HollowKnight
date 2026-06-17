@@ -47,7 +47,7 @@ public class GameScreen extends AbstractScreen {
         float mapH = layer.getHeight() * layer.getTileHeight();
 
 
-        gameViewport = new ExtendViewport(mapW/10f, mapH/20f, camera);
+        gameViewport = new ExtendViewport(mapW/5f, mapH/10f, camera); //
         mapRenderer = new OrthogonalTiledMapRenderer(map);
 
         InputMultiplexer multiplexer = new InputMultiplexer();
@@ -60,29 +60,37 @@ public class GameScreen extends AbstractScreen {
     public void render(float delta) {
         gameViewport.apply();
         game.update(delta);
-        camera.position.set(game.knight.getPosition(), 0);
+        camera.position.set(game.knight.getPosition().x, game.knight.getPosition().y + 30, 0);
         camera.update();
 
         batch.setProjectionMatrix(camera.combined);
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         mapRenderer.setView(camera);
-//        mapRenderer.render(new int[]{1});
-//        mapRenderer.render(new int[]{0});
-        mapRenderer.render();
+        mapRenderer.render(new int[]{0});
+        mapRenderer.render(new int[]{1});
+
         batch.begin();
         Knight knight = game.knight;
         TextureRegion frame = knight.getFrame(delta);
         float x = knight.getPosition().x;
         float y = knight.getPosition().y;
 
-        batch.draw(frame, x, y,
-            frame.getRegionWidth() / 2f, 0,
-            frame.getRegionWidth(), frame.getRegionHeight(),
+        float scaleFactor = 5f;
+        float spriteW = knight.getBoundingBox().width * scaleFactor;
+        float spriteH = spriteW * frame.getRegionHeight() / (float) frame.getRegionWidth();
+
+        batch.draw(frame, x + (knight.getBoundingBox().width - spriteW) / 2f,
+            y,
+             spriteW / 2f, 0,
+            spriteW, spriteH,
             knight.facingRight ? -1 : 1, 1, 0);
+
         batch.end();
+
+
         // 4. "back" (index 3) = foreground overlay
-//        mapRenderer.render(new int[]{2});
+        mapRenderer.render(new int[]{2});
 
         // Debug: SolidBlock ها و boundingBox Knight
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
