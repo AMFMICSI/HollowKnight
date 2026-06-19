@@ -13,14 +13,10 @@ public class GuideMenuScreen extends AbstractScreen {
         super.show();
         setBackground("menus/mainBackGround.png");
 
-        Table wrapper = new Table();
-        wrapper.setFillParent(true);
-
         Table content = new Table();
         content.center();
         content.defaults().padBottom(8);
 
-        // ── Title ──
         Label title = new Label("GUIDE", skin, "subtitle");
         content.add(title).padBottom(20).row();
 
@@ -31,7 +27,7 @@ public class GuideMenuScreen extends AbstractScreen {
             {"Jump",            KeyBindings.keyName(keys.get("JUMP"))},
             {"Dash",            KeyBindings.keyName(keys.get("DASH"))},
             {"Attack (Nail)",   KeyBindings.keyName(keys.get("ATTACK"))},
-            {"Pogo",            "↓ + " + KeyBindings.keyName(keys.get("ATTACK"))},
+            {"Pogo",            "\u2193 + " + KeyBindings.keyName(keys.get("ATTACK"))},
             {"Focus / Heal",    KeyBindings.keyName(keys.get("FOCUS"))},
             {"Vengeful Spirit", KeyBindings.keyName(keys.get("SPELL_VENGEFUL"))},
             {"Howling Wraiths", KeyBindings.keyName(keys.get("SPELL_WRAITHS"))},
@@ -49,21 +45,20 @@ public class GuideMenuScreen extends AbstractScreen {
 
         content.add().height(15).row();
 
-        // ── 2. Abilities ──
-        Label abilitiesTitle = new Label("── Abilities & Knight ──", skin);
+        Label abilitiesTitle = new Label("\u2014\u2014 Abilities & Knight \u2014\u2014", skin);
         content.add(abilitiesTitle).padBottom(10).row();
 
         String[][] abilities = {
             {"Nail Attack",         "Swing your nail to damage nearby enemies"},
             {"Jump / Double Jump",  "Press Jump once, then again mid-air"},
             {"Dash",                "Quick horizontal dash with cooldown"},
-            {"Pogo (↓+Attack)",     "Bounce on enemies & spikes"},
+            {"Pogo (\u2193+Attack)",     "Bounce on enemies & spikes"},
             {"Focus / Heal",        "Hold to consume 33 Soul, recover 1 Mask"},
             {"Vengeful Spirit",     "Fire a projectile forward (33 Soul)"},
             {"Howling Wraiths",     "AoE blast upward (33 Soul)"},
             {"Wall Slide",          "Hold toward a wall to slide down"},
             {"Soul System",         "Gain 11 Soul per hit on enemy (max 99)"},
-            {"Health (Masks)",      "5 Masks total — lose 1 per hit"},
+            {"Health (Masks)",      "5 Masks total \u2014 lose 1 per hit"},
         };
 
         for (String[] a : abilities) {
@@ -74,8 +69,7 @@ public class GuideMenuScreen extends AbstractScreen {
 
         content.add().height(15).row();
 
-        // ── 3. Cheat Codes ──
-        Label cheatTitle = new Label("── Cheat Codes ──", skin);
+        Label cheatTitle = new Label("\u2014\u2014 Cheat Codes \u2014\u2014", skin);
         content.add(cheatTitle).padBottom(10).row();
 
         String[][] cheats = {
@@ -99,11 +93,10 @@ public class GuideMenuScreen extends AbstractScreen {
 
         ScrollPane scroll = new ScrollPane(content, skin);
         scroll.setFadeScrollBars(false);
-        wrapper.add(scroll).grow().pad(20);
-
-        rootTable.add(wrapper).grow();
+        rootTable.add(scroll).grow().pad(20);
 
         setupMenuPointer(backBtn);
+
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

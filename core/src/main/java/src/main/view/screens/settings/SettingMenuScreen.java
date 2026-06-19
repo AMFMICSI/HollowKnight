@@ -22,13 +22,11 @@ public class SettingMenuScreen extends AbstractScreen {
         rootTable.clear();
 
         Table center = new Table();
-        center.setFillParent(true);
         center.center();
 
         Label title = new Label("Settings", skin);
         center.add(title).padBottom(30).row();
 
-        //   1. Music Volume + Mute
         Label musicLabel = new Label("Music", skin);
         TextButton musicMuteBtn = new TextButton(GameMusic.MENU.isMuted() ? "Unmute" : "Mute", skin);
         Slider musicSlider = new Slider(0, 1, 0.05f, false, skin);
@@ -57,7 +55,6 @@ public class SettingMenuScreen extends AbstractScreen {
         musicRow.add(musicMuteBtn).width(80);
         center.add(musicRow).padBottom(15).row();
 
-        //   2. SFX Volume + Mute
         Label sfxLabel = new Label("SFX", skin);
         TextButton sfxMuteBtn = new TextButton(GameSettings.getInstance().isSfxMuted() ? "Unmute" : "Mute", skin);
         Slider sfxSlider = new Slider(0, 1, 0.05f, false, skin);
@@ -83,7 +80,6 @@ public class SettingMenuScreen extends AbstractScreen {
         sfxRow.add(sfxMuteBtn).width(80);
         center.add(sfxRow).padBottom(15).row();
 
-        //   3. Brightness
         Label brightnessLabel = new Label("Brightness", skin);
         Slider brightnessSlider = new Slider(0.2f, 1, 0.05f, false, skin);
         brightnessSlider.setValue(GameSettings.getInstance().getBrightness());
@@ -97,7 +93,6 @@ public class SettingMenuScreen extends AbstractScreen {
         brightnessRow.add(brightnessSlider).width(200);
         center.add(brightnessRow).padBottom(15).row();
 
-        //   4. Language
         TextButton langBtn = new TextButton("Language: " + GameSettings.getInstance().getLanguage().toUpperCase(), skin);
         langBtn.addListener(new ClickListener() {
             @Override
@@ -110,7 +105,6 @@ public class SettingMenuScreen extends AbstractScreen {
         });
         center.add(langBtn).width(250).padBottom(15).row();
 
-        //   5. Key Bindings
         TextButton keyBtn = new TextButton("Key Bindings", skin);
         keyBtn.addListener(new ClickListener() {
             @Override
@@ -120,7 +114,6 @@ public class SettingMenuScreen extends AbstractScreen {
         });
         center.add(keyBtn).width(200).padBottom(20).row();
 
-        //   6. Reset Sound + Back
         Table bottomRow = new Table();
         TextButton resetSoundBtn = new TextButton("Reset Sound", skin);
         resetSoundBtn.addListener(new ClickListener() {
@@ -148,7 +141,7 @@ public class SettingMenuScreen extends AbstractScreen {
         bottomRow.add(backBtn).width(120);
         center.add(bottomRow);
 
-        rootTable.add(center).grow();
+        rootTable.add(center).expand().center();
         setupMenuPointer(musicMuteBtn, sfxMuteBtn, langBtn, keyBtn, resetSoundBtn, backBtn);
     }
 }

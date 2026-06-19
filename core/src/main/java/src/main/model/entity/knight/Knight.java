@@ -74,7 +74,6 @@ public class Knight extends Entity {
 
         // animation and boundingBox:
         updateAnimationState();
-        animationSet.getFrame(delta);
         boundingBox.setPosition(position.x, position.y);
     }
 

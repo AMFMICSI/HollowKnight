@@ -13,22 +13,23 @@ public class StartGameMenuScreen extends AbstractScreen {
     public void show() {
         super.show();
         setBackground("menus/mainBackGround.png");
+
         Label title = new Label("New Game", skin);
         TextButton newGameBtn = new TextButton("New Game", skin);
         TextButton loadGameBtn = new TextButton("Load Game", skin);
         TextButton backBtn = new TextButton("Back", skin);
 
-        Table centerTable = new Table();
-        centerTable.setFillParent(true);
-        centerTable.center();
-        centerTable.defaults().width(200).spaceBottom(10);
-        centerTable.add(title).padBottom(20).row();
-        centerTable.add(newGameBtn).row();
-        centerTable.add(loadGameBtn).row();
-        centerTable.add(backBtn).row();
+        Table centerMenu = new Table();
+        centerMenu.defaults().width(200).spaceBottom(10);
+        centerMenu.add(title).padBottom(20).row();
+        centerMenu.add(newGameBtn).row();
+        centerMenu.add(loadGameBtn).row();
+        centerMenu.add(backBtn).row();
 
-        rootTable.add(centerTable).grow();
+        rootTable.add(centerMenu).expand().center();
+
         setupMenuPointer(newGameBtn, loadGameBtn, backBtn);
+
         newGameBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

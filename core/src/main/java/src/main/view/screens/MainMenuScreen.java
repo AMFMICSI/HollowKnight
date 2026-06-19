@@ -2,7 +2,6 @@ package src.main.view.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -10,47 +9,37 @@ import src.main.view.GameMusic;
 import src.main.view.UiManager;
 import src.main.view.screens.settings.SettingMenuScreen;
 
-public class MainMenuScreen extends AbstractScreen{
+public class MainMenuScreen extends AbstractScreen {
 
     @Override
     public void show() {
         super.show();
         setBackground("menus/mainBackGround.png");
-        Stack stack = new Stack();
 
-        Table quitBtnWrapper = new Table();
-        quitBtnWrapper.setFillParent(true);
-        quitBtnWrapper.bottom().left().pad(10);
         TextButton quitBtn = new TextButton("Quit", skin);
-        quitBtnWrapper.add(quitBtn).width(100);
-
-        Table settingsBtnWrapper = new Table();
-        settingsBtnWrapper.setFillParent(true);
-        settingsBtnWrapper.top().right().pad(10);
         TextButton settingsBtn = new TextButton("Settings", skin);
-        settingsBtnWrapper.add(settingsBtn).width(100);
-
-        Table guideBtnWrapper = new Table();
-        guideBtnWrapper.setFillParent(true);
-        guideBtnWrapper.top().left().pad(10);
         TextButton guideBtn = new TextButton("Guide", skin);
-        guideBtnWrapper.add(guideBtn).width(100);
-
-        Table playBtnsWrapper = new Table();
-        playBtnsWrapper.setFillParent(true);
-        playBtnsWrapper.center().pad(10);
-        playBtnsWrapper.defaults().width(200).spaceBottom(10);
         TextButton startBtn = new TextButton("Start Game", skin);
         TextButton achiveBtn = new TextButton("Achievements", skin);
-        playBtnsWrapper.add(startBtn).row();
-        playBtnsWrapper.add(achiveBtn).row();
 
-        stack.add(quitBtnWrapper);
-        stack.add(settingsBtnWrapper);
-        stack.add(guideBtnWrapper);
-        stack.add(playBtnsWrapper);
+        Table topRow = new Table();
+        topRow.add(guideBtn).width(100).left();
+        topRow.add(settingsBtn).width(100).expandX().right();
 
-        rootTable.add(stack).grow();
+        rootTable.add(topRow).fillX().pad(10).row();
+
+        Table centerMenu = new Table();
+        centerMenu.defaults().width(200).spaceBottom(10);
+        centerMenu.add(startBtn).row();
+        centerMenu.add(achiveBtn).row();
+
+        rootTable.add(centerMenu).expand().center().row();
+
+        Table bottomRow = new Table();
+        bottomRow.add(quitBtn).width(100).left();
+
+        rootTable.add(bottomRow).fillX().pad(10);
+
         setupMenuPointer(quitBtn, settingsBtn, guideBtn, startBtn, achiveBtn);
         listeners(quitBtn, settingsBtn, guideBtn, startBtn, achiveBtn);
         GameMusic.MENU.play();
@@ -69,7 +58,6 @@ public class MainMenuScreen extends AbstractScreen{
                 UiManager.setScreen(new SettingMenuScreen());
             }
         });
-
         guideBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

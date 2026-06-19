@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import src.main.view.GameAssetManager;
-import src.main.view.Phats;
 
 public abstract class AbstractScreen implements Screen {
     protected Stage stage;
@@ -132,8 +131,9 @@ public abstract class AbstractScreen implements Screen {
     }
 
     protected void setupMenuPointer(TextButton... buttons) {
-        Image leftB = new Image(new Texture(Phats.MenuPointerLeft.getText()));
-        Image rightB = new Image(new Texture(Phats.MenuPointerRight.getText()));
+        Image leftB = new Image(GameAssetManager.menuPointerLeft);
+        Image rightB = new Image(GameAssetManager.menuPointerRight);
+
         leftB.setVisible(false);
         rightB.setVisible(false);
         mainStack.add(leftB);
@@ -143,16 +143,18 @@ public abstract class AbstractScreen implements Screen {
             button.addListener(new ClickListener(){
                 @Override
                 public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    float h = button.getHeight();
-                    float w = h;
-                    leftB.setSize(w, h);
-                    rightB.setSize(w, h);
+                    float pW = leftB.getPrefWidth();
+                    float pH = leftB.getPrefHeight();
+                    leftB.setSize(pW, pH);
+                    rightB.setSize(pW, pH);
 
                     Vector2 pos = button.localToStageCoordinates(new Vector2(0, 0));
                     pos = mainStack.stageToLocalCoordinates(pos);
 
-                    leftB.setPosition(pos.x - w - 1, pos.y);
-                    rightB.setPosition(pos.x + button.getWidth() + 1, pos.y);
+                    float centeredY = pos.y + (button.getHeight() - pH) / 2f;
+
+                    leftB.setPosition(pos.x - pW - 5, centeredY);
+                    rightB.setPosition(pos.x + button.getWidth() + 5, centeredY);
 
                     leftB.setVisible(true);
                     rightB.setVisible(true);
@@ -165,31 +167,4 @@ public abstract class AbstractScreen implements Screen {
             });
         }
     }
-//    protected void setupMenuPointer(TextButton... buttons) {
-//        Image leftB = new Image(new Texture(Phats.MenuPointerLeft.getText()));
-//        Image rightB = new Image(new Texture(Phats.MenuPointerRight.getText()));
-//        leftB.setVisible(false);
-//        rightB.setVisible(false);
-//        mainStack.add(leftB);
-//        mainStack.add(rightB);
-//
-//        for(TextButton button : buttons) {
-//            button.addListener(new ClickListener(){
-//                @Override
-//                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-//                    Vector2 pos = button.localToStageCoordinates(new Vector2(0 , 0));
-//                    pos = mainStack.stageToLocalCoordinates(pos);
-//                    leftB.setPosition(pos.x - leftB.getWidth() - 5, pos.y + button.getHeight()/2 - leftB.getHeight()/2);
-//                    rightB.setPosition(pos.x + button.getWidth() + 5, pos.y + button.getHeight()/2 - rightB.getHeight()/2);
-//                    leftB.setVisible(true);
-//                    rightB.setVisible(true);
-//                }
-//                @Override
-//                public void exit(InputEvent e, float x, float y, int p, Actor to) {
-//                    leftB.setVisible(false);
-//                    rightB.setVisible(false);
-//                }
-//            });
-//        }
-//    }
 }

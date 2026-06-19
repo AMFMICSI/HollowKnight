@@ -40,6 +40,7 @@ public class Main extends Game {
     public void dispose() {
         super.dispose();
         screen.dispose();
+        GameAssetManager.dispose();
         if (pixel != null) pixel.dispose();
         if (batch != null) batch.dispose();
     }
