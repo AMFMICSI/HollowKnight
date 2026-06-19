@@ -3,6 +3,8 @@ package src.main.view;
 public enum Phats {
     MenuPointerLeft("menus/menuPointer/MenuPointerLeft.png"),
     MenuPointerRight("menus/menuPointer/MenuPointerRight.png"),
+    Map("maps/newMap.tmx"),
+    MapProjectFile("maps/newMap.tiled-project"),
     ;
 
     private String text;

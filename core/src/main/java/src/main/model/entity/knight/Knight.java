@@ -1,8 +1,6 @@
 package src.main.model.entity.knight;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import src.main.model.animation.AnimationSet;
 import src.main.model.entity.Entity;
 import src.main.view.GameAssetManager;
@@ -17,7 +15,6 @@ public class Knight extends Entity {
 
     private final AnimationSet animationSet;
     private KnightState currentState = KnightState.IDLE;
-    private final Rectangle boundingBox =  new Rectangle();
 
     private boolean jumpKeyHeld = false;
     private float dashTimer = 0;
@@ -42,9 +39,8 @@ public class Knight extends Entity {
     @Override
     public void update(float delta) {
         //Timers:
-        if (invincibleTimer > 0) {
-            invincibleTimer -= delta;
-        }
+        if (invincibleTimer > 0) invincibleTimer -= delta;
+
         if (isDashing) {
             dashTimer -= delta;
             if (dashTimer <= 0) isDashing = false;
@@ -173,14 +169,8 @@ public class Knight extends Entity {
         invincibleTimer = INVINCIBLE_DURATION;
     }
 
-    public Vector2 getPosition() { return position; }
     @Override
     public TextureRegion getFrame(float delta) { return animationSet.getFrame(delta); }
-    public Rectangle getBoundingBox() { return boundingBox; }
-    public void setVelocityY(float vy) { velocity.y = vy; }
-    public float getVelocityY() { return velocity.y; }
-    public void setVelocityX(float vx) { velocity.x = vx; }
-    public float getVelocityX(){return velocity.x;}
     public void resetJump() { jumpCount = 0; }
     public int getHp() { return hp; }
     public int getMaxHp() { return maxHp; }

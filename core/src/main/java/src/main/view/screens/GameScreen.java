@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -15,10 +14,11 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import src.main.controller.GameController;
 import src.main.model.Game;
+import src.main.model.entity.enemy.Enemy;
+import src.main.model.entity.enemy.constantEnemy.huskHornhead.HuskHornhead;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.entity.knight.Knight;
 import src.main.view.GameMusic;
-import src.main.view.GameSettings;
 
 public class GameScreen extends AbstractScreen {
     private Game game;
@@ -86,7 +86,25 @@ public class GameScreen extends AbstractScreen {
             spriteW, spriteH,
             knight.facingRight ? -1 : 1, 1, 0);
 
+
+        for (Enemy enemy : game.enemies) {
+            if (enemy.isDeadAnimationDone()) continue;
+            TextureRegion eFrame = enemy.getFrame(delta);
+            float ex = enemy.getBoundingBox().x;
+            float ey = enemy.getBoundingBox().y;
+            float ew = enemy.getBoundingBox().width * 5f;
+            float eh = ew * eFrame.getRegionHeight() / (float) eFrame.getRegionWidth();
+            batch.draw(eFrame,
+                ex + (enemy.getBoundingBox().width - ew) / 2f,
+                ey,
+                ew / 2f, 0,
+                ew, eh,
+                enemy.facingRight ? -1 : 1, 1, 0);
+        }
+
+
         batch.end();
+
 
 
         // 4. "back" (index 3) = foreground overlay
@@ -102,6 +120,12 @@ public class GameScreen extends AbstractScreen {
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.rect(knight.getBoundingBox().x, knight.getBoundingBox().y,
             knight.getBoundingBox().width, knight.getBoundingBox().height);
+
+        shapeRenderer.setColor(Color.YELLOW);
+        for (Enemy enemy : game.enemies) {
+            shapeRenderer.rect(enemy.getBoundingBox().x, enemy.getBoundingBox().y,
+                enemy.getBoundingBox().width, enemy.getBoundingBox().height);
+        }
         shapeRenderer.end();
 
         stage.act(delta);

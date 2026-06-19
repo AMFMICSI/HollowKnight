@@ -31,22 +31,17 @@ task packTextures {
     inputs.dir animDir
     outputs.file file("$outputDir/knight.atlas")
     outputs.file file("$outputDir/knight.png")
+    outputs.file file("$outputDir/crawlid.atlas")
+    outputs.file file("$outputDir/crawlid.png")
     doLast {
-        def tmpDir = new File(project.buildDir, "tmp/knight-frames")
+        def knightTmpDir = new File(project.buildDir, "tmp/knight-frames")
+        delete knightTmpDir
+        knightTmpDir.mkdirs()
 
-        // Clean and recreate temp directory
-        delete tmpDir
-        tmpDir.mkdirs()
-
-        // Copy only individual frame PNGs (those with _NNN pattern), skip combined spritesheets
-        animDir.eachFileMatch(~".*_\\d{3}\\.png") { file ->
-            copy {
-                from file
-                into tmpDir
-            }
+        file("assets/animation").eachFileMatch(~".*_\\d{3}\\.png") { f ->
+            copy { from f; into knightTmpDir }
         }
 
-        // Pack only the knight frames
         def settings = new com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings()
         settings.maxWidth = 4096
         settings.maxHeight = 4096
@@ -57,7 +52,16 @@ task packTextures {
         settings.duplicatePadding = true
         settings.edgePadding = false
         com.badlogic.gdx.tools.texturepacker.TexturePacker.process(settings,
-            tmpDir.absolutePath, outputDir.absolutePath, "knight")
+            knightTmpDir.absolutePath, outputDir.absolutePath, "knight")
+
+        def crawlidTmpDir = new File(project.buildDir, "tmp/crawlid-frames")
+        delete crawlidTmpDir
+        crawlidTmpDir.mkdirs()
+        file("assets/animation/Crawlid").eachFileMatch(~".*_\\d{3}\\.png") { f ->
+            copy { from f; into crawlidTmpDir }
+        }
+        com.badlogic.gdx.tools.texturepacker.TexturePacker.process(settings,
+            crawlidTmpDir.absolutePath, outputDir.absolutePath, "crawlid")
     }
 }
 

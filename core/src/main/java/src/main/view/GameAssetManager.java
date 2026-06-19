@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-//import src.main.model.entity.enemy.HuskHornheadAnimationType;
 import com.badlogic.gdx.utils.Array;
+import src.main.model.entity.enemy.constantEnemy.huskHornhead.HuskHornheadAnimationType;
+import src.main.model.entity.enemy.groundEnemy.crawlid.CrawlidAnimationType;
 import src.main.model.entity.knight.KnightAnimationType;
 
 import java.util.HashMap;
@@ -17,16 +18,17 @@ public class GameAssetManager {
     public static Skin skin;
     public static Texture menuPointerLeft;
     public static Texture menuPointerRight;
-
     public static Map<KnightAnimationType, Animation<TextureRegion>> knightAnimations;
-//    public static Map<HuskHornheadAnimationType, Animation<TextureRegion>> huskHornheadAnimations;
-
     public static TextureAtlas knightAtlas;
     private static final Array<Texture> enemyTextures = new Array<>();
+    public static TextureAtlas crawlidAtlas;
+    public static Map<CrawlidAnimationType, Animation<TextureRegion>> crawlidAnimations;
+    public static Map<HuskHornheadAnimationType, Animation<TextureRegion>> huskHornheadAnimations = new HashMap<>();
 
     public static void init(){
         skin  = new Skin(Gdx.files.internal("ui/uiskin.json"));
         loadKnightAnimations();
+        loadCrawlidAnimations();
 //        loadHuskHornheadAnimations();
         loadMenuPointers();
     }
@@ -56,6 +58,20 @@ public class GameAssetManager {
         System.out.println("Loaded " + knightAnimations.size() + " KnightAnimations");
     }
 
+    public static void loadCrawlidAnimations() {
+        crawlidAnimations = new HashMap<>();
+        crawlidAtlas = new TextureAtlas(Gdx.files.internal("animation/crawlid.atlas"));
+        for (CrawlidAnimationType type : CrawlidAnimationType.values()) {
+            TextureRegion[] frames = new TextureRegion[type.frameCount];
+            for (int i = 0; i < type.frameCount; i++) {
+                String regionName = type.filePrefix + "_" + String.format("%03d", i);
+                frames[i] = crawlidAtlas.findRegion(regionName);
+            }
+            Animation<TextureRegion> anim = new Animation<>(type.frameDuration, frames);
+            anim.setPlayMode(type.playMode);
+            crawlidAnimations.put(type, anim);
+        }
+    }
 
 //    public static void loadHuskHornheadAnimations() {
 //        huskHornheadAnimations = new HashMap<>();
@@ -79,6 +95,7 @@ public class GameAssetManager {
         if (knightAtlas != null) knightAtlas.dispose();
         if (menuPointerLeft != null) menuPointerLeft.dispose();
         if (menuPointerRight != null) menuPointerRight.dispose();
+        if(crawlidAtlas != null) crawlidAtlas.dispose();
         for (Texture tex : enemyTextures) {
             if (tex != null) tex.dispose();
         }
