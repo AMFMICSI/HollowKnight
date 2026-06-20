@@ -46,6 +46,13 @@ public class MapLoader {
                         r.getRectangle().width, r.getRectangle().height, false));
             }
         }
+        // Collect Zone rectangles once
+        List<Rectangle> zoneRects = new ArrayList<>();
+        for (MapObject obj : objects) {
+            if (obj instanceof RectangleMapObject r && "Zone".equals(obj.getName())) {
+                zoneRects.add(r.getRectangle());
+            }
+        }
         for (MapObject obj : objects) {
             if ("SpawnPlayer".equals(obj.getName()) && obj instanceof PointMapObject p) {
                 spawnPoint.set(p.getPoint().x, p.getPoint().y);
@@ -58,8 +65,12 @@ public class MapLoader {
                 EnemySpawnInfo info = new EnemySpawnInfo();
                 info.position = new Vector2(p.getPoint().x, p.getPoint().y);
                 info.enemyType = enemyType;
-                if (props.get("zoneRef") instanceof RectangleMapObject zr)
-                    info.zone = zr.getRectangle();
+                for (Rectangle zr : zoneRects) {
+                    if (zr.contains(info.position.x, info.position.y)) {
+                        info.zone = zr;
+                        break;
+                    }
+                }
                 enemySpawnInfos.add(info);
             }
         }
