@@ -1,21 +1,23 @@
-package src.main.model.entity.enemy.constantEnemy.huskHornhead;
+package src.main.model.entity.enemy.constantEnemy.crystalGuardian;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import src.main.model.entity.animation.AnimationType;
 
-public enum HuskHornheadAnimationType implements AnimationType {
-    IDLE("Idle", 6, 0.15f, Animation.PlayMode.LOOP),
-    WALK("Walk", 7, 0.12f, Animation.PlayMode.LOOP),
-    ATTACK_ANTICIPATE("Attack Anticipate", 5, 0.10f, Animation.PlayMode.NORMAL),
-    ATTACK_LUNGE("Attack Lunge", 12, 0.08f, Animation.PlayMode.NORMAL),
-    DEATH_LAND("Death Land", 8, 0.12f, Animation.PlayMode.NORMAL);
+public enum CrystalGuardianAnimationType implements AnimationType {
+    IDLE("Idle", 5, 0.15f, Animation.PlayMode.LOOP),
+    SHOOT("Shoot", 7, 0.1f, Animation.PlayMode.NORMAL),
+    RUN("Run", 6, 0.1f, Animation.PlayMode.LOOP),
+    EVADE("Evade", 7, 0.1f, Animation.PlayMode.NORMAL),
+    TURN("Turn", 3, 0.1f, Animation.PlayMode.NORMAL),
+    DEATH_AIR("Death Air", 3, 0.15f, Animation.PlayMode.NORMAL),
+    DEATH_LAND("Death Land", 3, 0.15f, Animation.PlayMode.NORMAL);
 
     public final String filePrefix;
     public final int frameCount;
     public final float frameDuration;
     public final Animation.PlayMode playMode;
 
-    HuskHornheadAnimationType(String filePrefix, int frameCount, float frameDuration, Animation.PlayMode playMode) {
+    CrystalGuardianAnimationType(String filePrefix, int frameCount, float frameDuration, Animation.PlayMode playMode) {
         this.filePrefix = filePrefix;
         this.frameCount = frameCount;
         this.frameDuration = frameDuration;

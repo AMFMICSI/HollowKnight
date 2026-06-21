@@ -1,15 +1,13 @@
 package src.main.model.entity.enemy.groundEnemy.crawlid;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import src.main.model.entity.animation.AnimationSet;
 import src.main.model.entity.behavior.PatrolMovement;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.physics.PhysicsSystem;
 import src.main.view.GameAssetManager;
-
-import java.util.Map;
 
 public class Crawlid extends Enemy {
     private static final float WALK_SPEED = 30f;
@@ -17,8 +15,7 @@ public class Crawlid extends Enemy {
     private static final float DEATH_DURATION = 1.0f;
 
     private CrawlidState currentState = CrawlidState.PATROL;
-    private final Map<CrawlidAnimationType, Animation<TextureRegion>> animations;
-    private CrawlidAnimationType currentAnimType = CrawlidAnimationType.WALK;
+    private final AnimationSet<CrawlidAnimationType> animSet;
     private PatrolMovement patrol;
 
     private float zoneMinX, zoneMaxX;
@@ -31,15 +28,16 @@ public class Crawlid extends Enemy {
     }
 
     public Crawlid(float x, float y, Rectangle zone, KnightRef knightRef) {
+        spawnPosition.set(x, y);
         hp = maxHp = MAX_HP;
         position.set(x, y);
         boundingBox.setSize(20, 16);
         this.zone = (zone != null) ? zone : new Rectangle(x - 40, y - 20, 80, 40);
         zoneMinX = this.zone.x;
         zoneMaxX = this.zone.x + this.zone.width - boundingBox.width;
-        animations = GameAssetManager.crawlidAnimations;
+        animSet = new AnimationSet<>(GameAssetManager.crawlidAnimations, CrawlidAnimationType.WALK);
         patrol = new PatrolMovement(WALK_SPEED, 2f);
-        facingRight = true;
+        setFacingRight(true);
     }
 
     @Override
@@ -47,10 +45,9 @@ public class Crawlid extends Enemy {
         if (isDead) {
             deathTimer -= delta;
             if (deathTimer <= 0) deadAnimationDone = true;
-            animTime += delta;
             return;
         }
-        if (!isOnGround)
+        if (!isOnGround())
             velocity.y -= PhysicsSystem.GRAVITY * delta;
 
         if (currentState == CrawlidState.PATROL) {
@@ -65,21 +62,20 @@ public class Crawlid extends Enemy {
             }
         }
         boundingBox.setPosition(position);
-        animTime += delta;
     }
 
     public CrawlidState getCurrentState() { return currentState; }
 
     public void turnAround() {
-        facingRight = !facingRight;
-        velocity.x = facingRight ? WALK_SPEED : -WALK_SPEED;
+        setFacingRight(!isFacingRight());
+        velocity.x = isFacingRight() ? WALK_SPEED : -WALK_SPEED;
         currentState = CrawlidState.TURNING;  // → state جدید
         turnTimer = 0.2f;                      // مدت انیمیشن
     }
 
     @Override
     public void takeDamage(int amount) {
-        if (!isDead) diedInAir = !isOnGround;
+        if (!isDead) diedInAir = !isOnGround();
         super.takeDamage(amount);
     }
 
@@ -91,11 +87,12 @@ public class Crawlid extends Enemy {
 
     @Override
     public TextureRegion getFrame(float delta) {
-        CrawlidAnimationType newType = getCurrentAnimType();
-        if (currentAnimType != newType) {
-            currentAnimType = newType;
-            animTime = 0;
-        }
-        return animations.get(currentAnimType).getKeyFrame(animTime);
+        animSet.setAnimation(getCurrentAnimType());
+        return animSet.getFrame(delta);
+    }
+
+    @Override
+    public TextureRegion getCorpseFrame() {
+        return GameAssetManager.crawlidAnimations.get(CrawlidAnimationType.DEATH_LAND).getKeyFrame(0);
     }
 }

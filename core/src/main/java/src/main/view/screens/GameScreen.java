@@ -5,7 +5,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -15,10 +14,12 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import src.main.controller.GameController;
 import src.main.model.Game;
 import src.main.model.entity.enemy.Enemy;
-import src.main.model.entity.enemy.constantEnemy.huskHornhead.HuskHornhead;
+import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalHunter;
+import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalProjectile;
 import src.main.model.enviroment.SolidBlock;
-import src.main.model.entity.knight.Knight;
 import src.main.view.GameMusic;
+import src.main.view.GameSettings;
+import src.main.view.HudRenderer;
 
 public class GameScreen extends AbstractScreen {
     private Game game;
@@ -26,10 +27,14 @@ public class GameScreen extends AbstractScreen {
     private OrthographicCamera camera;
 
     private ShapeRenderer shapeRenderer;
+    private HudRenderer hudRenderer;
 
     private OrthogonalTiledMapRenderer mapRenderer;
 
     private Viewport gameViewport;
+
+    private static final float STEP = 1 / 60f;
+    private float accumulator;
 
     @Override
     public void show() {
@@ -40,8 +45,9 @@ public class GameScreen extends AbstractScreen {
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
         shapeRenderer = new ShapeRenderer();
+        hudRenderer = new HudRenderer();
 
-        TiledMap map = game.mapLoader.tiledMap;
+        TiledMap map = game.getMapLoader().getTiledMap();
         TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("main");
         float mapW = layer.getWidth() * layer.getTileWidth();
         float mapH = layer.getHeight() * layer.getTileHeight();
@@ -52,15 +58,19 @@ public class GameScreen extends AbstractScreen {
 
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);
-        multiplexer.addProcessor(new GameController(game, game.keyBindings));
+        multiplexer.addProcessor(new GameController(game, game.getKeyBindings()));
         Gdx.input.setInputProcessor(multiplexer);
     }
 
     @Override
     public void render(float delta) {
         gameViewport.apply();
-        game.update(delta);
-        camera.position.set(game.knight.getPosition().x, game.knight.getPosition().y + 30, 0);
+        accumulator += delta;
+        while (accumulator >= STEP) {
+            game.update(STEP);
+            accumulator -= STEP;
+        }
+        camera.position.set(game.getKnight().getPosition().x, game.getKnight().getPosition().y + 30, 0);
         camera.update();
 
         batch.setProjectionMatrix(camera.combined);
@@ -71,62 +81,55 @@ public class GameScreen extends AbstractScreen {
         mapRenderer.render(new int[]{1});
 
         batch.begin();
-        Knight knight = game.knight;
-        TextureRegion frame = knight.getFrame(delta);
-        float x = knight.getPosition().x;
-        float y = knight.getPosition().y;
-
-        float scaleFactor = 5f;
-        float spriteW = knight.getBoundingBox().width * scaleFactor;
-        float spriteH = spriteW * frame.getRegionHeight() / (float) frame.getRegionWidth();
-
-        batch.draw(frame, x + (knight.getBoundingBox().width - spriteW) / 2f,
-            y,
-             spriteW / 2f, 0,
-            spriteW, spriteH,
-            knight.facingRight ? -1 : 1, 1, 0);
-
-
-        for (Enemy enemy : game.enemies) {
-            if (enemy.isDeadAnimationDone()) continue;
-            TextureRegion eFrame = enemy.getFrame(delta);
-            float ex = enemy.getBoundingBox().x;
-            float ey = enemy.getBoundingBox().y;
-            float ew = enemy.getBoundingBox().width * 5f;
-            float eh = ew * eFrame.getRegionHeight() / (float) eFrame.getRegionWidth();
-            batch.draw(eFrame,
-                ex + (enemy.getBoundingBox().width - ew) / 2f,
-                ey,
-                ew / 2f, 0,
-                ew, eh,
-                enemy.facingRight ? -1 : 1, 1, 0);
+        game.getKnight().draw(batch, delta);
+        for (Enemy enemy : game.getEnemies()) {
+            enemy.draw(batch, delta);
         }
-
-
+        for (Enemy enemy : game.getEnemies()) {
+            if (enemy instanceof CrystalHunter ch) {
+                for (CrystalProjectile p : ch.getProjectiles()) {
+                    p.draw(batch, delta);
+                }
+            }
+        }
         batch.end();
+
+        hudRenderer.render(batch, game.getKnight().getHp(), game.getKnight().getMaxHp(),
+            game.getKnight().getSoul(), game.getKnight().getMaxSoul());
 
 
 
         // 4. "back" (index 3) = foreground overlay
         mapRenderer.render(new int[]{2});
 
-        // Debug: SolidBlock ها و boundingBox Knight
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.GREEN);
-        for (SolidBlock sb : game.mapLoader.solidBlocks) {
-            shapeRenderer.rect(sb.bounds.x, sb.bounds.y,
-                sb.bounds.width, sb.bounds.height);
-        }
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(knight.getBoundingBox().x, knight.getBoundingBox().y,
-            knight.getBoundingBox().width, knight.getBoundingBox().height);
+        if (GameSettings.getInstance().isDebugMode()) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(Color.GREEN);
+            for (SolidBlock sb : game.getMapLoader().getSolidBlocks()) {
+                shapeRenderer.rect(sb.getBounds().x, sb.getBounds().y,
+                    sb.getBounds().width, sb.getBounds().height);
+            }
+            shapeRenderer.setColor(Color.RED);
+            shapeRenderer.rect(game.getKnight().getBoundingBox().x, game.getKnight().getBoundingBox().y,
+                game.getKnight().getBoundingBox().width, game.getKnight().getBoundingBox().height);
 
-        shapeRenderer.setColor(Color.YELLOW);
-        for (Enemy enemy : game.enemies) {
-            shapeRenderer.rect(enemy.getBoundingBox().x, enemy.getBoundingBox().y,
-                enemy.getBoundingBox().width, enemy.getBoundingBox().height);
+            shapeRenderer.setColor(Color.YELLOW);
+            for (Enemy enemy : game.getEnemies()) {
+                shapeRenderer.rect(enemy.getBoundingBox().x, enemy.getBoundingBox().y,
+                    enemy.getBoundingBox().width, enemy.getBoundingBox().height);
+            }
+            shapeRenderer.setColor(Color.CYAN);
+            for (Enemy enemy : game.getEnemies()) {
+                if (enemy instanceof CrystalHunter ch) {
+                    for (CrystalProjectile p : ch.getProjectiles()) {
+                        if (p.isDead()) continue;
+                        shapeRenderer.rect(p.getBoundingBox().x, p.getBoundingBox().y,
+                            p.getBoundingBox().width, p.getBoundingBox().height);
+                    }
+                }
+            }
+            shapeRenderer.end();
         }
-        shapeRenderer.end();
 
         stage.act(delta);
         stage.draw();
@@ -142,6 +145,7 @@ public class GameScreen extends AbstractScreen {
     public void dispose() {
         if (mapRenderer != null) mapRenderer.dispose();
         batch.dispose();
-        game.mapLoader.dispose();
+        game.getMapLoader().dispose();
+        hudRenderer.dispose();
     }
 }

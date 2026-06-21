@@ -8,9 +8,9 @@ import java.util.List;
 
 public class CollisionSystem {
     public static void resolve(Knight knight, List<SolidBlock> blocks, float delta) {
-        boolean wasOnGround = knight.isOnGround;
+        boolean wasOnGround = knight.isOnGround();
         resolveEntity(knight, blocks, delta);
-        if (!wasOnGround && knight.isOnGround)
+        if (!wasOnGround && knight.isOnGround())
             knight.resetJump();
     }
 
@@ -22,11 +22,11 @@ public class CollisionSystem {
         entity.getPosition().x += entity.getVelocityX() * delta;
         entity.getBoundingBox().setPosition(entity.getPosition().x, entity.getPosition().y);
         for (SolidBlock block : blocks) {
-            if (entity.getBoundingBox().overlaps(block.bounds)) {
+            if (entity.getBoundingBox().overlaps(block.getBounds())) {
                 if (entity.getVelocityX() > 0)
-                    entity.getPosition().x = block.bounds.x - entity.getBoundingBox().width;
+                    entity.getPosition().x = block.getBounds().x - entity.getBoundingBox().width;
                 else if (entity.getVelocityX() < 0)
-                    entity.getPosition().x = block.bounds.x + block.bounds.width;
+                    entity.getPosition().x = block.getBounds().x + block.getBounds().width;
                 entity.setVelocityX(0);
                 entity.getBoundingBox().x = entity.getPosition().x;
             }
@@ -35,12 +35,12 @@ public class CollisionSystem {
         entity.getBoundingBox().setPosition(entity.getPosition().x, entity.getPosition().y);
         entity.setOnGround(false);
         for (SolidBlock block : blocks) {
-            if (entity.getBoundingBox().overlaps(block.bounds)) {
+            if (entity.getBoundingBox().overlaps(block.getBounds())) {
                 if (entity.getVelocityY() > 0) {
-                    entity.getPosition().y = block.bounds.y - entity.getBoundingBox().height;
+                    entity.getPosition().y = block.getBounds().y - entity.getBoundingBox().height;
                     entity.setVelocityY(0);
                 } else if (entity.getVelocityY() < 0) {
-                    entity.getPosition().y = block.bounds.y + block.bounds.height;
+                    entity.getPosition().y = block.getBounds().y + block.getBounds().height;
                     entity.setVelocityY(0);
                     entity.setOnGround(true);
                 }

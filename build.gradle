@@ -65,6 +65,43 @@ task packTextures {
     }
 }
 
+task packHud {
+    dependsOn buildscript.configurations.classpath
+    def outputDir = file("assets/animation")
+    outputs.file file("$outputDir/hud.atlas")
+    outputs.file file("$outputDir/hud.png")
+    doLast {
+        def hudTmpDir = new File(project.buildDir, "tmp/hud-frames")
+        delete hudTmpDir
+        hudTmpDir.mkdirs()
+
+        def srcDir = "assets/animation/HUD"
+        def names = [
+            "EmptyHealth.png", "FilledHealth.png",
+            "SoulOrb_Empty.png", "SoulOrb_Full.png",
+            "SoulOrb_Half.png", "SoulOrb_Full2.png", "SoulOrb_Eye.png"
+        ]
+        for (int i = 237; i <= 254; i++)
+            names.add("HUD Cln_${i}.png")
+
+        names.each { n ->
+            copy { from file("$srcDir/$n"); into hudTmpDir }
+        }
+
+        def settings = new com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings()
+        settings.maxWidth = 2048
+        settings.maxHeight = 2048
+        settings.alias = false
+        settings.pot = false
+        settings.bleed = false
+        settings.useIndexes = false
+        settings.duplicatePadding = true
+        settings.edgePadding = false
+        com.badlogic.gdx.tools.texturepacker.TexturePacker.process(settings,
+            hudTmpDir.absolutePath, outputDir.absolutePath, "hud")
+    }
+}
+
 configure(subprojects) {
   apply plugin: 'java-library'
   java.sourceCompatibility = 17

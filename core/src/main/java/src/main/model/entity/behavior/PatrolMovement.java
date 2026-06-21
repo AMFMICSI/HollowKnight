@@ -16,7 +16,7 @@ public class PatrolMovement implements MovementBehavior{
     @Override
     public void update(Entity entity, float delta) {
         timer -= delta;
-        entity.setVelocityX(entity.facingRight ? speed : -speed);
+        entity.setVelocityX(entity.isFacingRight() ? speed : -speed);
     }
 
     public boolean isFinished() {

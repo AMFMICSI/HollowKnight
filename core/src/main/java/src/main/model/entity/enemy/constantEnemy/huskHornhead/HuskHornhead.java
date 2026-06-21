@@ -1,14 +1,13 @@
 package src.main.model.entity.enemy.constantEnemy.huskHornhead;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import src.main.model.entity.animation.AnimationSet;
 import src.main.model.entity.behavior.ChargeMovement;
 import src.main.model.entity.behavior.PatrolMovement;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.physics.PhysicsSystem;
 import src.main.view.GameAssetManager;
-import java.util.Map;
 
 public class HuskHornhead extends Enemy {
     private static final float WALK_SPEED = 60f;
@@ -23,8 +22,7 @@ public class HuskHornhead extends Enemy {
     private float stateTimer = 0;
     private HuskHornheadState currentState = HuskHornheadState.PATROL;
 
-    private final Map<HuskHornheadAnimationType, Animation<TextureRegion>> animations;
-    private HuskHornheadAnimationType currentAnimType = HuskHornheadAnimationType.WALK;
+    private AnimationSet<HuskHornheadAnimationType> animSet;
 
     private KnightRef knightRef;
     private PatrolMovement patrol;
@@ -36,12 +34,13 @@ public class HuskHornhead extends Enemy {
     }
 
     public HuskHornhead(float x, float y, KnightRef knightRef) {
+        spawnPosition.set(x, y);
         hp = maxHp = MAX_HP;
         position.set(x, y);
         this.knightRef = knightRef;
         boundingBox.setSize(28, 40);
         zone.setSize(DETECT_RANGE, 40);
-        animations = GameAssetManager.huskHornheadAnimations;
+        animSet = new AnimationSet<>(GameAssetManager.huskHornheadAnimations, HuskHornheadAnimationType.WALK);
         patrol = new PatrolMovement(WALK_SPEED, WALK_DURATION);
         charge = new ChargeMovement(CHARGE_SPEED);
     }
@@ -51,11 +50,10 @@ public class HuskHornhead extends Enemy {
         if (isDead) {
             deathTimer -= delta;
             if (deathTimer <= 0) deadAnimationDone = true;
-            animTime += delta;
             return;
         }
 
-        if (!isOnGround)
+        if (!isOnGround())
             velocity.y -= PhysicsSystem.GRAVITY * delta;
 
         stateTimer -= delta;
@@ -75,7 +73,6 @@ public class HuskHornhead extends Enemy {
         }
 
         boundingBox.setPosition(position);
-        animTime += delta;
     }
 
     private void updatePatrol(float delta) {
@@ -90,7 +87,7 @@ public class HuskHornhead extends Enemy {
     private void updateRest(float delta) {
         velocity.x = 0;
         if (stateTimer <= 0) {
-            facingRight = !facingRight;
+            setFacingRight(!isFacingRight());
             currentState = HuskHornheadState.PATROL;
             patrol.reset();
             stateTimer = WALK_DURATION;
@@ -104,14 +101,14 @@ public class HuskHornhead extends Enemy {
             currentState = HuskHornheadState.CHARGING;
             charge.reset();
             stateTimer = 2f;
-            facingRight = knightRef.getPosition().x > position.x;
-            velocity.x = facingRight ? CHARGE_SPEED : -CHARGE_SPEED;
+            setFacingRight(knightRef.getPosition().x > position.x);
+            velocity.x = isFacingRight() ? CHARGE_SPEED : -CHARGE_SPEED;
         }
     }
 
     private void updateCharging(float delta) {
         charge.update(this, delta);
-        if (stateTimer <= 0 || (Math.abs(velocity.x) < 10f && isOnGround)) {
+        if (stateTimer <= 0 || (Math.abs(velocity.x) < 10f && isOnGround())) {
             stopCharging();
         }
     }
@@ -119,13 +116,13 @@ public class HuskHornhead extends Enemy {
     private void checkDetection() {
         Vector2 knightPos = knightRef.getPosition();
         zone.setPosition(
-            facingRight ? position.x + boundingBox.width : position.x - zone.width,
+            isFacingRight() ? position.x + boundingBox.width : position.x - zone.width,
             position.y
         );
         if (zone.contains(knightPos)) {
             currentState = HuskHornheadState.ALERT;
             stateTimer = ALERT_DURATION;
-            facingRight = knightPos.x > position.x;
+            setFacingRight(knightPos.x > position.x);
         }
     }
 
@@ -133,7 +130,7 @@ public class HuskHornhead extends Enemy {
         currentState = HuskHornheadState.REST;
         stateTimer = REST_DURATION;
         velocity.x = 0;
-        facingRight = !facingRight;
+        setFacingRight(!isFacingRight());
     }
 
     public void takeDamage(int amount) {
@@ -145,7 +142,7 @@ public class HuskHornhead extends Enemy {
             velocity.x = 0;
             velocity.y = 0;
         } else {
-            velocity.x = facingRight ? -200f : 200f;
+            velocity.x = isFacingRight() ? -200f : 200f;
             velocity.y = 100f;
             currentState = HuskHornheadState.ALERT;
             stateTimer = 0.3f;
@@ -168,11 +165,13 @@ public class HuskHornhead extends Enemy {
 
     @Override
     public TextureRegion getFrame(float delta) {
-        HuskHornheadAnimationType newType = getCurrentAnimType();
-        if (currentAnimType != newType) {
-            currentAnimType = newType;
-            animTime = 0;
-        }
-        return animations.get(currentAnimType).getKeyFrame(animTime);
+        animSet.setAnimation(getCurrentAnimType());
+        return animSet.getFrame(delta);
+    }
+
+    @Override
+    public TextureRegion getCorpseFrame() {
+        animSet.setAnimation(HuskHornheadAnimationType.DEATH_LAND);
+        return animSet.getFrame(0);
     }
 }

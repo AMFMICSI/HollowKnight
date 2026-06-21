@@ -3,8 +3,8 @@ package src.main.view;
 public enum Phats {
     MenuPointerLeft("menus/menuPointer/MenuPointerLeft.png"),
     MenuPointerRight("menus/menuPointer/MenuPointerRight.png"),
-//    Map("maps/crystalPeaks/crystalPeaks.tmx"),
-    Map("maps/forgottenCrossroads/forgottenCrossroads.tmx"),
+    Map("maps/crystalPeaks/crystalPeaks.tmx"),
+//    Map("maps/forgottenCrossroads/forgottenCrossroads.tmx"),
     MapProjectFile("maps/hollowKnight.tiled-project"),
     ;
 

@@ -11,7 +11,7 @@ public class ChargeMovement implements   MovementBehavior {
 
     @Override
     public void update(Entity entity, float delta) {
-        entity.setVelocityX(entity.facingRight ? speed : -speed);
+        entity.setVelocityX(entity.isFacingRight() ? speed : -speed);
     }
 
     public void reset() {}

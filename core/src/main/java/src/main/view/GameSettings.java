@@ -35,4 +35,8 @@ public class GameSettings {
 
     public String getLanguage() { return prefs.getString("language", "en"); }
     public void setLanguage(String v) { prefs.putString("language", v).flush(); }
+
+    private boolean debugMode;
+    public boolean isDebugMode() { return debugMode; }
+    public void setDebugMode(boolean v) { debugMode = v; }
 }

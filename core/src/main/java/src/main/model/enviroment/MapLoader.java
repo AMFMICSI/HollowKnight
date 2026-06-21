@@ -16,11 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapLoader {
-    public TiledMap tiledMap;
-    public List<SolidBlock> solidBlocks = new ArrayList<>();
-    public Vector2 spawnPoint = new Vector2();
+    private TiledMap tiledMap;
+    private List<SolidBlock> solidBlocks = new ArrayList<>();
+    private Vector2 spawnPoint = new Vector2();
 
-    public List<EnemySpawnInfo> enemySpawnInfos = new ArrayList<>();
+    private List<EnemySpawnInfo> enemySpawnInfos = new ArrayList<>();
+
+    public TiledMap getTiledMap() { return tiledMap; }
+    public List<SolidBlock> getSolidBlocks() { return solidBlocks; }
+    public Vector2 getSpawnPoint() { return spawnPoint; }
+    public List<EnemySpawnInfo> getEnemySpawnInfos() { return enemySpawnInfos; }
+
     public static class EnemySpawnInfo {
         public Vector2 position;
         public String enemyType;
@@ -33,26 +39,27 @@ public class MapLoader {
         tiledMap = new TmxMapLoader().load(Phats.Map.getText() , params);
 
         MapObjects objects = tiledMap.getLayers().get("logical").getObjects();
-//        TiledMapTileLayer mainLayer = (TiledMapTileLayer) tiledMap.getLayers().get("main");
-//        float tileW = mainLayer.getTileWidth();
-//        float tileH = mainLayer.getTileHeight();
-//        float mapH = mainLayer.getHeight() * tileH;
 
         for (MapObject obj : objects) {
             if (obj instanceof RectangleMapObject r) {
-                if ("SolidBlock".equals(obj.getName()))
-                    solidBlocks.add(new SolidBlock(
-                        r.getRectangle().x, r.getRectangle().y,
-                        r.getRectangle().width, r.getRectangle().height, false));
+                String name = obj.getName();
+                Rectangle rect = r.getRectangle();
+                if ("SolidBlock".equals(name))
+                    solidBlocks.add(new SolidBlock(rect.x, rect.y, rect.width, rect.height, false));
+                if ("Spike".equals(name) || "Hazard".equals(name))
+                    solidBlocks.add(new SolidBlock(rect.x, rect.y, rect.width, rect.height, true));
             }
         }
+
         // Collect Zone rectangles once
         List<Rectangle> zoneRects = new ArrayList<>();
         for (MapObject obj : objects) {
             if (obj instanceof RectangleMapObject r && "Zone".equals(obj.getName())) {
-                zoneRects.add(r.getRectangle());
+                Rectangle rect = r.getRectangle();
+                zoneRects.add(new Rectangle(rect));
             }
         }
+
         for (MapObject obj : objects) {
             if ("SpawnPlayer".equals(obj.getName()) && obj instanceof PointMapObject p) {
                 spawnPoint.set(p.getPoint().x, p.getPoint().y);

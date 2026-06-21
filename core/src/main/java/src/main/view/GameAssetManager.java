@@ -6,10 +6,13 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Array;
+import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardianAnimationType;
 import src.main.model.entity.enemy.constantEnemy.huskHornhead.HuskHornheadAnimationType;
+import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalHunterAnimationType;
 import src.main.model.entity.enemy.groundEnemy.crawlid.CrawlidAnimationType;
 import src.main.model.entity.knight.KnightAnimationType;
+import src.main.model.entity.animation.AnimationType;
+import src.main.model.entity.hud.SoulFillStage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,17 +23,30 @@ public class GameAssetManager {
     public static Texture menuPointerRight;
     public static Map<KnightAnimationType, Animation<TextureRegion>> knightAnimations;
     public static TextureAtlas knightAtlas;
-    private static final Array<Texture> enemyTextures = new Array<>();
+
     public static TextureAtlas crawlidAtlas;
     public static Map<CrawlidAnimationType, Animation<TextureRegion>> crawlidAnimations;
-    public static Map<HuskHornheadAnimationType, Animation<TextureRegion>> huskHornheadAnimations = new HashMap<>();
+    public static TextureAtlas crystalHunterAtlas;
+    public static Map<CrystalHunterAnimationType, Animation<TextureRegion>> crystalHunterAnimations;
+    public static TextureRegion crystalProjectileRegion;
+    public static TextureAtlas huskHornheadAtlas;
+    public static Map<HuskHornheadAnimationType, Animation<TextureRegion>> huskHornheadAnimations;
+    public static TextureAtlas crystalGuardianAtlas;
+    public static TextureAtlas hudAtlas;
+    public static Map<SoulFillStage, Animation<TextureRegion>> soulFillAnimations;
+
+    public static Map<CrystalGuardianAnimationType, Animation<TextureRegion>> crystalGuardianAnimations;
 
     public static void init(){
         skin  = new Skin(Gdx.files.internal("ui/uiskin.json"));
         loadKnightAnimations();
         loadCrawlidAnimations();
-//        loadHuskHornheadAnimations();
+        loadCrystalHunterAnimations();
+        loadHuskHornheadAnimations();
+        loadCrystalGuardianAnimations();
         loadMenuPointers();
+        loadHudAtlas();
+        loadSoulAnimations();
     }
 
 
@@ -39,56 +55,64 @@ public class GameAssetManager {
         menuPointerRight = new Texture(Gdx.files.internal(Phats.MenuPointerRight.getText()));
     }
 
-    public static void loadKnightAnimations(){
-        knightAnimations = new HashMap<>();
-        knightAtlas = new TextureAtlas(Gdx.files.internal("animation/knight.atlas"));
-
-        for(KnightAnimationType type : KnightAnimationType.values()){
-            TextureRegion[] frames = new TextureRegion[type.frameCount];
-
-            for(int i = 0; i < type.frameCount; i++){
-                String regionName = type.filePrefix + "_" + String.format("%03d", i);
-                frames[i] = knightAtlas.findRegion(regionName);
+    private static <T extends Enum<T> & AnimationType> Map<T, Animation<TextureRegion>> loadAnimations(
+            TextureAtlas atlas, T[] types, String format) {
+        Map<T, Animation<TextureRegion>> map = new HashMap<>();
+        for (T type : types) {
+            TextureRegion[] frames = new TextureRegion[type.getFrameCount()];
+            for (int i = 0; i < type.getFrameCount(); i++) {
+                frames[i] = atlas.findRegion(String.format(format, type.getFilePrefix(), i));
             }
-
-            Animation<TextureRegion> animation = new Animation<>(type.frameDuration, frames);
-            animation.setPlayMode(type.playMode);
-            knightAnimations.put(type, animation);
+            Animation<TextureRegion> anim = new Animation<>(type.getFrameDuration(), frames);
+            anim.setPlayMode(type.getPlayMode());
+            map.put(type, anim);
         }
-        System.out.println("Loaded " + knightAnimations.size() + " KnightAnimations");
+        return map;
+    }
+
+    public static void loadKnightAnimations(){
+        knightAtlas = new TextureAtlas(Gdx.files.internal("animation/knight.atlas"));
+        knightAnimations = loadAnimations(knightAtlas, KnightAnimationType.values(), "%s_%03d");
     }
 
     public static void loadCrawlidAnimations() {
-        crawlidAnimations = new HashMap<>();
         crawlidAtlas = new TextureAtlas(Gdx.files.internal("animation/crawlid.atlas"));
-        for (CrawlidAnimationType type : CrawlidAnimationType.values()) {
-            TextureRegion[] frames = new TextureRegion[type.frameCount];
-            for (int i = 0; i < type.frameCount; i++) {
-                String regionName = type.filePrefix + "_" + String.format("%03d", i);
-                frames[i] = crawlidAtlas.findRegion(regionName);
-            }
-            Animation<TextureRegion> anim = new Animation<>(type.frameDuration, frames);
-            anim.setPlayMode(type.playMode);
-            crawlidAnimations.put(type, anim);
-        }
+        crawlidAnimations = loadAnimations(crawlidAtlas, CrawlidAnimationType.values(), "%s_%03d");
     }
 
-//    public static void loadHuskHornheadAnimations() {
-//        huskHornheadAnimations = new HashMap<>();
-//        String base = "animation/Husk_Hornhead/";
-//
-//        for (HuskHornheadAnimationType type : HuskHornheadAnimationType.values()) {
-//            TextureRegion[] frames = new TextureRegion[type.frameCount];
-//            for (int i = 0; i < type.frameCount; i++) {
-//                String fileName = base + type.filePrefix + "_" + String.format("%03d", i) + ".png";
-//                frames[i] = new TextureRegion(new Texture(Gdx.files.internal(fileName)));
-//            }
-//            Animation<TextureRegion> anim = new Animation<>(type.frameDuration, frames);
-//            anim.setPlayMode(type.playMode);
-//            huskHornheadAnimations.put(type, anim);
-//        }
-//        System.out.println("Loaded " + huskHornheadAnimations.size() + " HuskHornhead animations");
-//    }
+    public static void loadCrystalHunterAnimations() {
+        crystalHunterAtlas = new TextureAtlas(Gdx.files.internal("animation/crystalHunter.atlas"));
+        crystalHunterAnimations = loadAnimations(crystalHunterAtlas, CrystalHunterAnimationType.values(), "%s_%03d");
+        crystalProjectileRegion = crystalHunterAtlas.findRegion("Crystal_000");
+    }
+
+    public static void loadHuskHornheadAnimations() {
+        huskHornheadAtlas = new TextureAtlas(Gdx.files.internal("animation/huskHornhead.atlas"));
+        huskHornheadAnimations = loadAnimations(huskHornheadAtlas, HuskHornheadAnimationType.values(), "%s_%03d");
+    }
+
+    public static void loadCrystalGuardianAnimations() {
+        crystalGuardianAtlas = new TextureAtlas(Gdx.files.internal("animation/crystalGuardian.atlas"));
+        crystalGuardianAnimations = loadAnimations(crystalGuardianAtlas, CrystalGuardianAnimationType.values(), "%s_%03d");
+    }
+
+    public static void loadHudAtlas() {
+        hudAtlas = new TextureAtlas(Gdx.files.internal("animation/hud.atlas"));
+    }
+
+    public static void loadSoulAnimations() {
+        soulFillAnimations = new HashMap<>();
+        for (SoulFillStage stage : SoulFillStage.values()) {
+            TextureRegion[] frames = new TextureRegion[stage.frameCount];
+            for (int i = 0; i < stage.frameCount; i++) {
+                String name = stage.filePrefix + "_" + (stage.frameStart + i);
+                frames[i] = hudAtlas.findRegion(name);
+            }
+            Animation<TextureRegion> anim = new Animation<>(stage.frameDuration, frames);
+            anim.setPlayMode(stage.playMode);
+            soulFillAnimations.put(stage, anim);
+        }
+    }
 
     public static void dispose() {
         if (skin != null) skin.dispose();
@@ -96,9 +120,9 @@ public class GameAssetManager {
         if (menuPointerLeft != null) menuPointerLeft.dispose();
         if (menuPointerRight != null) menuPointerRight.dispose();
         if(crawlidAtlas != null) crawlidAtlas.dispose();
-        for (Texture tex : enemyTextures) {
-            if (tex != null) tex.dispose();
-        }
-        enemyTextures.clear();
+        if(crystalHunterAtlas != null) crystalHunterAtlas.dispose();
+        if(huskHornheadAtlas != null) huskHornheadAtlas.dispose();
+        if(crystalGuardianAtlas != null) crystalGuardianAtlas.dispose();
+        if(hudAtlas != null) hudAtlas.dispose();
     }
 }
