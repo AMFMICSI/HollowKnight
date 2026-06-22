@@ -1,0 +1,60 @@
+{
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/forgottenCrossroads/forgottenCrossroads.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 1.5,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 656.6666666666666,
+                "y": 268
+            }
+        },
+        "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/tilesets/Forgotten_Crossroads_BackGround.tsx": {
+            "scaleInDock": 0.25,
+            "scaleInEditor": 1
+        },
+        "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/tilesets/Obstáculo.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/tilesets/crysalPath.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/tilesets/crystal.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 1
+        },
+        "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/tilesets/flame.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "crystalPeaks.tmx": {
+            "expandedObjectLayers": [
+                6
+            ],
+            "scale": 0.75,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 975.9999999999999,
+                "y": 1108
+            }
+        }
+    },
+    "openFiles": [
+    ],
+    "project": "crystalPeaks.tiled-project",
+    "recentFiles": [
+        "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/tilesets/Forgotten_Crossroads_BackGround.tsx",
+        "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/forgottenCrossroads/forgottenCrossroads.tmx",
+        "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/tilesets/flame.tsx",
+        "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/tilesets/crystal.tsx",
+        "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/tilesets/crysalPath.tsx",
+        "crystalPeaks.tmx"
+    ]
+}
