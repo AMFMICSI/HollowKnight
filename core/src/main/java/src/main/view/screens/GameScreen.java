@@ -17,7 +17,9 @@ import src.main.model.entity.enemy.Enemy;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalHunter;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalProjectile;
 import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardian;
+import src.main.model.enviroment.ClimbableWall;
 import src.main.model.enviroment.SolidBlock;
+import src.main.model.enviroment.Spike;
 import src.main.view.GameAssetManager;
 import src.main.view.GameMusic;
 import src.main.view.GameSettings;
@@ -64,6 +66,44 @@ public class GameScreen extends AbstractScreen {
         Gdx.input.setInputProcessor(multiplexer);
     }
 
+    private void renderDebug() {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.GREEN);
+        for (SolidBlock sb : game.getMapLoader().getSolidBlocks()) {
+            shapeRenderer.rect(sb.getBounds().x, sb.getBounds().y,
+                sb.getBounds().width, sb.getBounds().height);
+        }
+        shapeRenderer.setColor(Color.MAGENTA);
+        for (Spike spike : game.getMapLoader().getSpikes()) {
+            shapeRenderer.rect(spike.getBounds().x, spike.getBounds().y,
+                spike.getBounds().width, spike.getBounds().height);
+        }
+        shapeRenderer.setColor(Color.ORANGE);
+        for (ClimbableWall w : game.getMapLoader().getClimbableWalls()) {
+            shapeRenderer.rect(w.getBounds().x, w.getBounds().y,
+                w.getBounds().width, w.getBounds().height);
+        }
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(game.getKnight().getBoundingBox().x, game.getKnight().getBoundingBox().y,
+            game.getKnight().getBoundingBox().width, game.getKnight().getBoundingBox().height);
+        shapeRenderer.setColor(Color.YELLOW);
+        for (Enemy enemy : game.getEnemies()) {
+            shapeRenderer.rect(enemy.getBoundingBox().x, enemy.getBoundingBox().y,
+                enemy.getBoundingBox().width, enemy.getBoundingBox().height);
+        }
+        shapeRenderer.setColor(Color.CYAN);
+        for (Enemy enemy : game.getEnemies()) {
+            if (enemy instanceof CrystalHunter ch) {
+                for (CrystalProjectile p : ch.getProjectiles()) {
+                    if (p.isDead()) continue;
+                    shapeRenderer.rect(p.getBoundingBox().x, p.getBoundingBox().y,
+                        p.getBoundingBox().width, p.getBoundingBox().height);
+                }
+            }
+        }
+        shapeRenderer.end();
+    }
+
     @Override
     public void render(float delta) {
         gameViewport.apply();
@@ -86,57 +126,22 @@ public class GameScreen extends AbstractScreen {
         game.getKnight().draw(batch, delta);
         for (Enemy enemy : game.getEnemies()) {
             enemy.draw(batch, delta);
-        }
-        for (Enemy enemy : game.getEnemies()) {
             if (enemy instanceof CrystalHunter ch) {
-                for (CrystalProjectile p : ch.getProjectiles()) {
+                for (CrystalProjectile p : ch.getProjectiles())
                     p.draw(batch, delta);
-                }
             }
-        }
-        for (Enemy enemy : game.getEnemies()) {
-            if (enemy instanceof CrystalGuardian cg) {
+            if (enemy instanceof CrystalGuardian cg)
                 cg.getLaser().draw(batch, GameAssetManager.laserRegion);
-            }
         }
         batch.end();
 
         hudRenderer.render(batch, game.getKnight().getHp(), game.getKnight().getMaxHp(),
             game.getKnight().getSoul(), game.getKnight().getMaxSoul());
 
-
-
-        // 4. "back" (index 3) = foreground overlay
         mapRenderer.render(new int[]{2});
 
-        if (GameSettings.getInstance().isDebugMode()) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.GREEN);
-            for (SolidBlock sb : game.getMapLoader().getSolidBlocks()) {
-                shapeRenderer.rect(sb.getBounds().x, sb.getBounds().y,
-                    sb.getBounds().width, sb.getBounds().height);
-            }
-            shapeRenderer.setColor(Color.RED);
-            shapeRenderer.rect(game.getKnight().getBoundingBox().x, game.getKnight().getBoundingBox().y,
-                game.getKnight().getBoundingBox().width, game.getKnight().getBoundingBox().height);
-
-            shapeRenderer.setColor(Color.YELLOW);
-            for (Enemy enemy : game.getEnemies()) {
-                shapeRenderer.rect(enemy.getBoundingBox().x, enemy.getBoundingBox().y,
-                    enemy.getBoundingBox().width, enemy.getBoundingBox().height);
-            }
-            shapeRenderer.setColor(Color.CYAN);
-            for (Enemy enemy : game.getEnemies()) {
-                if (enemy instanceof CrystalHunter ch) {
-                    for (CrystalProjectile p : ch.getProjectiles()) {
-                        if (p.isDead()) continue;
-                        shapeRenderer.rect(p.getBoundingBox().x, p.getBoundingBox().y,
-                            p.getBoundingBox().width, p.getBoundingBox().height);
-                    }
-                }
-            }
-            shapeRenderer.end();
-        }
+        if (GameSettings.getInstance().isDebugMode())
+            renderDebug();
 
         stage.act(delta);
         stage.draw();

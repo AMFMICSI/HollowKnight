@@ -18,12 +18,16 @@ import java.util.List;
 public class MapLoader {
     private TiledMap tiledMap;
     private List<SolidBlock> solidBlocks = new ArrayList<>();
+    private List<Spike> spikes = new ArrayList<>();
+    private List<ClimbableWall> climbableWalls = new ArrayList<>();
     private Vector2 spawnPoint = new Vector2();
 
     private List<EnemySpawnInfo> enemySpawnInfos = new ArrayList<>();
 
     public TiledMap getTiledMap() { return tiledMap; }
     public List<SolidBlock> getSolidBlocks() { return solidBlocks; }
+    public List<Spike> getSpikes() { return spikes; }
+    public List<ClimbableWall> getClimbableWalls() { return climbableWalls; }
     public Vector2 getSpawnPoint() { return spawnPoint; }
     public List<EnemySpawnInfo> getEnemySpawnInfos() { return enemySpawnInfos; }
 
@@ -36,7 +40,7 @@ public class MapLoader {
     public MapLoader() {
         TmxMapLoader.Parameters params = new TmxMapLoader.Parameters();
         params.projectFilePath = Phats.MapProjectFile.getText();
-        tiledMap = new TmxMapLoader().load(Phats.Map.getText() , params);
+        tiledMap = new TmxMapLoader().load(Phats.Map.getText(), params);
 
         MapObjects objects = tiledMap.getLayers().get("logical").getObjects();
 
@@ -45,9 +49,13 @@ public class MapLoader {
                 String name = obj.getName();
                 Rectangle rect = r.getRectangle();
                 if ("SolidBlock".equals(name))
-                    solidBlocks.add(new SolidBlock(rect.x, rect.y, rect.width, rect.height, false));
-                if ("Spike".equals(name) || "Hazard".equals(name))
-                    solidBlocks.add(new SolidBlock(rect.x, rect.y, rect.width, rect.height, true));
+                    solidBlocks.add(new SolidBlock(rect.x, rect.y, rect.width, rect.height));
+                if ("Spike".equals(name))
+                    spikes.add(new Spike(rect.x, rect.y, rect.width, rect.height));
+                if ("WallClimb".equals(name)) {
+                    climbableWalls.add(new ClimbableWall(rect.x, rect.y, rect.width, rect.height));
+                    solidBlocks.add(new SolidBlock(rect.x, rect.y, rect.width, rect.height));
+                }
             }
         }
 

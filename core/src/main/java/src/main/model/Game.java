@@ -15,6 +15,7 @@ import src.main.model.entity.enemy.groundEnemy.crawlid.Crawlid;
 import src.main.model.enviroment.MapLoader;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.entity.knight.Knight;
+import src.main.model.enviroment.Spike;
 import src.main.model.physics.CollisionSystem;
 import src.main.view.Phats;
 
@@ -70,7 +71,8 @@ public class Game {
 
     private void updateKnight(float delta) {
         knight.update(delta);
-        CollisionSystem.resolve(knight, mapLoader.getSolidBlocks(), delta);
+        CollisionSystem.resolve(knight, mapLoader.getSolidBlocks(),
+            mapLoader.getSpikes(), mapLoader.getClimbableWalls(), delta);
     }
 
     private void updateCombat(float delta) {
@@ -101,8 +103,8 @@ public class Game {
             }
 
             if (knight.isPogoAttack() && !knight.isHitRegistered()) {
-                for (SolidBlock sb : mapLoader.getSolidBlocks()) {
-                    if (sb.isDeadly() && hitbox.overlaps(sb.getBounds())) {
+                for (Spike spike : mapLoader.getSpikes()) {
+                    if (hitbox.overlaps(spike.getBounds())) {
                         knight.setHitRegistered(true);
                         knight.doPogoBounce();
                         break;
@@ -111,12 +113,7 @@ public class Game {
             }
         }
 
-        for (SolidBlock sb : mapLoader.getSolidBlocks()) {
-            if (sb.isDeadly() && knight.getBoundingBox().overlaps(sb.getBounds())) {
-                knight.takeDamage();
-                break;
-            }
-        }
+
     }
 
     private void updateEnemies(float delta) {

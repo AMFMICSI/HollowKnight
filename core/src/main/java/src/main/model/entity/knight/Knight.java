@@ -20,6 +20,8 @@ public class Knight extends Entity {
     private static final int SOUL_PER_HIT = 11;
     private static final int SOUL_PER_HEAL = 33;
     private static final float FOCUS_DURATION = 1.5f;
+    private static final float WALL_SLIDE_SPEED = 70f;
+    private static final float WALL_JUMP_HORIZONTAL = 300f;
 
     private final AnimationSet animationSet;
     private KnightState currentState = KnightState.IDLE;
@@ -29,6 +31,10 @@ public class Knight extends Entity {
     private float dashTimer = 0;
     private boolean isDashing = false;
     private int jumpCount = 0;
+
+    // Wall Climb
+    private boolean isOnWall = false;
+    private boolean wallToLeft = false;
 
     // Attack
     private float attackTimer = 0;
@@ -96,12 +102,17 @@ public class Knight extends Entity {
             velocity.y *= 0.85f;
 
         if (!isDashing && !isFocusing) {
-            if (isMovingLeft() && !isMovingRight()) velocity.x = -MOVE_SPEED;
-            else if (isMovingRight() && !isMovingLeft()) velocity.x = MOVE_SPEED;
-            else velocity.x = 0;
+            if (isOnWall) {
+                velocity.y = -WALL_SLIDE_SPEED;
+                velocity.x = 0;
+            } else {
+                if (isMovingLeft() && !isMovingRight()) velocity.x = -MOVE_SPEED;
+                else if (isMovingRight() && !isMovingLeft()) velocity.x = MOVE_SPEED;
+                else velocity.x = 0;
+            }
         }
 
-        if (!isDashing) velocity.y -= PhysicsSystem.GRAVITY * delta;
+        if (!isDashing && !isOnWall) velocity.y -= PhysicsSystem.GRAVITY * delta;
 
         updateAnimationState();
         boundingBox.setPosition(position.x, position.y);
@@ -116,6 +127,8 @@ public class Knight extends Entity {
             if (isAttackDown) currentState = KnightState.ATTACKING_DOWN;
             else if (isAttackUp) currentState = KnightState.ATTACKING_UP;
             else currentState = KnightState.ATTACKING;
+        } else if (isOnWall) {
+            currentState = KnightState.WALL_SLIDING;
         } else if (!isOnGround()) {
             if (jumpCount == 2) currentState = KnightState.DOUBLE_JUMPING;
             else if (velocity.y > 0) currentState = KnightState.JUMPING;
@@ -139,6 +152,7 @@ public class Knight extends Entity {
             case JUMPING:   animType = KnightAnimationType.AIRBORNE; break;
             case DOUBLE_JUMPING: animType = KnightAnimationType.DOUBLE_JUMP; break;
             case FALLING:   animType = KnightAnimationType.FALL; break;
+            case WALL_SLIDING:   animType = KnightAnimationType.FALL; break;
             case ATTACKING:   animType = KnightAnimationType.SLASH; break;
             case ATTACKING_DOWN: animType = KnightAnimationType.DOWN_SLASH; break;
             case ATTACKING_UP:   animType = KnightAnimationType.UP_SLASH; break;
@@ -157,6 +171,14 @@ public class Knight extends Entity {
 
     // --- MOVEMENT ---
     public void jump() {
+        if (isOnWall) {                                                     // (Wall Jump)
+            velocity.y = JUMP_VELOCITY;
+            velocity.x = wallToLeft ? WALL_JUMP_HORIZONTAL : -WALL_JUMP_HORIZONTAL;
+            jumpCount = 1;
+            jumpKeyHeld = true;
+            isOnWall = false;
+            return;
+        }
         if (isOnGround()) {
             velocity.y = JUMP_VELOCITY;
             setOnGround(false);
@@ -259,6 +281,21 @@ public class Knight extends Entity {
     public boolean isHitRegistered() { return hitRegistered; }
     public void setHitRegistered(boolean v) { hitRegistered = v; }
 
+    // --- WALL CLIMB ---
+    public void setOnWall(boolean onWall, boolean wallLeft) {
+        if (onWall && !this.isOnWall) {
+            jumpCount = 0;
+            isDashing = false;
+            dashTimer = 0;
+            velocity.x = 0;
+        }
+        this.isOnWall = onWall;
+        this.wallToLeft = wallLeft;
+        if (onWall) setFacingRight(!wallLeft);
+    }
+
+    public boolean isOnWall() { return isOnWall; }
+
     // --- FOCUS ---
     public void startFocus() {
         if (isFocusing || !isOnGround() || isDashing || attackTimer > 0 || hp >= MAX_HP || soul < SOUL_PER_HEAL)
@@ -313,6 +350,7 @@ public class Knight extends Entity {
         jumpCount = 0;
         isDashing = false;
         dashTimer = 0;
+        isOnWall = false;
         invincibleTimer = INVINCIBLE_DURATION;
         isFocusing = false;
         focusTimer = 0;

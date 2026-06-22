@@ -1,14 +1,10 @@
 package src.main.model.enviroment;
-
 import com.badlogic.gdx.math.Rectangle;
 
-public class SolidBlock {
-
+public class ClimbableWall {
     private Rectangle bounds;
-
-    public SolidBlock(float x, float y, float width, float height) {
-        this.bounds = new Rectangle(x, y, width, height);
+    public ClimbableWall(float x, float y, float w, float h) {
+        this.bounds = new Rectangle(x, y, w, h);
     }
-
     public Rectangle getBounds() { return bounds; }
 }

@@ -1,17 +1,58 @@
 package src.main.model.physics;
 
+import com.badlogic.gdx.math.Rectangle;
 import src.main.model.entity.Entity;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.entity.knight.Knight;
 import src.main.model.enviroment.SolidBlock;
+import src.main.model.enviroment.Spike;
+import src.main.model.enviroment.ClimbableWall;
+
 import java.util.List;
 
 public class CollisionSystem {
-    public static void resolve(Knight knight, List<SolidBlock> blocks, float delta) {
+    public static void resolve(Knight knight, List<SolidBlock> blocks, List<Spike> spikes,
+                               List<ClimbableWall> climbableWalls, float delta) {
         boolean wasOnGround = knight.isOnGround();
         resolveEntity(knight, blocks, delta);
         if (!wasOnGround && knight.isOnGround())
             knight.resetJump();
+
+        // --- Spike ---
+        for (Spike spike : spikes) {
+            if (knight.getBoundingBox().overlaps(spike.getBounds())) {
+                float vx = knight.getVelocityX();
+                float vy = knight.getVelocityY();
+                knight.takeDamage();
+                spike.pushOut(knight, vx, vy);
+                break;
+            }
+        }
+
+        // --- Wall Climb ---
+        boolean onWall = false;
+        boolean wallLeft = false;
+        Rectangle b = knight.getBoundingBox();
+        float tol = 2f;
+
+        for (ClimbableWall w : climbableWalls) {
+            Rectangle wb = w.getBounds();
+            boolean touchesLeft = Math.abs(b.x - (wb.x + wb.width)) <= tol
+                && b.x + b.width > wb.x;
+            boolean touchesRight = Math.abs((b.x + b.width) - wb.x) <= tol
+                && b.x < wb.x + wb.width;
+            boolean yOverlap = b.y < wb.y + wb.height && b.y + b.height > wb.y;
+
+            if (yOverlap && (touchesLeft || touchesRight)) {
+                onWall = true;
+                wallLeft = touchesLeft;
+                break;
+            }
+        }
+
+        boolean pressingTowardWall = (wallLeft && knight.isMovingLeft())
+            || (!wallLeft && knight.isMovingRight());
+        knight.setOnWall(onWall && pressingTowardWall, wallLeft);
     }
 
     public static void resolve(Enemy enemy, List<SolidBlock> blocks, float delta) {

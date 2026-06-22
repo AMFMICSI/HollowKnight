@@ -1,0 +1,202 @@
+
+zote.png
+size: 3508, 562
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Attack_000
+  rotate: false
+  xy: 0, 376
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Attack_001
+  rotate: false
+  xy: 0, 188
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Attack_002
+  rotate: false
+  xy: 351, 376
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Attack_003
+  rotate: false
+  xy: 0, 0
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Fall_000
+  rotate: false
+  xy: 351, 188
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Fall_001
+  rotate: false
+  xy: 702, 376
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Fall_002
+  rotate: false
+  xy: 351, 0
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Fall_003
+  rotate: false
+  xy: 702, 188
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Fall_004
+  rotate: false
+  xy: 1053, 376
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Get Up_000
+  rotate: false
+  xy: 702, 0
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Get Up_001
+  rotate: false
+  xy: 1053, 188
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Get Up_002
+  rotate: false
+  xy: 1404, 376
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Get Up_003
+  rotate: false
+  xy: 1053, 0
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Idle_000
+  rotate: false
+  xy: 1404, 188
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Idle_001
+  rotate: false
+  xy: 1755, 376
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Idle_002
+  rotate: false
+  xy: 1404, 0
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Idle_003
+  rotate: false
+  xy: 1755, 188
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Idle_004
+  rotate: false
+  xy: 2106, 376
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Roll_000
+  rotate: false
+  xy: 1755, 0
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Roll_001
+  rotate: false
+  xy: 2106, 188
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Roll_002
+  rotate: false
+  xy: 2457, 376
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Talk_000
+  rotate: false
+  xy: 2106, 0
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Talk_001
+  rotate: false
+  xy: 2457, 188
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Talk_002
+  rotate: false
+  xy: 2808, 376
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Talk_003
+  rotate: false
+  xy: 2457, 0
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Talk_004
+  rotate: false
+  xy: 2808, 188
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Turn_000
+  rotate: false
+  xy: 3159, 376
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+Turn_001
+  rotate: false
+  xy: 2808, 0
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
