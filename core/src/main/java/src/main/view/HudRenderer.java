@@ -26,8 +26,8 @@ public class HudRenderer {
         hudCamera = new OrthographicCamera();
         hudCamera.setToOrtho(false, W, H);
 
-        emptyMask = GameAssetManager.hudAtlas.findRegion("EmptyHealth");
-        filledMask = GameAssetManager.hudAtlas.findRegion("FilledHealth");
+        emptyMask = GameAssetManager.getHudRegion("EmptyHealth");
+        filledMask = GameAssetManager.getHudRegion("FilledHealth");
         soulAnim = new AnimationSet<>(GameAssetManager.soulFillAnimations, SoulFillStage.EMPTY);
     }
 

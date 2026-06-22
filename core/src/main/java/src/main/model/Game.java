@@ -6,11 +6,12 @@ import src.main.model.data.KeyBindings;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardian;
 import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardianLaser;
-import src.main.model.entity.enemy.constantEnemy.huskHornhead.HuskHornhead;
+import src.main.model.entity.enemy.groundEnemy.huskHornhead.HuskHornhead;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalHunter;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalProjectile;
+import src.main.model.entity.enemy.boss.falseKnight.FalseKnight;
+import src.main.model.entity.enemy.groundEnemy.GroundEnemy;
 import src.main.model.entity.enemy.groundEnemy.crawlid.Crawlid;
-import src.main.model.entity.enemy.groundEnemy.crawlid.CrawlidState;
 import src.main.model.enviroment.MapLoader;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.entity.knight.Knight;
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class Game {
     private static final int SOUL_PER_HIT = 11;
+    private static final float RESPAWN_DISTANCE = 600f;
 
     private Knight knight;
     private KeyBindings keyBindings = new KeyBindings();
@@ -46,11 +48,14 @@ public class Game {
                 case "HuskHornhead" -> new HuskHornhead(
                     info.position.x, info.position.y, () -> knight.getPosition());
                 case "CrystalGuardian" -> new CrystalGuardian(
+                    info.position.x, info.position.y, info.zone, () -> knight.getPosition());
+                case "FalseKnight" -> new FalseKnight(
                     info.position.x, info.position.y, () -> knight.getPosition());
                 default -> throw new RuntimeException("Unknown enemy: " + info.enemyType);
             };
             enemies.add(e);
         }
+        for (Enemy e : enemies) e.setSolidBlocks(mapLoader.getSolidBlocks());
     }
 
     public void update(float delta) {
@@ -59,7 +64,7 @@ public class Game {
         updateCombat(delta);
         updateEnemies(delta);
         updateProjectiles(delta);
-        respawnEnemies(delta);
+        respawnEnemies();
         knight.updateAnimationState();
     }
 
@@ -123,11 +128,8 @@ public class Game {
             float prevVx = enemy.getVelocityX();
             enemy.update(delta);
             CollisionSystem.resolve(enemy, mapLoader.getSolidBlocks(), delta);
-            if (enemy instanceof Crawlid c
-                && prevVx != 0
-                && Math.abs(enemy.getVelocityX()) < 0.01f
-                && c.getCurrentState() != CrawlidState.TURNING)
-                c.turnAround();
+            if (enemy instanceof GroundEnemy ge)
+                ge.onCollisionResolved(prevVx, mapLoader.getSolidBlocks());
             if (enemy.getBoundingBox().overlaps(knight.getBoundingBox()) && !enemy.isDead())
                 knight.takeDamage();
         }
@@ -156,7 +158,6 @@ public class Game {
             }
         }
     }
-
     private void updateCrystalGuardianLasers(float delta , CrystalGuardian cg){
         CrystalGuardianLaser laser = cg.getLaser();
         laser.update(delta);
@@ -171,15 +172,14 @@ public class Game {
         }
     }
 
-    private void respawnEnemies(float delta) {
-        float respawnDist = 600f;
+    private void respawnEnemies() {
         for (Enemy enemy : enemies) {
             if (enemy.canRespawn(
                 Vector2.dst(knight.getPosition().x, knight.getPosition().y,
                     enemy.getPosition().x, enemy.getPosition().y),
-                respawnDist)) {
+                RESPAWN_DISTANCE)) {
                 enemy.respawn();
+            }
         }
     }
-}
 }

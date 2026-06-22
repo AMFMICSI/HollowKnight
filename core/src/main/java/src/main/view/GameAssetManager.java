@@ -7,9 +7,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardianAnimationType;
-import src.main.model.entity.enemy.constantEnemy.huskHornhead.HuskHornheadAnimationType;
+import src.main.model.entity.enemy.groundEnemy.huskHornhead.HuskHornheadAnimationType;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalHunterAnimationType;
 import src.main.model.entity.enemy.groundEnemy.crawlid.CrawlidAnimationType;
+import src.main.model.entity.enemy.boss.falseKnight.FalseKnightAnimationType;
 import src.main.model.entity.knight.KnightAnimationType;
 import src.main.model.entity.animation.AnimationType;
 import src.main.model.entity.hud.SoulFillStage;
@@ -21,21 +22,23 @@ public class GameAssetManager {
     public static Skin skin;
     public static Texture menuPointerLeft;
     public static Texture menuPointerRight;
-    public static Map<KnightAnimationType, Animation<TextureRegion>> knightAnimations;
-    public static TextureAtlas knightAtlas;
 
-    public static TextureAtlas crawlidAtlas;
+    private static TextureAtlas knightAtlas;
+    public static Map<KnightAnimationType, Animation<TextureRegion>> knightAnimations;
+    private static TextureAtlas crawlidAtlas;
     public static Map<CrawlidAnimationType, Animation<TextureRegion>> crawlidAnimations;
-    public static TextureAtlas crystalHunterAtlas;
+    private static TextureAtlas crystalHunterAtlas;
     public static Map<CrystalHunterAnimationType, Animation<TextureRegion>> crystalHunterAnimations;
     public static TextureRegion crystalProjectileRegion;
-    public static TextureAtlas huskHornheadAtlas;
+    private static TextureAtlas huskHornheadAtlas;
     public static Map<HuskHornheadAnimationType, Animation<TextureRegion>> huskHornheadAnimations;
-    public static TextureAtlas crystalGuardianAtlas;
-    public static TextureAtlas hudAtlas;
-    public static Map<SoulFillStage, Animation<TextureRegion>> soulFillAnimations;
-
+    private static TextureAtlas crystalGuardianAtlas;
     public static Map<CrystalGuardianAnimationType, Animation<TextureRegion>> crystalGuardianAnimations;
+    public static TextureRegion laserRegion;
+    private static TextureAtlas falseKnightAtlas;
+    public static Map<FalseKnightAnimationType, Animation<TextureRegion>> falseKnightAnimations;
+    private static TextureAtlas hudAtlas;
+    public static Map<SoulFillStage, Animation<TextureRegion>> soulFillAnimations;
 
     public static void init(){
         skin  = new Skin(Gdx.files.internal("ui/uiskin.json"));
@@ -44,6 +47,7 @@ public class GameAssetManager {
         loadCrystalHunterAnimations();
         loadHuskHornheadAnimations();
         loadCrystalGuardianAnimations();
+        loadFalseKnightAnimations();
         loadMenuPointers();
         loadHudAtlas();
         loadSoulAnimations();
@@ -71,33 +75,39 @@ public class GameAssetManager {
     }
 
     public static void loadKnightAnimations(){
-        knightAtlas = new TextureAtlas(Gdx.files.internal("animation/knight.atlas"));
+        knightAtlas = new TextureAtlas(Gdx.files.internal("atlases/knight.atlas"));
         knightAnimations = loadAnimations(knightAtlas, KnightAnimationType.values(), "%s_%03d");
     }
 
     public static void loadCrawlidAnimations() {
-        crawlidAtlas = new TextureAtlas(Gdx.files.internal("animation/crawlid.atlas"));
+        crawlidAtlas = new TextureAtlas(Gdx.files.internal("atlases/crawlid.atlas"));
         crawlidAnimations = loadAnimations(crawlidAtlas, CrawlidAnimationType.values(), "%s_%03d");
     }
 
     public static void loadCrystalHunterAnimations() {
-        crystalHunterAtlas = new TextureAtlas(Gdx.files.internal("animation/crystalHunter.atlas"));
+        crystalHunterAtlas = new TextureAtlas(Gdx.files.internal("atlases/crystalHunter.atlas"));
         crystalHunterAnimations = loadAnimations(crystalHunterAtlas, CrystalHunterAnimationType.values(), "%s_%03d");
         crystalProjectileRegion = crystalHunterAtlas.findRegion("Crystal_000");
     }
 
     public static void loadHuskHornheadAnimations() {
-        huskHornheadAtlas = new TextureAtlas(Gdx.files.internal("animation/huskHornhead.atlas"));
+        huskHornheadAtlas = new TextureAtlas(Gdx.files.internal("atlases/huskHornhead.atlas"));
         huskHornheadAnimations = loadAnimations(huskHornheadAtlas, HuskHornheadAnimationType.values(), "%s_%03d");
     }
 
     public static void loadCrystalGuardianAnimations() {
-        crystalGuardianAtlas = new TextureAtlas(Gdx.files.internal("animation/crystalGuardian.atlas"));
+        crystalGuardianAtlas = new TextureAtlas(Gdx.files.internal("atlases/crystalGuardian.atlas"));
         crystalGuardianAnimations = loadAnimations(crystalGuardianAtlas, CrystalGuardianAnimationType.values(), "%s_%03d");
+        laserRegion = new TextureRegion(new Texture(Gdx.files.internal("animation/Crystallized/atlas0 #25304.png")));
+    }
+
+    public static void loadFalseKnightAnimations() {
+        falseKnightAtlas = new TextureAtlas(Gdx.files.internal("atlases/falseKnight.atlas"));
+        falseKnightAnimations = loadAnimations(falseKnightAtlas, FalseKnightAnimationType.values(), "%s_%03d");
     }
 
     public static void loadHudAtlas() {
-        hudAtlas = new TextureAtlas(Gdx.files.internal("animation/hud.atlas"));
+        hudAtlas = new TextureAtlas(Gdx.files.internal("atlases/hud.atlas"));
     }
 
     public static void loadSoulAnimations() {
@@ -114,6 +124,10 @@ public class GameAssetManager {
         }
     }
 
+    public static TextureRegion getHudRegion(String name) {
+        return hudAtlas.findRegion(name);
+    }
+
     public static void dispose() {
         if (skin != null) skin.dispose();
         if (knightAtlas != null) knightAtlas.dispose();
@@ -123,6 +137,8 @@ public class GameAssetManager {
         if(crystalHunterAtlas != null) crystalHunterAtlas.dispose();
         if(huskHornheadAtlas != null) huskHornheadAtlas.dispose();
         if(crystalGuardianAtlas != null) crystalGuardianAtlas.dispose();
+        if(laserRegion != null) laserRegion.getTexture().dispose();
+        if(falseKnightAtlas != null) falseKnightAtlas.dispose();
         if(hudAtlas != null) hudAtlas.dispose();
     }
 }

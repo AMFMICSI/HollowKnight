@@ -1,0 +1,244 @@
+
+crystalGuardian.png
+size: 1710, 1134
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Idle_000
+  rotate: false
+  xy: 0, 0
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Idle_001
+  rotate: false
+  xy: 285, 0
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Idle_002
+  rotate: false
+  xy: 570, 0
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Idle_003
+  rotate: false
+  xy: 855, 0
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Idle_004
+  rotate: false
+  xy: 1140, 0
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Shoot_000
+  rotate: false
+  xy: 1425, 0
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Shoot_001
+  rotate: false
+  xy: 0, 189
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Shoot_002
+  rotate: false
+  xy: 285, 189
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Shoot_003
+  rotate: false
+  xy: 570, 189
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Shoot_004
+  rotate: false
+  xy: 855, 189
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Shoot_005
+  rotate: false
+  xy: 1140, 189
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Shoot_006
+  rotate: false
+  xy: 1425, 189
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Run_000
+  rotate: false
+  xy: 0, 378
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Run_001
+  rotate: false
+  xy: 285, 378
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Run_002
+  rotate: false
+  xy: 570, 378
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Run_003
+  rotate: false
+  xy: 855, 378
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Run_004
+  rotate: false
+  xy: 1140, 378
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Run_005
+  rotate: false
+  xy: 1425, 378
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Evade_000
+  rotate: false
+  xy: 0, 567
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Evade_001
+  rotate: false
+  xy: 285, 567
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Evade_002
+  rotate: false
+  xy: 570, 567
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Evade_003
+  rotate: false
+  xy: 855, 567
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Evade_004
+  rotate: false
+  xy: 1140, 567
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Evade_005
+  rotate: false
+  xy: 1425, 567
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Evade_006
+  rotate: false
+  xy: 0, 756
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Turn_000
+  rotate: false
+  xy: 285, 756
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Turn_001
+  rotate: false
+  xy: 570, 756
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Turn_002
+  rotate: false
+  xy: 855, 756
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Death Air_000
+  rotate: false
+  xy: 1140, 756
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Death Air_001
+  rotate: false
+  xy: 1425, 756
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Death Air_002
+  rotate: false
+  xy: 0, 945
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Death Land_000
+  rotate: false
+  xy: 285, 945
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Death Land_001
+  rotate: false
+  xy: 570, 945
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1
+Death Land_002
+  rotate: false
+  xy: 855, 945
+  size: 285, 189
+  orig: 285, 189
+  offset: 0, 0
+  index: -1

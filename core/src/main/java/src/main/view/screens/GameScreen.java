@@ -16,7 +16,9 @@ import src.main.model.Game;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalHunter;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalProjectile;
+import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardian;
 import src.main.model.enviroment.SolidBlock;
+import src.main.view.GameAssetManager;
 import src.main.view.GameMusic;
 import src.main.view.GameSettings;
 import src.main.view.HudRenderer;
@@ -90,6 +92,11 @@ public class GameScreen extends AbstractScreen {
                 for (CrystalProjectile p : ch.getProjectiles()) {
                     p.draw(batch, delta);
                 }
+            }
+        }
+        for (Enemy enemy : game.getEnemies()) {
+            if (enemy instanceof CrystalGuardian cg) {
+                cg.getLaser().draw(batch, GameAssetManager.laserRegion);
             }
         }
         batch.end();

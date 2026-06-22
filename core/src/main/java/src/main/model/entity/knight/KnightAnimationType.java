@@ -5,11 +5,14 @@ import src.main.model.entity.animation.AnimationType;
 
 public enum KnightAnimationType implements AnimationType {
     IDLE("Idle", 9, 0.12f, Animation.PlayMode.LOOP),
-    RUN("Run", 13, 0.08f, Animation.PlayMode.LOOP),
+    RUN_START("Run_start", 2, 0.1f, Animation.PlayMode.NORMAL),
+    RUN_LOOP("Run_loop", 11, 0.08f, Animation.PlayMode.LOOP),
     AIRBORNE("Airborne", 12, 0.10f, Animation.PlayMode.LOOP),
     FALL("Fall", 6, 0.10f, Animation.PlayMode.LOOP),
-    SLASH("Slash", 5, 0.06f, Animation.PlayMode.NORMAL),
+    SLASH("SlashAlt", 5, 0.06f, Animation.PlayMode.NORMAL),
     DASH("Dash", 12, 0.07f, Animation.PlayMode.LOOP),
+    DOWN_SLASH("DownSlash", 5, 0.06f, Animation.PlayMode.NORMAL),
+    UP_SLASH("UpSlash", 5, 0.06f, Animation.PlayMode.NORMAL),
     DOUBLE_JUMP("Double Jump", 8, 0.08f, Animation.PlayMode.LOOP),
     LANDING("Landing", 4, 0.08f, Animation.PlayMode.NORMAL),
     FOCUS_START("Focus Start", 3, 0.1f, Animation.PlayMode.NORMAL),

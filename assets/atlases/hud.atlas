@@ -1,0 +1,181 @@
+
+hud.png
+size: 1799, 167
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+EmptyHealth
+  rotate: false
+  xy: 774, 0
+  size: 126, 167
+  orig: 126, 167
+  offset: 0, 0
+  index: -1
+FilledHealth
+  rotate: false
+  xy: 902, 0
+  size: 126, 167
+  orig: 126, 167
+  offset: 0, 0
+  index: -1
+HUD Cln_237
+  rotate: false
+  xy: 1162, 92
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_238
+  rotate: false
+  xy: 1233, 92
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_239
+  rotate: false
+  xy: 1304, 92
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_240
+  rotate: false
+  xy: 1375, 92
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_241
+  rotate: false
+  xy: 1446, 92
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_242
+  rotate: false
+  xy: 1517, 92
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_243
+  rotate: false
+  xy: 1588, 92
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_244
+  rotate: false
+  xy: 1659, 92
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_245
+  rotate: false
+  xy: 1730, 92
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_246
+  rotate: false
+  xy: 1162, 15
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_247
+  rotate: false
+  xy: 1233, 15
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_248
+  rotate: false
+  xy: 1304, 15
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_249
+  rotate: false
+  xy: 1375, 15
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_250
+  rotate: false
+  xy: 1446, 15
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_251
+  rotate: false
+  xy: 1517, 15
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_252
+  rotate: false
+  xy: 1588, 15
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_253
+  rotate: false
+  xy: 1659, 15
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+HUD Cln_254
+  rotate: false
+  xy: 1730, 15
+  size: 69, 75
+  orig: 69, 75
+  offset: 0, 0
+  index: -1
+SoulOrb_Empty
+  rotate: false
+  xy: 1030, 42
+  size: 130, 125
+  orig: 130, 125
+  offset: 0, 0
+  index: -1
+SoulOrb_Eye
+  rotate: false
+  xy: 1030, 7
+  size: 87, 33
+  orig: 87, 33
+  offset: 0, 0
+  index: -1
+SoulOrb_Full
+  rotate: false
+  xy: 0, 3
+  size: 256, 164
+  orig: 256, 164
+  offset: 0, 0
+  index: -1
+SoulOrb_Full2
+  rotate: false
+  xy: 258, 3
+  size: 256, 164
+  orig: 256, 164
+  offset: 0, 0
+  index: -1
+SoulOrb_Half
+  rotate: false
+  xy: 516, 3
+  size: 256, 164
+  orig: 256, 164
+  offset: 0, 0
+  index: -1

@@ -7,14 +7,18 @@ import src.main.model.entity.Entity;
 
 import com.badlogic.gdx.math.Rectangle;
 import src.main.model.entity.enemy.groundEnemy.crawlid.Crawlid;
+import src.main.model.enviroment.SolidBlock;
+
+import java.util.List;
 
 
 public abstract class Enemy extends Entity {
     protected int hp, maxHp;
     protected boolean isDead = false, deadAnimationDone = false;
     protected float deathTimer;
-    protected Rectangle zone = new Rectangle();
+    protected Rectangle zone;
     protected Vector2 spawnPosition = new Vector2();
+    protected List<SolidBlock> solidBlocks;
 
     public void draw(SpriteBatch batch, float delta) {
         if (isDeadAnimationDone()) {
@@ -61,8 +65,7 @@ public abstract class Enemy extends Entity {
     }
 
     public boolean canRespawn(float playerDist, float threshold) {
-        return isDead && deadAnimationDone
-            && Vector2.dst(position.x, position.y, spawnPosition.x, spawnPosition.y) > threshold;
+        return isDead && deadAnimationDone && playerDist > threshold;
     }
 
     public void respawn() {
@@ -77,4 +80,5 @@ public abstract class Enemy extends Entity {
     public boolean isDead() { return isDead; }
     public boolean isDeadAnimationDone() { return deadAnimationDone; }
     public int getHp(){return hp;}
+    public void setSolidBlocks(List<SolidBlock> solidBlocks) { this.solidBlocks = solidBlocks; }
 }

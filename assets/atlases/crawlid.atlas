@@ -1,0 +1,83 @@
+
+crawlid.png
+size: 3341, 177
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Death Air_000
+  rotate: false
+  xy: 0, 0
+  size: 303, 177
+  orig: 303, 177
+  offset: 0, 0
+  index: -1
+Death Air_001
+  rotate: false
+  xy: 305, 0
+  size: 303, 177
+  orig: 303, 177
+  offset: 0, 0
+  index: -1
+Death Air_002
+  rotate: false
+  xy: 610, 0
+  size: 303, 177
+  orig: 303, 177
+  offset: 0, 0
+  index: -1
+Death Land_000
+  rotate: false
+  xy: 915, 0
+  size: 303, 177
+  orig: 303, 177
+  offset: 0, 0
+  index: -1
+Death Land_001
+  rotate: false
+  xy: 1220, 0
+  size: 303, 177
+  orig: 303, 177
+  offset: 0, 0
+  index: -1
+Walk_000
+  rotate: false
+  xy: 1525, 28
+  size: 301, 149
+  orig: 301, 149
+  offset: 0, 0
+  index: -1
+Walk_001
+  rotate: false
+  xy: 1828, 28
+  size: 301, 149
+  orig: 301, 149
+  offset: 0, 0
+  index: -1
+Walk_002
+  rotate: false
+  xy: 2131, 28
+  size: 301, 149
+  orig: 301, 149
+  offset: 0, 0
+  index: -1
+Walk_003
+  rotate: false
+  xy: 2434, 28
+  size: 301, 149
+  orig: 301, 149
+  offset: 0, 0
+  index: -1
+turn_000
+  rotate: false
+  xy: 2737, 28
+  size: 301, 149
+  orig: 301, 149
+  offset: 0, 0
+  index: -1
+turn_001
+  rotate: false
+  xy: 3040, 28
+  size: 301, 149
+  orig: 301, 149
+  offset: 0, 0
+  index: -1

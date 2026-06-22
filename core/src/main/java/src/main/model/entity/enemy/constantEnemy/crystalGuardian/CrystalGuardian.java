@@ -1,41 +1,41 @@
 package src.main.model.entity.enemy.constantEnemy.crystalGuardian;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import src.main.model.entity.animation.AnimationSet;
 import src.main.model.entity.enemy.Enemy;
+import src.main.model.enviroment.SolidBlock;
+import src.main.model.physics.PhysicsSystem;
 import src.main.view.GameAssetManager;
 
 public class CrystalGuardian extends Enemy {
     private static final int MAX_HP = 8;
-    private static final float DETECT_RANGE = 300f;
     private static final float ENRAGED_SPEED = 300f;
     private static final float COOLDOWN_DURATION = 1.5f;
-    private static final float DEATH_DURATION = 1.0f;
 
     private CrystalGuardianState currentState = CrystalGuardianState.IDLE;
     private final AnimationSet<CrystalGuardianAnimationType> animSet;
     private float stateTimer;
     private CrystalGuardianLaser laser;
-    private boolean facingRight = true;
     private KnightRef knightRef;
-    private float spawnX;
 
     @FunctionalInterface
     public interface KnightRef {
         Vector2 getPosition();
     }
 
-    public CrystalGuardian(float x, float y, KnightRef knightRef) {
+    public CrystalGuardian(float x, float y, Rectangle zone, KnightRef knightRef) {
         spawnPosition.set(x, y);
         hp = maxHp = MAX_HP;
-        spawnX = x;
         position.set(x, y);
         this.knightRef = knightRef;
+        this.zone = zone;
         boundingBox.setSize(32, 48);
         animSet = new AnimationSet<>(GameAssetManager.crystalGuardianAnimations, CrystalGuardianAnimationType.IDLE);
         laser = new CrystalGuardianLaser();
+        setFacingRight(true);
     }
 
     @Override
@@ -46,11 +46,11 @@ public class CrystalGuardian extends Enemy {
             return;
         }
 
+        if (!isOnGround()) velocity.y -= PhysicsSystem.GRAVITY * delta;
+
         stateTimer -= delta;
         Vector2 knightPos = knightRef.getPosition();
-        float dist = Math.abs(knightPos.x - position.x);
-        boolean seePlayer = dist < DETECT_RANGE
-            && ((facingRight && knightPos.x > position.x) || (!facingRight && knightPos.x < position.x));
+        boolean seePlayer = zone != null && zone.contains(knightPos) && hasLineOfSight(knightPos);
 
         switch (currentState) {
             case IDLE:
@@ -68,9 +68,9 @@ public class CrystalGuardian extends Enemy {
                 velocity.x = 0;
                 if (stateTimer <= 0 && animSet.getStateTime() >= 0.3f) {
                     laser.fire(
-                        facingRight ? position.x + boundingBox.width : position.x - 600f,
+                        isFacingRight() ? position.x + boundingBox.width : position.x - 600f,
                         position.y + boundingBox.height / 2f,
-                        facingRight
+                        isFacingRight()
                     );
                     currentState = CrystalGuardianState.ENRAGED;
                     stateTimer = 2f;
@@ -79,9 +79,8 @@ public class CrystalGuardian extends Enemy {
 
             case ENRAGED:
                 animSet.setAnimation(CrystalGuardianAnimationType.RUN);
-                float dir = knightPos.x > position.x ? 1 : -1;
-                velocity.x = dir * ENRAGED_SPEED;
-                facingRight = dir > 0;
+                setFacingRight(knightPos.x > position.x);
+                velocity.x = isFacingRight() ? ENRAGED_SPEED : -ENRAGED_SPEED;
                 if (stateTimer <= 0) {
                     currentState = CrystalGuardianState.COOLDOWN;
                     stateTimer = COOLDOWN_DURATION;
@@ -98,9 +97,19 @@ public class CrystalGuardian extends Enemy {
                 break;
         }
 
-        facingRight = knightPos.x > position.x;
         boundingBox.setPosition(position);
         laser.update(delta);
+    }
+
+    private boolean hasLineOfSight(Vector2 to) {
+        float sx = position.x + boundingBox.width / 2f;
+        float sy = position.y + boundingBox.height / 2f;
+        if (solidBlocks == null) return true;
+        for (SolidBlock block : solidBlocks) {
+            if (Intersector.intersectSegmentRectangle(sx, sy, to.x, to.y, block.getBounds()))
+                return false;
+        }
+        return true;
     }
 
     @Override
@@ -109,11 +118,10 @@ public class CrystalGuardian extends Enemy {
         hp -= amount;
         if (hp <= 0) {
             isDead = true;
-            deathTimer = DEATH_DURATION;
+            deathTimer = 1.0f;
             velocity.x = 0;
             velocity.y = 0;
         } else {
-            // knockback
             velocity.x = knightRef.getPosition().x > position.x ? -100f : 100f;
             velocity.y = 50f;
         }

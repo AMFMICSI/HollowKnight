@@ -38,14 +38,25 @@ public class GameController implements InputProcessor {
         if (keycode == keys.get("MOVE_RIGHT")) { game.getKnight().setMovingRight(true); game.getKnight().setMovingLeft(false); game.getKnight().setFacingRight(true); return true; }
         else if (keycode == keys.get("MOVE_LEFT")) { game.getKnight().setMovingLeft(true); game.getKnight().setMovingRight(false); game.getKnight().setFacingRight(false); return true; }
         else if (keycode == keys.get("JUMP")) { game.getKnight().jump(); return true; }
-        else if (keycode == keys.get("DASH")) { game.getKnight().dash(); return true; }
+        else if (keycode == keys.get("DASH")) {
+            if (Gdx.input.isKeyPressed(keys.get("POGO"))) {
+                game.getKnight().dashDown();
+            } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                game.getKnight().dashUp();
+            } else {
+                game.getKnight().dash();
+            }
+            return true;
+        }
         else if (keycode == keys.get("ATTACK")) {
             if (Gdx.input.isKeyPressed(keys.get("POGO"))) {
                 if (!game.getKnight().isOnGround()) {
                     game.getKnight().pogoAttack();
                 } else {
-                    game.getKnight().attack();
+                    game.getKnight().attackDown();
                 }
+            } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                game.getKnight().attackUp();
             } else {
                 game.getKnight().attack();
             }

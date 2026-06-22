@@ -1,0 +1,517 @@
+
+falseKnight.png
+size: 9855, 5724
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Idle_000
+  rotate: false
+  xy: 0, 0
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Idle_001
+  rotate: false
+  xy: 1095, 0
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Idle_002
+  rotate: false
+  xy: 2190, 0
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Idle_003
+  rotate: false
+  xy: 3285, 0
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Idle_004
+  rotate: false
+  xy: 4380, 0
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Run_000
+  rotate: false
+  xy: 5475, 0
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Run_001
+  rotate: false
+  xy: 6570, 0
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Run_002
+  rotate: false
+  xy: 7665, 0
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Run_003
+  rotate: false
+  xy: 8760, 0
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Run_004
+  rotate: false
+  xy: 0, 636
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Run Antic_000
+  rotate: false
+  xy: 1095, 636
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Run Antic_001
+  rotate: false
+  xy: 2190, 636
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack Antic_000
+  rotate: false
+  xy: 3285, 636
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack Antic_001
+  rotate: false
+  xy: 4380, 636
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack Antic_002
+  rotate: false
+  xy: 5475, 636
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack Antic_003
+  rotate: false
+  xy: 6570, 636
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack Antic_004
+  rotate: false
+  xy: 7665, 636
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack Antic_005
+  rotate: false
+  xy: 8760, 636
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack_000
+  rotate: false
+  xy: 0, 1272
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack_001
+  rotate: false
+  xy: 1095, 1272
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack_002
+  rotate: false
+  xy: 2190, 1272
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack Recover_000
+  rotate: false
+  xy: 3285, 1272
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack Recover_001
+  rotate: false
+  xy: 4380, 1272
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack Recover_002
+  rotate: false
+  xy: 5475, 1272
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack Recover_003
+  rotate: false
+  xy: 6570, 1272
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Attack Recover_004
+  rotate: false
+  xy: 7665, 1272
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Jump_000
+  rotate: false
+  xy: 8760, 1272
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Jump_001
+  rotate: false
+  xy: 0, 1908
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Jump_002
+  rotate: false
+  xy: 1095, 1908
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Jump_003
+  rotate: false
+  xy: 2190, 1908
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Jump Attack_000
+  rotate: false
+  xy: 3285, 1908
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Jump Attack_001
+  rotate: false
+  xy: 4380, 1908
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Jump Attack_002
+  rotate: false
+  xy: 5475, 1908
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Jump Attack_003
+  rotate: false
+  xy: 6570, 1908
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Jump Attack_004
+  rotate: false
+  xy: 7665, 1908
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Jump Attack_005
+  rotate: false
+  xy: 8760, 1908
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Jump Attack_006
+  rotate: false
+  xy: 0, 2544
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Jump Attack_007
+  rotate: false
+  xy: 1095, 2544
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Land_000
+  rotate: false
+  xy: 2190, 2544
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Land_001
+  rotate: false
+  xy: 3285, 2544
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Land_002
+  rotate: false
+  xy: 4380, 2544
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Land_003
+  rotate: false
+  xy: 5475, 2544
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Land_004
+  rotate: false
+  xy: 6570, 2544
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Turn_000
+  rotate: false
+  xy: 7665, 2544
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Turn_001
+  rotate: false
+  xy: 8760, 2544
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Stun Recover_000
+  rotate: false
+  xy: 0, 3180
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Stun Recover_001
+  rotate: false
+  xy: 1095, 3180
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Stun Recover_002
+  rotate: false
+  xy: 2190, 3180
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Stun Recover_003
+  rotate: false
+  xy: 3285, 3180
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Stun Recover_004
+  rotate: false
+  xy: 4380, 3180
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Stun Recover_005
+  rotate: false
+  xy: 5475, 3180
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathFall_000
+  rotate: false
+  xy: 6570, 3180
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathFall_001
+  rotate: false
+  xy: 7665, 3180
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathFall_002
+  rotate: false
+  xy: 8760, 3180
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathHit_000
+  rotate: false
+  xy: 0, 3816
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathHit_001
+  rotate: false
+  xy: 1095, 3816
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathHit_002
+  rotate: false
+  xy: 2190, 3816
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathLand_000
+  rotate: false
+  xy: 3285, 3816
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathLand_001
+  rotate: false
+  xy: 4380, 3816
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathLand_002
+  rotate: false
+  xy: 5475, 3816
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathLand_003
+  rotate: false
+  xy: 6570, 3816
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathLand_004
+  rotate: false
+  xy: 7665, 3816
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathLand_005
+  rotate: false
+  xy: 8760, 3816
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathLand_006
+  rotate: false
+  xy: 0, 4452
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathLand_007
+  rotate: false
+  xy: 1095, 4452
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathLand_008
+  rotate: false
+  xy: 2190, 4452
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathLand_009
+  rotate: false
+  xy: 3285, 4452
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+DeathLand_010
+  rotate: false
+  xy: 4380, 4452
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Body_000
+  rotate: false
+  xy: 5475, 4452
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Body_001
+  rotate: false
+  xy: 6570, 4452
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Body_002
+  rotate: false
+  xy: 7665, 4452
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Body_003
+  rotate: false
+  xy: 8760, 4452
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1
+Body_004
+  rotate: false
+  xy: 0, 5088
+  size: 1095, 636
+  orig: 1095, 636
+  offset: 0, 0
+  index: -1

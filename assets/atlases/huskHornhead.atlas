@@ -1,0 +1,272 @@
+
+huskHornhead.png
+size: 1673, 1314
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Idle_000
+  rotate: false
+  xy: 0, 0
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Idle_001
+  rotate: false
+  xy: 239, 0
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Idle_002
+  rotate: false
+  xy: 478, 0
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Idle_003
+  rotate: false
+  xy: 717, 0
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Idle_004
+  rotate: false
+  xy: 956, 0
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Idle_005
+  rotate: false
+  xy: 1195, 0
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Walk_000
+  rotate: false
+  xy: 1434, 0
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Walk_001
+  rotate: false
+  xy: 0, 219
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Walk_002
+  rotate: false
+  xy: 239, 219
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Walk_003
+  rotate: false
+  xy: 478, 219
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Walk_004
+  rotate: false
+  xy: 717, 219
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Walk_005
+  rotate: false
+  xy: 956, 219
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Walk_006
+  rotate: false
+  xy: 1195, 219
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Anticipate_000
+  rotate: false
+  xy: 1434, 219
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Anticipate_001
+  rotate: false
+  xy: 0, 438
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Anticipate_002
+  rotate: false
+  xy: 239, 438
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Anticipate_003
+  rotate: false
+  xy: 478, 438
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Anticipate_004
+  rotate: false
+  xy: 717, 438
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Lunge_000
+  rotate: false
+  xy: 956, 438
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Lunge_001
+  rotate: false
+  xy: 1195, 438
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Lunge_002
+  rotate: false
+  xy: 1434, 438
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Lunge_003
+  rotate: false
+  xy: 0, 657
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Lunge_004
+  rotate: false
+  xy: 239, 657
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Lunge_005
+  rotate: false
+  xy: 478, 657
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Lunge_006
+  rotate: false
+  xy: 717, 657
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Lunge_007
+  rotate: false
+  xy: 956, 657
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Lunge_008
+  rotate: false
+  xy: 1195, 657
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Lunge_009
+  rotate: false
+  xy: 1434, 657
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Lunge_010
+  rotate: false
+  xy: 0, 876
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Attack Lunge_011
+  rotate: false
+  xy: 239, 876
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Death Land_000
+  rotate: false
+  xy: 478, 876
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Death Land_001
+  rotate: false
+  xy: 717, 876
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Death Land_002
+  rotate: false
+  xy: 956, 876
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Death Land_003
+  rotate: false
+  xy: 1195, 876
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Death Land_004
+  rotate: false
+  xy: 1434, 876
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Death Land_005
+  rotate: false
+  xy: 0, 1095
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Death Land_006
+  rotate: false
+  xy: 239, 1095
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1
+Death Land_007
+  rotate: false
+  xy: 478, 1095
+  size: 239, 219
+  orig: 239, 219
+  offset: 0, 0
+  index: -1

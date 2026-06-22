@@ -1,0 +1,124 @@
+crystalHunter.png
+size: 676, 1080
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Fly_000
+  rotate: false
+  xy: 0, 0
+  size: 169, 220
+  orig: 169, 220
+  offset: 0, 0
+  index: -1
+Fly_001
+  rotate: false
+  xy: 169, 0
+  size: 169, 220
+  orig: 169, 220
+  offset: 0, 0
+  index: -1
+Fly_002
+  rotate: false
+  xy: 338, 0
+  size: 169, 220
+  orig: 169, 220
+  offset: 0, 0
+  index: -1
+Fly_003
+  rotate: false
+  xy: 507, 0
+  size: 169, 220
+  orig: 169, 220
+  offset: 0, 0
+  index: -1
+Turn To Fly_000
+  rotate: false
+  xy: 0, 220
+  size: 169, 220
+  orig: 169, 220
+  offset: 0, 0
+  index: -1
+Turn To Fly_001
+  rotate: false
+  xy: 169, 220
+  size: 169, 220
+  orig: 169, 220
+  offset: 0, 0
+  index: -1
+Turn To Fly_002
+  rotate: false
+  xy: 338, 220
+  size: 169, 220
+  orig: 169, 220
+  offset: 0, 0
+  index: -1
+Attack Recover_000
+  rotate: false
+  xy: 507, 220
+  size: 169, 220
+  orig: 169, 220
+  offset: 0, 0
+  index: -1
+Attack_000
+  rotate: false
+  xy: 0, 440
+  size: 169, 220
+  orig: 169, 220
+  offset: 0, 0
+  index: -1
+Attack_001
+  rotate: false
+  xy: 169, 440
+  size: 169, 220
+  orig: 169, 220
+  offset: 0, 0
+  index: -1
+Attack_002
+  rotate: false
+  xy: 338, 440
+  size: 169, 220
+  orig: 169, 220
+  offset: 0, 0
+  index: -1
+Attack_003
+  rotate: false
+  xy: 507, 440
+  size: 169, 220
+  orig: 169, 220
+  offset: 0, 0
+  index: -1
+Crystal_000
+  rotate: false
+  xy: 0, 660
+  size: 378, 308
+  orig: 378, 308
+  offset: 0, 0
+  index: -1
+Death Air_000
+  rotate: false
+  xy: 0, 968
+  size: 108, 112
+  orig: 108, 112
+  offset: 0, 0
+  index: -1
+Death Air_001
+  rotate: false
+  xy: 108, 968
+  size: 108, 112
+  orig: 108, 112
+  offset: 0, 0
+  index: -1
+Death Air_002
+  rotate: false
+  xy: 216, 968
+  size: 108, 112
+  orig: 108, 112
+  offset: 0, 0
+  index: -1
+Death Land_000
+  rotate: false
+  xy: 324, 968
+  size: 108, 112
+  orig: 108, 112
+  offset: 0, 0
+  index: -1

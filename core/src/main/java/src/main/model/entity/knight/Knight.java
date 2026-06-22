@@ -33,6 +33,8 @@ public class Knight extends Entity {
     // Attack
     private float attackTimer = 0;
     private boolean isPogoAttack = false;
+    private boolean isAttackDown = false;
+    private boolean isAttackUp = false;
     private boolean hitRegistered = false;
 
     // HP
@@ -46,6 +48,8 @@ public class Knight extends Entity {
     // Focus
     private boolean isFocusing = false;
     private float focusTimer = 0;
+
+    private boolean runStartPlayed;
 
     public Knight(float x, float y) {
         animationSet = new AnimationSet<>(GameAssetManager.knightAnimations, KnightAnimationType.IDLE);
@@ -68,6 +72,8 @@ public class Knight extends Entity {
             attackTimer -= delta;
             if (attackTimer <= 0) {
                 isPogoAttack = false;
+                isAttackDown = false;
+                isAttackUp = false;
                 hitRegistered = false;
             }
         }
@@ -95,19 +101,21 @@ public class Knight extends Entity {
             else velocity.x = 0;
         }
 
-        velocity.y -= PhysicsSystem.GRAVITY * delta;
+        if (!isDashing) velocity.y -= PhysicsSystem.GRAVITY * delta;
 
         updateAnimationState();
         boundingBox.setPosition(position.x, position.y);
     }
 
     public void updateAnimationState() {
-        if (isDashing) {
-            currentState = KnightState.DASHING;
-        } else if (isFocusing) {
+        if (isFocusing) {
             currentState = KnightState.FOCUSING;
+        } else if (isDashing) {
+            currentState = KnightState.DASHING;
         } else if (attackTimer > 0) {
-            currentState = KnightState.ATTACKING;
+            if (isAttackDown) currentState = KnightState.ATTACKING_DOWN;
+            else if (isAttackUp) currentState = KnightState.ATTACKING_UP;
+            else currentState = KnightState.ATTACKING;
         } else if (!isOnGround()) {
             if (jumpCount == 2) currentState = KnightState.DOUBLE_JUMPING;
             else if (velocity.y > 0) currentState = KnightState.JUMPING;
@@ -120,18 +128,29 @@ public class Knight extends Entity {
 
         KnightAnimationType animType;
         switch (currentState) {
-            case RUNNING:   animType = KnightAnimationType.RUN; break;
+            case RUNNING:
+                if (!runStartPlayed
+                    && animationSet.getCurrentType() == KnightAnimationType.RUN_START
+                    && animationSet.getStateTime() >= animationSet.getAnimationDuration()) {
+                    runStartPlayed = true;
+                }
+                animType = runStartPlayed ? KnightAnimationType.RUN_LOOP : KnightAnimationType.RUN_START;
+                break;
             case JUMPING:   animType = KnightAnimationType.AIRBORNE; break;
             case DOUBLE_JUMPING: animType = KnightAnimationType.DOUBLE_JUMP; break;
             case FALLING:   animType = KnightAnimationType.FALL; break;
-            case ATTACKING: animType = KnightAnimationType.SLASH; break;
+            case ATTACKING:   animType = KnightAnimationType.SLASH; break;
+            case ATTACKING_DOWN: animType = KnightAnimationType.DOWN_SLASH; break;
+            case ATTACKING_UP:   animType = KnightAnimationType.UP_SLASH; break;
             case DASHING:   animType = KnightAnimationType.DASH; break;
             case FOCUSING:
                 if (focusTimer < 0.3f) animType = KnightAnimationType.FOCUS_START;
                 else if (focusTimer > FOCUS_DURATION - 0.2f) animType = KnightAnimationType.FOCUS_GET;
                 else animType = KnightAnimationType.FOCUS;
                 break;
-            default:        animType = KnightAnimationType.IDLE;
+            default:
+                runStartPlayed = false;
+                animType = KnightAnimationType.IDLE;
         }
         animationSet.setAnimation(animType);
     }
@@ -164,12 +183,54 @@ public class Knight extends Entity {
         }
     }
 
+    public void dashDown() {
+        if (!isDashing) {
+            isDashing = true;
+            dashTimer = DASH_DURATION;
+            velocity.x = isFacingRight() ? DASH_SPEED : -DASH_SPEED;
+            velocity.y = -DASH_SPEED;
+        }
+    }
+
+    public void dashUp() {
+        if (!isDashing) {
+            isDashing = true;
+            dashTimer = DASH_DURATION;
+            velocity.x = 0;
+            velocity.y = DASH_SPEED;
+        }
+    }
+
     // --- ATTACK ---
     public void attack() {
         if (attackTimer <= 0 && !isDashing && !isFocusing) {
             attackTimer = ATTACK_DURATION;
             velocity.x = 0;
             isPogoAttack = false;
+            isAttackDown = false;
+            isAttackUp = false;
+            hitRegistered = false;
+        }
+    }
+
+    public void attackDown() {
+        if (attackTimer <= 0 && !isDashing && !isFocusing) {
+            attackTimer = ATTACK_DURATION;
+            velocity.x = 0;
+            isPogoAttack = false;
+            isAttackDown = true;
+            isAttackUp = false;
+            hitRegistered = false;
+        }
+    }
+
+    public void attackUp() {
+        if (attackTimer <= 0 && !isDashing && !isFocusing) {
+            attackTimer = ATTACK_DURATION;
+            velocity.x = 0;
+            isPogoAttack = false;
+            isAttackDown = false;
+            isAttackUp = true;
             hitRegistered = false;
         }
     }
@@ -179,6 +240,8 @@ public class Knight extends Entity {
             attackTimer = ATTACK_DURATION;
             velocity.x = 0;
             isPogoAttack = true;
+            isAttackDown = false;
+            isAttackUp = false;
             hitRegistered = false;
         }
     }
