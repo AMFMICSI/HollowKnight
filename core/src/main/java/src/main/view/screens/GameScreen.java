@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import src.main.controller.GameController;
@@ -17,6 +18,7 @@ import src.main.model.entity.enemy.Enemy;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalHunter;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalProjectile;
 import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardian;
+import src.main.model.entity.npc.zote.Zote;
 import src.main.model.enviroment.ClimbableWall;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.enviroment.Spike;
@@ -24,6 +26,7 @@ import src.main.view.GameAssetManager;
 import src.main.view.GameMusic;
 import src.main.view.GameSettings;
 import src.main.view.HudRenderer;
+import src.main.view.actors.modal.DialogueBox;
 
 public class GameScreen extends AbstractScreen {
     private Game game;
@@ -39,6 +42,8 @@ public class GameScreen extends AbstractScreen {
 
     private static final float STEP = 1 / 60f;
     private float accumulator;
+
+    private DialogueBox dialogueBox;
 
     @Override
     public void show() {
@@ -56,13 +61,12 @@ public class GameScreen extends AbstractScreen {
         float mapW = layer.getWidth() * layer.getTileWidth();
         float mapH = layer.getHeight() * layer.getTileHeight();
 
-
-        gameViewport = new ExtendViewport(mapW/5f, mapH/10f, camera); //
+        gameViewport = new ExtendViewport(mapW/5f, mapH/10f, camera);
         mapRenderer = new OrthogonalTiledMapRenderer(map);
 
         InputMultiplexer multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(stage);
         multiplexer.addProcessor(new GameController(game, game.getKeyBindings()));
+        multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
     }
 
@@ -91,16 +95,13 @@ public class GameScreen extends AbstractScreen {
             shapeRenderer.rect(enemy.getBoundingBox().x, enemy.getBoundingBox().y,
                 enemy.getBoundingBox().width, enemy.getBoundingBox().height);
         }
-        shapeRenderer.setColor(Color.CYAN);
-        for (Enemy enemy : game.getEnemies()) {
-            if (enemy instanceof CrystalHunter ch) {
-                for (CrystalProjectile p : ch.getProjectiles()) {
-                    if (p.isDead()) continue;
-                    shapeRenderer.rect(p.getBoundingBox().x, p.getBoundingBox().y,
-                        p.getBoundingBox().width, p.getBoundingBox().height);
-                }
-            }
+        shapeRenderer.setColor(Color.PURPLE);
+        for (Rectangle zone : game.getMapLoader().getZones()) {
+            shapeRenderer.rect(zone.x, zone.y, zone.width, zone.height);
         }
+        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.rect(game.getZote().getBoundingBox().x, game.getZote().getBoundingBox().y,
+            game.getZote().getBoundingBox().width, game.getZote().getBoundingBox().height);
         shapeRenderer.end();
     }
 
@@ -133,10 +134,38 @@ public class GameScreen extends AbstractScreen {
             if (enemy instanceof CrystalGuardian cg)
                 cg.getLaser().draw(batch, GameAssetManager.laserRegion);
         }
+        game.getZote().draw(batch, delta);
+        if (game.getZote().isInRange(game.getKnight().getPosition()) && !game.isDialogueActive()) {
+            skin.getFont("default").draw(batch, "[E] Talk",
+                game.getZote().getPosition().x - 20,
+                game.getZote().getPosition().y + 40);
+        }
         batch.end();
 
         hudRenderer.render(batch, game.getKnight().getHp(), game.getKnight().getMaxHp(),
             game.getKnight().getSoul(), game.getKnight().getMaxSoul());
+
+        if (game.consumeDialogueAdvance()) {
+            if (dialogueBox != null && !dialogueBox.isAnimationComplete()) {
+                dialogueBox.skipAnimation();
+            } else {
+                game.interact();
+            }
+        }
+
+        if (game.isDialogueActive()) {
+            if (dialogueBox == null) {
+                dialogueBox = new DialogueBox(skin);
+                dialogueBox.show(stage, game.getCurrentDialogueText());
+            } else {
+                dialogueBox.setText(game.getCurrentDialogueText());
+            }
+        } else {
+            if (dialogueBox != null) {
+                dialogueBox.remove();
+                dialogueBox = null;
+            }
+        }
 
         mapRenderer.render(new int[]{2});
 

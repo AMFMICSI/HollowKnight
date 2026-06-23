@@ -9,7 +9,7 @@ import src.main.view.GameAssetManager;
 
 public class Knight extends Entity {
     private static final float MOVE_SPEED = 200f;
-    private static final float JUMP_VELOCITY = 500f;
+    private static final float JUMP_VELOCITY = 700f;
     private static final float DASH_SPEED = 500f;
     private static final float DASH_DURATION = 0.2f;
     private static final float ATTACK_DURATION = 0.3f;

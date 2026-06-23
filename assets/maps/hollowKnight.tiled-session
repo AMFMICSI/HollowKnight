@@ -5,17 +5,17 @@
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "": {
-            "scaleInDock": 0.33
+            "scaleInDock": 0.06
         },
         "crystalPeaks/crystalPeaks.tmx": {
             "expandedObjectLayers": [
                 6
             ],
-            "scale": 0.33,
-            "selectedLayer": 1,
+            "scale": 0.75,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 2254.545454545455,
-                "y": 1987.878787878788
+                "x": 2400.6666666666665,
+                "y": 1763.3333333333333
             }
         },
         "crystalPeaks/crystalPeaks.tmx#SpriteAtlasTexture": {

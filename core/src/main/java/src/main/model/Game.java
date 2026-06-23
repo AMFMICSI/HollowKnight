@@ -2,6 +2,7 @@ package src.main.model;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import src.main.model.data.KeyBindings;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardian;
@@ -12,12 +13,14 @@ import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalProjectile;
 import src.main.model.entity.enemy.boss.falseKnight.FalseKnight;
 import src.main.model.entity.enemy.groundEnemy.GroundEnemy;
 import src.main.model.entity.enemy.groundEnemy.crawlid.Crawlid;
+import src.main.model.entity.npc.zote.Zote;
 import src.main.model.enviroment.MapLoader;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.entity.knight.Knight;
 import src.main.model.enviroment.Spike;
 import src.main.model.physics.CollisionSystem;
-import src.main.view.Phats;
+import src.main.view.GameAssetManager;
+import src.main.view.actors.modal.DialogueBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +33,24 @@ public class Game {
     private KeyBindings keyBindings = new KeyBindings();
     private MapLoader mapLoader;
     private List<Enemy> enemies;
+    private Zote zote;
+    private boolean dialogueActive;
+    private String currentDialogueText;
+    private boolean dialogueAdvanceRequested;
 
     public Knight getKnight() { return knight; }
     public KeyBindings getKeyBindings() { return keyBindings; }
     public MapLoader getMapLoader() { return mapLoader; }
     public List<Enemy> getEnemies() { return enemies; }
+    public Zote getZote() { return zote; }
+    public boolean isDialogueActive() { return dialogueActive; }
+    public String getCurrentDialogueText() { return currentDialogueText; }
+    public void requestDialogueAdvance() { dialogueAdvanceRequested = true; }
+    public boolean consumeDialogueAdvance() {
+        boolean v = dialogueAdvanceRequested;
+        dialogueAdvanceRequested = false;
+        return v;
+    }
 
     public Game() {
         mapLoader = new MapLoader();
@@ -57,6 +73,9 @@ public class Game {
             enemies.add(e);
         }
         for (Enemy e : enemies) e.setSolidBlocks(mapLoader.getSolidBlocks());
+
+        Vector2 zs = mapLoader.getZoteSpawnPoint();
+        zote = new Zote(zs.x, zs.y);
     }
 
     public void update(float delta) {
@@ -67,12 +86,18 @@ public class Game {
         updateProjectiles(delta);
         respawnEnemies();
         knight.updateAnimationState();
+        updateZote(delta);
     }
 
     private void updateKnight(float delta) {
         knight.update(delta);
         CollisionSystem.resolve(knight, mapLoader.getSolidBlocks(),
             mapLoader.getSpikes(), mapLoader.getClimbableWalls(), delta);
+    }
+
+    private void updateZote(float delta) {
+        zote.update(delta);
+        zote.updateProximity(knight.getPosition(), delta);
     }
 
     private void updateCombat(float delta) {
@@ -102,6 +127,12 @@ public class Game {
                 }
             }
 
+            if (!knight.isHitRegistered() && hitbox.overlaps(zote.getBoundingBox())) {
+                knight.setHitRegistered(true);
+                zote.takeDamage();
+                zote.setFacingRight(knight.getPosition().x >= zote.getPosition().x);
+            }
+
             if (knight.isPogoAttack() && !knight.isHitRegistered()) {
                 for (Spike spike : mapLoader.getSpikes()) {
                     if (hitbox.overlaps(spike.getBounds())) {
@@ -112,8 +143,6 @@ public class Game {
                 }
             }
         }
-
-
     }
 
     private void updateEnemies(float delta) {
@@ -176,6 +205,27 @@ public class Game {
                     enemy.getPosition().x, enemy.getPosition().y),
                 RESPAWN_DISTANCE)) {
                 enemy.respawn();
+            }
+        }
+    }
+
+    public void interact() {
+        if (!dialogueActive) {
+            if (zote.isInRange(knight.getPosition())) {
+                knight.setMovingRight(false);
+                knight.setMovingLeft(false);
+                knight.stopX();
+                zote.interact();
+                currentDialogueText = zote.getCurrentDialogue();
+                dialogueActive = true;
+            }
+        } else {
+            zote.advanceDialogue();
+            if (zote.isTalking()) {
+                currentDialogueText = zote.getCurrentDialogue();
+            } else {
+                dialogueActive = false;
+                currentDialogueText = null;
             }
         }
     }

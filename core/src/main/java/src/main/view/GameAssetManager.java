@@ -1,6 +1,7 @@
 package src.main.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -14,6 +15,7 @@ import src.main.model.entity.enemy.boss.falseKnight.FalseKnightAnimationType;
 import src.main.model.entity.knight.KnightAnimationType;
 import src.main.model.entity.animation.AnimationType;
 import src.main.model.entity.hud.SoulFillStage;
+import src.main.model.entity.npc.zote.ZoteAnimationType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +41,10 @@ public class GameAssetManager {
     public static Map<FalseKnightAnimationType, Animation<TextureRegion>> falseKnightAnimations;
     private static TextureAtlas hudAtlas;
     public static Map<SoulFillStage, Animation<TextureRegion>> soulFillAnimations;
+    public static Sound zoteGrunt1;
+    public static Sound zoteGrunt2;
+    private static TextureAtlas zoteAtlas;
+    public static Map<ZoteAnimationType, Animation<TextureRegion>> zoteAnimations;
 
     public static void init(){
         skin  = new Skin(Gdx.files.internal("ui/uiskin.json"));
@@ -51,6 +57,8 @@ public class GameAssetManager {
         loadMenuPointers();
         loadHudAtlas();
         loadSoulAnimations();
+        loadZoteAnimations();
+        loadZoteSounds();
     }
 
 
@@ -106,6 +114,16 @@ public class GameAssetManager {
         falseKnightAnimations = loadAnimations(falseKnightAtlas, FalseKnightAnimationType.values(), "%s_%03d");
     }
 
+    public static void loadZoteAnimations() {
+        zoteAtlas = new TextureAtlas(Gdx.files.internal("atlases/zote.atlas"));
+        zoteAnimations = loadAnimations(zoteAtlas, ZoteAnimationType.values(), "%s_%03d");
+    }
+
+    public static void loadZoteSounds() {
+        zoteGrunt1 = Gdx.audio.newSound(Gdx.files.internal("music/Brumm_grunt_01.wav"));
+        zoteGrunt2 = Gdx.audio.newSound(Gdx.files.internal("music/Brumm_grunt_double.wav"));
+    }
+
     public static void loadHudAtlas() {
         hudAtlas = new TextureAtlas(Gdx.files.internal("atlases/hud.atlas"));
     }
@@ -140,5 +158,8 @@ public class GameAssetManager {
         if(laserRegion != null) laserRegion.getTexture().dispose();
         if(falseKnightAtlas != null) falseKnightAtlas.dispose();
         if(hudAtlas != null) hudAtlas.dispose();
+        if (zoteAtlas != null) zoteAtlas.dispose();
+        if (zoteGrunt1 != null) zoteGrunt1.dispose();
+        if (zoteGrunt2 != null) zoteGrunt2.dispose();
     }
 }

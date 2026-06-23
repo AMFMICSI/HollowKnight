@@ -21,8 +21,9 @@ public class MapLoader {
     private List<Spike> spikes = new ArrayList<>();
     private List<ClimbableWall> climbableWalls = new ArrayList<>();
     private Vector2 spawnPoint = new Vector2();
-
+    private Vector2 zoteSpawnPoint = new Vector2();
     private List<EnemySpawnInfo> enemySpawnInfos = new ArrayList<>();
+    List<Rectangle> zoneRects = new ArrayList<>();
 
     public TiledMap getTiledMap() { return tiledMap; }
     public List<SolidBlock> getSolidBlocks() { return solidBlocks; }
@@ -30,6 +31,8 @@ public class MapLoader {
     public List<ClimbableWall> getClimbableWalls() { return climbableWalls; }
     public Vector2 getSpawnPoint() { return spawnPoint; }
     public List<EnemySpawnInfo> getEnemySpawnInfos() { return enemySpawnInfos; }
+    public Vector2 getZoteSpawnPoint() { return zoteSpawnPoint; }
+    public List<Rectangle> getZones() { return zoneRects; }
 
     public static class EnemySpawnInfo {
         public Vector2 position;
@@ -60,7 +63,6 @@ public class MapLoader {
         }
 
         // Collect Zone rectangles once
-        List<Rectangle> zoneRects = new ArrayList<>();
         for (MapObject obj : objects) {
             if (obj instanceof RectangleMapObject r && "Zone".equals(obj.getName())) {
                 Rectangle rect = r.getRectangle();
@@ -71,6 +73,10 @@ public class MapLoader {
         for (MapObject obj : objects) {
             if ("SpawnPlayer".equals(obj.getName()) && obj instanceof PointMapObject p) {
                 spawnPoint.set(p.getPoint().x, p.getPoint().y);
+                continue;
+            }
+            if ("SpawnZote".equals(obj.getName()) && obj instanceof PointMapObject p) {
+                zoteSpawnPoint.set(p.getPoint().x, p.getPoint().y);
                 continue;
             }
             if (obj instanceof PointMapObject p) {

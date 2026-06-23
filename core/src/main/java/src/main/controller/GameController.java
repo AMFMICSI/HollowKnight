@@ -21,15 +21,27 @@ public class GameController implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        if (game.isDialogueActive()) {
+            if (keycode == keys.get("INTERACT") || keycode == Input.Keys.ENTER || keycode == Input.Keys.NUMPAD_ENTER) {
+                game.requestDialogueAdvance();
+            }
+            return true;
+        }
+
+        if (keycode == keys.get("INTERACT")) {
+            game.interact();
+            return true;
+        }
+
         if (keycode == Input.Keys.F3) {
             GameSettings.getInstance().setDebugMode(!GameSettings.getInstance().isDebugMode());
             return true;
         }
 
-        if(keycode == keys.get("PAUSE")){
+        if (keycode == keys.get("PAUSE")) {
             PauseModal pauseModal = new PauseModal() {
-                @Override public void onResume() {hide();}
-                @Override public void onExit() {UiManager.setScreen(new MainMenuScreen());}
+                @Override public void onResume() { hide(); }
+                @Override public void onExit() { UiManager.setScreen(new MainMenuScreen()); }
             };
             pauseModal.show();
             return true;
@@ -71,6 +83,12 @@ public class GameController implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
+        if (game.isDialogueActive()) {
+            if (keycode == keys.get("MOVE_RIGHT")) { game.getKnight().setMovingRight(false); return true; }
+            if (keycode == keys.get("MOVE_LEFT")) { game.getKnight().setMovingLeft(false); return true; }
+            return true;
+        }
+
         if (keycode == keys.get("MOVE_RIGHT")) { game.getKnight().setMovingRight(false); return true; }
         if (keycode == keys.get("MOVE_LEFT")) { game.getKnight().setMovingLeft(false); return true; }
         else if (keycode == keys.get("JUMP")) { game.getKnight().jumpReleased(); return true; }
@@ -82,37 +100,23 @@ public class GameController implements InputProcessor {
     }
 
     @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
+    public boolean keyTyped(char character) { return false; }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) { return false; }
 
     @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) { return false; }
 
     @Override
-    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
+    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) { return false; }
 
     @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
+    public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }
 
     @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
+    public boolean mouseMoved(int screenX, int screenY) { return false; }
 
     @Override
-    public boolean scrolled(float amountX, float amountY) {
-        return false;
-    }
+    public boolean scrolled(float amountX, float amountY) { return false; }
 }
