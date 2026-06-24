@@ -20,6 +20,14 @@ public class AnimationSet<T> {
         return animations.get(currentType).getKeyFrame(stateTime);
     }
 
+    public void advanceStateTime(float delta) {
+        stateTime += delta;
+    }
+
+    public TextureRegion getCurrentFrame() {
+        return animations.get(currentType).getKeyFrame(stateTime);
+    }
+
     public void setAnimation(T type) {
         if (currentType != type) {
             currentType = type;

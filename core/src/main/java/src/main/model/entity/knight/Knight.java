@@ -47,6 +47,8 @@ public class Knight extends Entity {
     private int hp = MAX_HP;
     private float invincibleTimer = 0;
     private float spawnX, spawnY;
+    private boolean justDamaged = false;
+    private boolean justRespawned = false;
 
     // Soul
     private int soul = 0;
@@ -332,14 +334,23 @@ public class Knight extends Entity {
     public int getMaxSoul() { return MAX_SOUL; }
 
     // --- HP / DAMAGE ---
-    public void takeDamage() {
+    public void takeDamage() { takeDamage(1); }
+
+    public void takeDamage(int amount) {
         if (invincibleTimer > 0) return;
         if (isFocusing) cancelFocus();
-        hp--;
+        hp -= amount;
         invincibleTimer = INVINCIBLE_DURATION;
+        justDamaged = true;
         velocity.x = isFacingRight() ? -200f : 200f;
         velocity.y = 100f;
         if (hp <= 0) respawn();
+    }
+
+    public boolean consumeJustDamaged() {
+        boolean v = justDamaged;
+        justDamaged = false;
+        return v;
     }
 
     public void respawn() {
@@ -354,6 +365,13 @@ public class Knight extends Entity {
         invincibleTimer = INVINCIBLE_DURATION;
         isFocusing = false;
         focusTimer = 0;
+        justRespawned = true;
+    }
+
+    public boolean consumeJustRespawned() {
+        boolean v = justRespawned;
+        justRespawned = false;
+        return v;
     }
 
     @Override

@@ -1,11 +1,25 @@
 {
-    "activeFile": "crystalPeaks/crystalPeaks.tmx",
+    "activeFile": "MainMap.tmx",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "": {
-            "scaleInDock": 0.06
+            "scaleInDock": 1
+        },
+        "MainMap.tmx": {
+            "scale": 0.25,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 2754,
+                "y": 2486
+            }
+        },
+        "MainMap.tmx#SpriteAtlasTexture": {
+            "scaleInDock": 0.25
+        },
+        "MainMap.tmx#flame": {
+            "scaleInDock": 1
         },
         "crystalPeaks/crystalPeaks.tmx": {
             "expandedObjectLayers": [
@@ -104,11 +118,12 @@
     },
     "last.imagePath": "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/tilesets",
     "openFiles": [
-        "crystalPeaks/crystalPeaks.tmx"
+        "MainMap.tmx"
     ],
     "project": "hollowKnight.tiled-project",
     "property.type": "object",
     "recentFiles": [
+        "MainMap.tmx",
         "crystalPeaks/crystalPeaks.tmx",
         "tilesets/SpriteAtlasTexturesprite.tsx",
         "tilesets/small spike.tsx",
@@ -119,9 +134,9 @@
         "tilesets/ground.tsx",
         "crystalPeaks/spike.tsx",
         "tilesets/SpriteAtlasTexture.tsx",
-        "tilesets/crystal.tsx",
-        "forgottenCrossroads/forgottenCrossroads.tmx"
+        "tilesets/crystal.tsx"
     ],
+    "tileset.embedInMap": true,
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
         "height": 8,

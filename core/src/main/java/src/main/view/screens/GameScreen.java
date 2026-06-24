@@ -113,7 +113,34 @@ public class GameScreen extends AbstractScreen {
             game.update(STEP);
             accumulator -= STEP;
         }
-        camera.position.set(game.getKnight().getPosition().x, game.getKnight().getPosition().y + 30, 0);
+        float targetX = game.getKnight().getPosition().x;
+        float targetY = game.getKnight().getPosition().y + 30;
+
+        // Boss arena camera clamp
+        if (game.isInBossFight() && game.getBossArena() != null) {
+            Rectangle arena = game.getBossArena();
+            float halfW = camera.viewportWidth / 2f;
+            float halfH = camera.viewportHeight / 2f;
+            if (arena.width <= camera.viewportWidth) {
+                targetX = arena.x + arena.width / 2f;
+            } else {
+                targetX = Math.min(Math.max(targetX, arena.x + halfW), arena.x + arena.width - halfW);
+            }
+            if (arena.height <= camera.viewportHeight) {
+                targetY = arena.y + arena.height / 2f;
+            } else {
+                targetY = Math.min(Math.max(targetY, arena.y + halfH), arena.y + arena.height - halfH);
+            }
+        }
+
+        // Camera shake
+        if (game.getCameraShakeTimer() > 0) {
+            float intensity = game.getCameraShakeIntensity();
+            targetX += (float) (Math.random() - 0.5f) * intensity * 2;
+            targetY += (float) (Math.random() - 0.5f) * intensity * 2;
+        }
+
+        camera.position.set(targetX, targetY, 0);
         camera.update();
 
         batch.setProjectionMatrix(camera.combined);

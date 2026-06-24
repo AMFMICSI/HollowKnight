@@ -81,4 +81,6 @@ public abstract class Enemy extends Entity {
     public boolean isDeadAnimationDone() { return deadAnimationDone; }
     public int getHp(){return hp;}
     public void setSolidBlocks(List<SolidBlock> solidBlocks) { this.solidBlocks = solidBlocks; }
+    public Rectangle getZone() { return zone; }
+    public void setZone(Rectangle zone) { this.zone = zone; }
 }

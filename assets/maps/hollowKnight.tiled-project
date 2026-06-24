@@ -129,6 +129,26 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
+            "id": 9,
+            "members": [
+            ],
+            "name": "WallClimb",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
             "id": 6,
             "members": [
             ],
@@ -149,10 +169,10 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
-            "id": 9,
+            "id": 14,
             "members": [
             ],
-            "name": "WallClimb",
+            "name": "BossGate",
             "type": "class",
             "useAs": [
                 "property",

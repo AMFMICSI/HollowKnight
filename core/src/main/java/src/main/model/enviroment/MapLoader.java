@@ -24,6 +24,7 @@ public class MapLoader {
     private Vector2 zoteSpawnPoint = new Vector2();
     private List<EnemySpawnInfo> enemySpawnInfos = new ArrayList<>();
     List<Rectangle> zoneRects = new ArrayList<>();
+    private List<Rectangle> bossGates = new ArrayList<>();
 
     public TiledMap getTiledMap() { return tiledMap; }
     public List<SolidBlock> getSolidBlocks() { return solidBlocks; }
@@ -33,6 +34,7 @@ public class MapLoader {
     public List<EnemySpawnInfo> getEnemySpawnInfos() { return enemySpawnInfos; }
     public Vector2 getZoteSpawnPoint() { return zoteSpawnPoint; }
     public List<Rectangle> getZones() { return zoneRects; }
+    public List<Rectangle> getBossGates() { return bossGates; }
 
     public static class EnemySpawnInfo {
         public Vector2 position;
@@ -67,6 +69,14 @@ public class MapLoader {
             if (obj instanceof RectangleMapObject r && "Zone".equals(obj.getName())) {
                 Rectangle rect = r.getRectangle();
                 zoneRects.add(new Rectangle(rect));
+            }
+        }
+
+        // Collect BossGate rectangles
+        for (MapObject obj : objects) {
+            if (obj instanceof RectangleMapObject r && "BossGate".equals(obj.getName())) {
+                Rectangle rect = r.getRectangle();
+                bossGates.add(new Rectangle(rect));
             }
         }
 
