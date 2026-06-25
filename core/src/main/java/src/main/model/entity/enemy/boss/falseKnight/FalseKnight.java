@@ -103,7 +103,7 @@ public class FalseKnight extends Enemy {
         float dx = knightPos.x - position.x;
         float dst = position.dst(knightPos);
 
-        if (!isStunned && currentState != FalseKnightState.STUN_RECOVER) {
+        if (!isStunned && currentState == FalseKnightState.IDLE) {
             setFacingRight(dx > 0);
         }
 
@@ -285,6 +285,7 @@ public class FalseKnight extends Enemy {
     }
 
     private void decideMove(float dst, float dx) {
+        setFacingRight(dx > 0);
         float r = (float) Math.random();
 
         if (damageTakenTimer > 0 && !lastMove.equals("DEFENSIVE_LEAP")) {

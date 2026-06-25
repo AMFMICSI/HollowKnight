@@ -37,6 +37,10 @@ public class GameAssetManager {
     private static TextureAtlas crystalGuardianAtlas;
     public static Map<CrystalGuardianAnimationType, Animation<TextureRegion>> crystalGuardianAnimations;
     public static TextureRegion laserRegion;
+    public static Animation<TextureRegion> vengefulProjectileAnim;
+    public static Animation<TextureRegion> wraithsAoeAnim;
+    private static Texture vengefulProjectileTex;
+    private static Texture wraithsAoeTex;
     private static TextureAtlas falseKnightAtlas;
     public static Map<FalseKnightAnimationType, Animation<TextureRegion>> falseKnightAnimations;
     private static TextureAtlas hudAtlas;
@@ -49,6 +53,7 @@ public class GameAssetManager {
     public static void init(){
         skin  = new Skin(Gdx.files.internal("ui/uiskin.json"));
         loadKnightAnimations();
+        loadSpellTextures();
         loadCrawlidAnimations();
         loadCrystalHunterAnimations();
         loadHuskHornheadAnimations();
@@ -85,6 +90,26 @@ public class GameAssetManager {
     public static void loadKnightAnimations(){
         knightAtlas = new TextureAtlas(Gdx.files.internal("atlases/knight.atlas"));
         knightAnimations = loadAnimations(knightAtlas, KnightAnimationType.values(), "%s_%03d");
+    }
+
+    public static void loadSpellTextures() {
+        vengefulProjectileTex = new Texture(Gdx.files.internal("animation/Projectile/SoulBall.png"));
+        int vfw = vengefulProjectileTex.getWidth() / 4;
+        int vfh = vengefulProjectileTex.getHeight();
+        TextureRegion[] vFrames = new TextureRegion[4];
+        for (int i = 0; i < 4; i++)
+            vFrames[i] = new TextureRegion(vengefulProjectileTex, i * vfw, 0, vfw, vfh);
+        vengefulProjectileAnim = new Animation<>(0.1f, vFrames);
+        vengefulProjectileAnim.setPlayMode(Animation.PlayMode.LOOP);
+
+        wraithsAoeTex = new Texture(Gdx.files.internal("animation/Effects/SoulScream.png"));
+        int wfw = wraithsAoeTex.getWidth() / 13;
+        int wfh = wraithsAoeTex.getHeight();
+        TextureRegion[] wFrames = new TextureRegion[13];
+        for (int i = 0; i < 13; i++)
+            wFrames[i] = new TextureRegion(wraithsAoeTex, i * wfw, 0, wfw, wfh);
+        wraithsAoeAnim = new Animation<>(0.05f, wFrames);
+        wraithsAoeAnim.setPlayMode(Animation.PlayMode.NORMAL);
     }
 
     public static void loadCrawlidAnimations() {
@@ -156,6 +181,8 @@ public class GameAssetManager {
         if(huskHornheadAtlas != null) huskHornheadAtlas.dispose();
         if(crystalGuardianAtlas != null) crystalGuardianAtlas.dispose();
         if(laserRegion != null) laserRegion.getTexture().dispose();
+        if(vengefulProjectileTex != null) vengefulProjectileTex.dispose();
+        if(wraithsAoeTex != null) wraithsAoeTex.dispose();
         if(falseKnightAtlas != null) falseKnightAtlas.dispose();
         if(hudAtlas != null) hudAtlas.dispose();
         if (zoteAtlas != null) zoteAtlas.dispose();

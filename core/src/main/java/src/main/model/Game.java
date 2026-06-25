@@ -18,12 +18,16 @@ import src.main.model.entity.npc.zote.Zote;
 import src.main.model.enviroment.MapLoader;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.entity.knight.Knight;
+import src.main.model.entity.spell.SpellType;
+import src.main.model.entity.spell.VengefulProjectile;
+import src.main.model.entity.spell.HowlingWraithsAoe;
 import src.main.model.enviroment.Spike;
 import src.main.model.physics.CollisionSystem;
 import src.main.view.GameAssetManager;
 import src.main.view.actors.modal.DialogueBox;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Game {
@@ -45,6 +49,9 @@ public class Game {
     private boolean gatesActivated = false;
     private FalseKnight falseKnight;
     private List<SolidBlock> bossGateBlocks = new ArrayList<>();
+    private List<VengefulProjectile> spellProjectiles = new ArrayList<>();
+    private List<HowlingWraithsAoe> spellAoes = new ArrayList<>();
+    private String pendingToast = null;
 
     public Knight getKnight() { return knight; }
     public KeyBindings getKeyBindings() { return keyBindings; }
@@ -105,53 +112,21 @@ public class Game {
     public void update(float delta) {
         delta = Math.min(delta, 0.033f);
 
-        // Check boss arena entry
-        if (bossArena != null && !inBossFight
-            && bossArena.contains(knight.getPosition().x, knight.getPosition().y)) {
-            inBossFight = true;
-            if (falseKnight != null) falseKnight.setActive(true);
-        }
-
-        // Activate boss gates on entering boss fight
-        if (inBossFight && !gatesActivated) {
-            for (Rectangle gate : mapLoader.getBossGates()) {
-                SolidBlock block = new SolidBlock(gate.x, gate.y, gate.width, gate.height);
-                mapLoader.getSolidBlocks().add(block);
-                bossGateBlocks.add(block);
-            }
-            // If knight overlaps any gate, teleport to center of arena
-            if (bossArena != null) {
-                boolean overlaps = false;
-                for (Rectangle gate : mapLoader.getBossGates()) {
-                    if (knight.getBoundingBox().overlaps(gate)) {
-                        overlaps = true;
-                        break;
-                    }
-                }
-                if (overlaps) {
-                    knight.getPosition().x = bossArena.x + bossArena.width / 2f
-                        - knight.getBoundingBox().width / 2f;
-                    knight.getBoundingBox().setPosition(knight.getPosition());
-                }
-            }
-            gatesActivated = true;
-        }
-
-        // Release boss fight on boss death
-        if (inBossFight && falseKnight != null && falseKnight.isDead()
-            && falseKnight.isDeadAnimationDone()) {
-            releaseBossFight();
-        }
-
+        updateBossArena();
         updateKnight(delta);
 
-        // Release boss fight on knight death
         if (inBossFight && knight.consumeJustRespawned()) {
             releaseBossFight();
         }
 
         updateCombat(delta);
         updateEnemies(delta);
+        firePendingSpell();
+        updateSpellProjectiles(delta);
+        updateSpellAoes(delta);
+        if (knight.consumePendingSoulToast()) {
+            pendingToast = "Not enough Soul!";
+        }
         updateProjectiles(delta);
 
         if (knight.consumeJustDamaged()) {
@@ -169,6 +144,39 @@ public class Game {
         knight.update(delta);
         CollisionSystem.resolve(knight, mapLoader.getSolidBlocks(),
             mapLoader.getSpikes(), mapLoader.getClimbableWalls(), delta);
+    }
+
+    private void updateBossArena() {
+        if (bossArena == null) return;
+
+        if (!inBossFight && bossArena.contains(knight.getPosition().x, knight.getPosition().y)) {
+            inBossFight = true;
+            if (falseKnight != null) falseKnight.setActive(true);
+        }
+
+        if (inBossFight && !gatesActivated) {
+            for (Rectangle gate : mapLoader.getBossGates()) {
+                SolidBlock block = new SolidBlock(gate.x, gate.y, gate.width, gate.height);
+                mapLoader.getSolidBlocks().add(block);
+                bossGateBlocks.add(block);
+            }
+            if (bossArena != null) {
+                for (Rectangle gate : mapLoader.getBossGates()) {
+                    if (knight.getBoundingBox().overlaps(gate)) {
+                        knight.getPosition().x = bossArena.x + bossArena.width / 2f
+                            - knight.getBoundingBox().width / 2f;
+                        knight.getBoundingBox().setPosition(knight.getPosition());
+                        break;
+                    }
+                }
+            }
+            gatesActivated = true;
+        }
+
+        if (inBossFight && falseKnight != null && falseKnight.isDead()
+            && falseKnight.isDeadAnimationDone()) {
+            releaseBossFight();
+        }
     }
 
     private void updateZote(float delta) {
@@ -352,6 +360,81 @@ public class Game {
     public boolean isInBossFight() { return inBossFight; }
     public float getCameraShakeTimer() { return cameraShakeTimer; }
     public float getCameraShakeIntensity() { return cameraShakeIntensity; }
+    public List<VengefulProjectile> getSpellProjectiles() { return spellProjectiles; }
+    public List<HowlingWraithsAoe> getSpellAoes() { return spellAoes; }
+    public FalseKnight getFalseKnight() { return falseKnight; }
+
+    private void firePendingSpell() {
+        SpellType type = knight.consumePendingCastResult();
+        if (type == null) return;
+        switch (type) {
+            case VENGEFUL:
+                fireVengefulSpirit();
+                break;
+            case WRAITHS:
+                fireHowlingWraiths();
+                break;
+        }
+    }
+
+    private void fireVengefulSpirit() {
+        float x = knight.isFacingRight()
+            ? knight.getBoundingBox().x + knight.getBoundingBox().width
+            : knight.getBoundingBox().x - 16;
+        float y = knight.getPosition().y + 20;
+        spellProjectiles.add(new VengefulProjectile(x, y, knight.isFacingRight()));
+    }
+
+    private void fireHowlingWraiths() {
+        spellAoes.add(new HowlingWraithsAoe(
+            knight.getBoundingBox().x, knight.getBoundingBox().y,
+            knight.getBoundingBox().width, knight.getBoundingBox().height));
+    }
+
+    private void updateSpellProjectiles(float delta) {
+        Iterator<VengefulProjectile> it = spellProjectiles.iterator();
+        while (it.hasNext()) {
+            VengefulProjectile p = it.next();
+            if (p.isDead()) { it.remove(); continue; }
+            if (p.checkWallCollision(delta, mapLoader.getSolidBlocks())) {
+                it.remove();
+                continue;
+            }
+            p.update(delta);
+            for (Enemy enemy : enemies) {
+                if (enemy.isDead() || enemy.isDeadAnimationDone()) continue;
+                if (p.getBoundingBox().overlaps(enemy.getBoundingBox()) && p.tryHit(enemy)) {
+                    enemy.takeDamage(1);
+                    knight.addSoul(SOUL_PER_HIT);
+                }
+            }
+        }
+    }
+
+    private void updateSpellAoes(float delta) {
+        Iterator<HowlingWraithsAoe> it = spellAoes.iterator();
+        while (it.hasNext()) {
+            HowlingWraithsAoe aoe = it.next();
+            if (aoe.isDone()) { it.remove(); continue; }
+            int prevTick = aoe.getTickCount();
+            aoe.update(delta);
+            if (aoe.getTickCount() > prevTick) {
+                for (Enemy enemy : enemies) {
+                    if (enemy.isDead() || enemy.isDeadAnimationDone()) continue;
+                    if (aoe.getBounds().overlaps(enemy.getBoundingBox())) {
+                        enemy.takeDamage(1);
+                        knight.addSoul(SOUL_PER_HIT);
+                    }
+                }
+            }
+        }
+    }
+
+    public String consumePendingToast() {
+        String v = pendingToast;
+        pendingToast = null;
+        return v;
+    }
 
     public void interact() {
         if (!dialogueActive) {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -15,10 +16,13 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import src.main.controller.GameController;
 import src.main.model.Game;
 import src.main.model.entity.enemy.Enemy;
+import src.main.model.entity.enemy.boss.falseKnight.FalseKnight;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalHunter;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalProjectile;
 import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardian;
 import src.main.model.entity.npc.zote.Zote;
+import src.main.model.entity.spell.VengefulProjectile;
+import src.main.model.entity.spell.HowlingWraithsAoe;
 import src.main.model.enviroment.ClimbableWall;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.enviroment.Spike;
@@ -102,7 +106,38 @@ public class GameScreen extends AbstractScreen {
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.rect(game.getZote().getBoundingBox().x, game.getZote().getBoundingBox().y,
             game.getZote().getBoundingBox().width, game.getZote().getBoundingBox().height);
+        if (game.isInBossFight()) {
+            FalseKnight fk = game.getFalseKnight();
+            if (fk != null) {
+                shapeRenderer.setColor(Color.CYAN);
+                shapeRenderer.rect(fk.getAttackHitbox().x, fk.getAttackHitbox().y,
+                    fk.getAttackHitbox().width, fk.getAttackHitbox().height);
+                shapeRenderer.setColor(Color.WHITE);
+                shapeRenderer.rect(fk.getStunHitbox().x, fk.getStunHitbox().y,
+                    fk.getStunHitbox().width, fk.getStunHitbox().height);
+            }
+        }
         shapeRenderer.end();
+
+        batch.begin();
+        BitmapFont font = skin.getFont("default");
+        font.draw(batch, "Knight: " + game.getKnight().getCurrentState().name(),
+            game.getKnight().getBoundingBox().x,
+            game.getKnight().getBoundingBox().y + game.getKnight().getBoundingBox().height + 20);
+        font.draw(batch, "HP:" + game.getKnight().getHp() + "/" + game.getKnight().getMaxHp()
+            + " Soul:" + game.getKnight().getSoul(),
+            game.getKnight().getBoundingBox().x,
+            game.getKnight().getBoundingBox().y - 10);
+        for (Enemy e : game.getEnemies()) {
+            String label = e.getClass().getSimpleName() + " HP:" + e.getHp();
+            if (e instanceof FalseKnight fk) {
+                label += " " + fk.getCurrentState().name();
+            }
+            font.draw(batch, label,
+                e.getBoundingBox().x,
+                e.getBoundingBox().y + e.getBoundingBox().height + 15);
+        }
+        batch.end();
     }
 
     @Override
@@ -172,6 +207,11 @@ public class GameScreen extends AbstractScreen {
         hudRenderer.render(batch, game.getKnight().getHp(), game.getKnight().getMaxHp(),
             game.getKnight().getSoul(), game.getKnight().getMaxSoul());
 
+        String toast = game.consumePendingToast();
+        if (toast != null) {
+            openToast(toast);
+        }
+
         if (game.consumeDialogueAdvance()) {
             if (dialogueBox != null && !dialogueBox.isAnimationComplete()) {
                 dialogueBox.skipAnimation();
@@ -195,6 +235,14 @@ public class GameScreen extends AbstractScreen {
         }
 
         mapRenderer.render(new int[]{2});
+
+        batch.begin();
+        batch.setProjectionMatrix(camera.combined);
+        for (VengefulProjectile p : game.getSpellProjectiles())
+            p.draw(batch, delta);
+        for (HowlingWraithsAoe aoe : game.getSpellAoes())
+            aoe.draw(batch, delta);
+        batch.end();
 
         if (GameSettings.getInstance().isDebugMode())
             renderDebug();

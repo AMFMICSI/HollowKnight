@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import src.main.model.entity.animation.AnimationSet;
 import src.main.model.entity.Entity;
+import src.main.model.entity.spell.SpellType;
 import src.main.model.physics.PhysicsSystem;
 import src.main.view.GameAssetManager;
 
@@ -22,6 +23,8 @@ public class Knight extends Entity {
     private static final float FOCUS_DURATION = 1.5f;
     private static final float WALL_SLIDE_SPEED = 70f;
     private static final float WALL_JUMP_HORIZONTAL = 300f;
+    private static final float CAST_DURATION = 0.3f;
+    private static final int SOUL_PER_SPELL = 33;
 
     private final AnimationSet animationSet;
     private KnightState currentState = KnightState.IDLE;
@@ -56,6 +59,13 @@ public class Knight extends Entity {
     // Focus
     private boolean isFocusing = false;
     private float focusTimer = 0;
+
+    // Casting
+    private boolean isCasting = false;
+    private float castTimer = 0;
+    private SpellType pendingCastResult = null;
+    private SpellType pendingSpellType = null;
+    private boolean pendingSoulToast = false;
 
     private boolean runStartPlayed;
 
@@ -99,11 +109,21 @@ public class Knight extends Entity {
             }
         }
 
+        // Casting
+        if (isCasting) {
+            castTimer += delta;
+            velocity.x = 0;
+            velocity.y = 0;
+            if (castTimer >= CAST_DURATION) {
+                completeCast();
+            }
+        }
+
         // Variable jump height
         if (!jumpKeyHeld && velocity.y > 0)
             velocity.y *= 0.85f;
 
-        if (!isDashing && !isFocusing) {
+        if (!isDashing && !isFocusing && !isCasting) {
             if (isOnWall) {
                 velocity.y = -WALL_SLIDE_SPEED;
                 velocity.x = 0;
@@ -121,7 +141,9 @@ public class Knight extends Entity {
     }
 
     public void updateAnimationState() {
-        if (isFocusing) {
+        if (isCasting) {
+            // keep currentState as set by startCast (CASTING_VENGEFUL or CASTING_WRAITHS)
+        } else if (isFocusing) {
             currentState = KnightState.FOCUSING;
         } else if (isDashing) {
             currentState = KnightState.DASHING;
@@ -159,6 +181,8 @@ public class Knight extends Entity {
             case ATTACKING_DOWN: animType = KnightAnimationType.DOWN_SLASH; break;
             case ATTACKING_UP:   animType = KnightAnimationType.UP_SLASH; break;
             case DASHING:   animType = KnightAnimationType.DASH; break;
+            case CASTING_VENGEFUL: animType = KnightAnimationType.FIREBALL_CAST; break;
+            case CASTING_WRAITHS:  animType = KnightAnimationType.SCREAM; break;
             case FOCUSING:
                 if (focusTimer < 0.3f) animType = KnightAnimationType.FOCUS_START;
                 else if (focusTimer > FOCUS_DURATION - 0.2f) animType = KnightAnimationType.FOCUS_GET;
@@ -173,6 +197,7 @@ public class Knight extends Entity {
 
     // --- MOVEMENT ---
     public void jump() {
+        if (isCasting) return;
         if (isOnWall) {                                                     // (Wall Jump)
             velocity.y = JUMP_VELOCITY;
             velocity.x = wallToLeft ? WALL_JUMP_HORIZONTAL : -WALL_JUMP_HORIZONTAL;
@@ -199,7 +224,7 @@ public class Knight extends Entity {
     }
 
     public void dash() {
-        if (!isDashing) {
+        if (!isDashing && !isCasting) {
             isDashing = true;
             dashTimer = DASH_DURATION;
             velocity.x = isFacingRight() ? DASH_SPEED : -DASH_SPEED;
@@ -208,7 +233,7 @@ public class Knight extends Entity {
     }
 
     public void dashDown() {
-        if (!isDashing) {
+        if (!isDashing && !isCasting) {
             isDashing = true;
             dashTimer = DASH_DURATION;
             velocity.x = isFacingRight() ? DASH_SPEED : -DASH_SPEED;
@@ -217,7 +242,7 @@ public class Knight extends Entity {
     }
 
     public void dashUp() {
-        if (!isDashing) {
+        if (!isDashing && !isCasting) {
             isDashing = true;
             dashTimer = DASH_DURATION;
             velocity.x = 0;
@@ -227,7 +252,7 @@ public class Knight extends Entity {
 
     // --- ATTACK ---
     public void attack() {
-        if (attackTimer <= 0 && !isDashing && !isFocusing) {
+        if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
             attackTimer = ATTACK_DURATION;
             velocity.x = 0;
             isPogoAttack = false;
@@ -238,7 +263,7 @@ public class Knight extends Entity {
     }
 
     public void attackDown() {
-        if (attackTimer <= 0 && !isDashing && !isFocusing) {
+        if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
             attackTimer = ATTACK_DURATION;
             velocity.x = 0;
             isPogoAttack = false;
@@ -249,7 +274,7 @@ public class Knight extends Entity {
     }
 
     public void attackUp() {
-        if (attackTimer <= 0 && !isDashing && !isFocusing) {
+        if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
             attackTimer = ATTACK_DURATION;
             velocity.x = 0;
             isPogoAttack = false;
@@ -260,7 +285,7 @@ public class Knight extends Entity {
     }
 
     public void pogoAttack() {
-        if (attackTimer <= 0 && !isDashing && !isFocusing) {
+        if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
             attackTimer = ATTACK_DURATION;
             velocity.x = 0;
             isPogoAttack = true;
@@ -298,10 +323,62 @@ public class Knight extends Entity {
 
     public boolean isOnWall() { return isOnWall; }
 
+    // --- CASTING ---
+    public void startCast(SpellType type) {
+        if (isCasting || isDashing || attackTimer > 0 || isFocusing || !isOnGround())
+            return;
+        if (soul < SOUL_PER_SPELL) {
+            pendingSoulToast = true;
+            return;
+        }
+        isCasting = true;
+        castTimer = 0;
+        pendingSpellType = type;
+        currentState = (type == SpellType.VENGEFUL)
+            ? KnightState.CASTING_VENGEFUL
+            : KnightState.CASTING_WRAITHS;
+        velocity.x = 0;
+        velocity.y = 0;
+    }
+
+    private void completeCast() {
+        spendSoul(SOUL_PER_SPELL);
+        pendingCastResult = pendingSpellType;
+        pendingSpellType = null;
+        isCasting = false;
+        castTimer = 0;
+        currentState = KnightState.IDLE;
+    }
+
+    public void cancelCast() {
+        if (!isCasting) return;
+        isCasting = false;
+        castTimer = 0;
+        pendingSpellType = null;
+    }
+
+    public SpellType consumePendingCastResult() {
+        SpellType v = pendingCastResult;
+        pendingCastResult = null;
+        return v;
+    }
+
+    public boolean consumePendingSoulToast() {
+        boolean v = pendingSoulToast;
+        pendingSoulToast = false;
+        return v;
+    }
+
+    public boolean isCasting() { return isCasting; }
+
     // --- FOCUS ---
     public void startFocus() {
-        if (isFocusing || !isOnGround() || isDashing || attackTimer > 0 || hp >= MAX_HP || soul < SOUL_PER_HEAL)
+        if (isFocusing || !isOnGround() || isDashing || attackTimer > 0 || hp >= MAX_HP || isCasting)
             return;
+        if (soul < SOUL_PER_HEAL) {
+            pendingSoulToast = true;
+            return;
+        }
         isFocusing = true;
         focusTimer = 0;
         velocity.x = 0;
@@ -339,6 +416,7 @@ public class Knight extends Entity {
     public void takeDamage(int amount) {
         if (invincibleTimer > 0) return;
         if (isFocusing) cancelFocus();
+        if (isCasting) cancelCast();
         hp -= amount;
         invincibleTimer = INVINCIBLE_DURATION;
         justDamaged = true;
@@ -365,6 +443,8 @@ public class Knight extends Entity {
         invincibleTimer = INVINCIBLE_DURATION;
         isFocusing = false;
         focusTimer = 0;
+        isCasting = false;
+        castTimer = 0;
         justRespawned = true;
     }
 
@@ -396,4 +476,5 @@ public class Knight extends Entity {
     public int getMaxHp() { return MAX_HP; }
     public float getInvincibleTimer() { return invincibleTimer; }
     public void resetInvincibleTimer() { invincibleTimer = 0; }
+    public KnightState getCurrentState() { return currentState; }
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import src.main.model.Game;
 import src.main.model.data.KeyBindings;
+import src.main.model.entity.spell.SpellType;
 import src.main.view.GameSettings;
 import src.main.view.UiManager;
 import src.main.view.actors.modal.PauseModal;
@@ -76,6 +77,14 @@ public class GameController implements InputProcessor {
         }
         else if (keycode == keys.get("FOCUS")) {
             game.getKnight().startFocus();
+            return true;
+        }
+        else if (keycode == keys.get("SPELL_VENGEFUL")) {
+            game.getKnight().startCast(SpellType.VENGEFUL);
+            return true;
+        }
+        else if (keycode == keys.get("SPELL_WRAITHS")) {
+            game.getKnight().startCast(SpellType.WRAITHS);
             return true;
         }
         return false;

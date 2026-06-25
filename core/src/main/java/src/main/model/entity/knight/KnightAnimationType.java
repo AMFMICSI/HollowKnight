@@ -18,7 +18,9 @@ public enum KnightAnimationType implements AnimationType {
     FOCUS_START("Focus Start", 3, 0.1f, Animation.PlayMode.NORMAL),
     FOCUS("Focus", 7, 0.12f, Animation.PlayMode.LOOP),
     FOCUS_END("Focus End", 3, 0.1f, Animation.PlayMode.NORMAL),
-    FOCUS_GET("Focus Get", 6, 0.08f, Animation.PlayMode.NORMAL);
+    FOCUS_GET("Focus Get", 6, 0.08f, Animation.PlayMode.NORMAL),
+    FIREBALL_CAST("Fireball Cast", 9, 0.04f, Animation.PlayMode.NORMAL),
+    SCREAM("Scream", 7, 0.04f, Animation.PlayMode.NORMAL);
 
 
     public final String filePrefix;
