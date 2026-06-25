@@ -61,7 +61,14 @@ public abstract class Enemy extends Entity {
             deathTimer = 1.0f;
             velocity.x = 0;
             velocity.y = 0;
+        } else {
+            applyKnockback(150f, 80f);
         }
+    }
+
+    public void applyKnockback(float forceX, float forceY) {
+        velocity.x = isFacingRight() ? -forceX : forceX;
+        velocity.y = forceY;
     }
 
     public boolean canRespawn(float playerDist, float threshold) {

@@ -8,6 +8,7 @@ import src.main.model.data.KeyBindings;
 import src.main.model.entity.spell.SpellType;
 import src.main.view.GameSettings;
 import src.main.view.UiManager;
+import src.main.view.actors.modal.InventoryModal;
 import src.main.view.actors.modal.PauseModal;
 import src.main.view.screens.MainMenuScreen;
 
@@ -85,6 +86,12 @@ public class GameController implements InputProcessor {
         }
         else if (keycode == keys.get("SPELL_WRAITHS")) {
             game.getKnight().startCast(SpellType.WRAITHS);
+            return true;
+        }
+        else if (keycode == keys.get("INVENTORY")) {
+            if (!game.isDialogueActive()) {
+                new InventoryModal(game).show();
+            }
             return true;
         }
         return false;

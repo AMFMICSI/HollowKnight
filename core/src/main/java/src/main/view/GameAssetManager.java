@@ -39,14 +39,29 @@ public class GameAssetManager {
     public static TextureRegion laserRegion;
     public static Animation<TextureRegion> vengefulProjectileAnim;
     public static Animation<TextureRegion> wraithsAoeAnim;
-    private static Texture vengefulProjectileTex;
-    private static Texture wraithsAoeTex;
+    public static Animation<TextureRegion> shadowProjectileAnim;
+    public static Animation<TextureRegion> shadowScreamAnim;
+    public static Animation<TextureRegion> dashEffectAnim;
+    private static TextureAtlas effectsAtlas;
+    private static TextureAtlas charmsAtlas;
     private static TextureAtlas falseKnightAtlas;
     public static Map<FalseKnightAnimationType, Animation<TextureRegion>> falseKnightAnimations;
     private static TextureAtlas hudAtlas;
     public static Map<SoulFillStage, Animation<TextureRegion>> soulFillAnimations;
     public static Sound zoteGrunt1;
     public static Sound zoteGrunt2;
+    public static Sound charmClickSound;
+    public static Texture soulCatcherIcon;
+    public static Texture unbreakableStrengthIcon;
+    public static Texture quickSlashIcon;
+    public static Texture heavyBlowIcon;
+    public static Texture quickFocusIcon;
+    public static Texture dashmasterIcon;
+    public static Texture sharpShadowIcon;
+    public static Texture voidHeartIcon;
+    public static Texture charmNotch;
+    public static Texture notchLit;
+    public static Texture notchUnlit;
     private static TextureAtlas zoteAtlas;
     public static Map<ZoteAnimationType, Animation<TextureRegion>> zoteAnimations;
 
@@ -64,6 +79,8 @@ public class GameAssetManager {
         loadSoulAnimations();
         loadZoteAnimations();
         loadZoteSounds();
+        loadCharmTextures();
+        loadCharmSounds();
     }
 
 
@@ -93,23 +110,55 @@ public class GameAssetManager {
     }
 
     public static void loadSpellTextures() {
-        vengefulProjectileTex = new Texture(Gdx.files.internal("animation/Projectile/SoulBall.png"));
-        int vfw = vengefulProjectileTex.getWidth() / 4;
-        int vfh = vengefulProjectileTex.getHeight();
+        effectsAtlas = new TextureAtlas(Gdx.files.internal("atlases/effects.atlas"));
+
         TextureRegion[] vFrames = new TextureRegion[4];
         for (int i = 0; i < 4; i++)
-            vFrames[i] = new TextureRegion(vengefulProjectileTex, i * vfw, 0, vfw, vfh);
+            vFrames[i] = effectsAtlas.findRegion("SoulBall_" + String.format("%03d", i));
         vengefulProjectileAnim = new Animation<>(0.1f, vFrames);
         vengefulProjectileAnim.setPlayMode(Animation.PlayMode.LOOP);
 
-        wraithsAoeTex = new Texture(Gdx.files.internal("animation/Effects/SoulScream.png"));
-        int wfw = wraithsAoeTex.getWidth() / 13;
-        int wfh = wraithsAoeTex.getHeight();
         TextureRegion[] wFrames = new TextureRegion[13];
         for (int i = 0; i < 13; i++)
-            wFrames[i] = new TextureRegion(wraithsAoeTex, i * wfw, 0, wfw, wfh);
+            wFrames[i] = effectsAtlas.findRegion("SoulScream_" + String.format("%03d", i));
         wraithsAoeAnim = new Animation<>(0.05f, wFrames);
         wraithsAoeAnim.setPlayMode(Animation.PlayMode.NORMAL);
+
+        TextureRegion[] spFrames = new TextureRegion[6];
+        for (int i = 0; i < 6; i++)
+            spFrames[i] = effectsAtlas.findRegion("ShadowBall_" + String.format("%03d", i));
+        shadowProjectileAnim = new Animation<>(0.1f, spFrames);
+        shadowProjectileAnim.setPlayMode(Animation.PlayMode.LOOP);
+
+        TextureRegion[] ssFrames = new TextureRegion[13];
+        for (int i = 0; i < 13; i++)
+            ssFrames[i] = effectsAtlas.findRegion("ShadowScream_" + String.format("%03d", i));
+        shadowScreamAnim = new Animation<>(0.05f, ssFrames);
+        shadowScreamAnim.setPlayMode(Animation.PlayMode.NORMAL);
+
+        TextureRegion[] deFrames = new TextureRegion[8];
+        for (int i = 0; i < 8; i++)
+            deFrames[i] = effectsAtlas.findRegion("DashEffect_" + String.format("%03d", i));
+        dashEffectAnim = new Animation<>(0.05f, deFrames);
+        dashEffectAnim.setPlayMode(Animation.PlayMode.NORMAL);
+    }
+
+    public static void loadCharmTextures() {
+        soulCatcherIcon    = new Texture(Gdx.files.internal("charms/soul_catcher.png"));
+        unbreakableStrengthIcon = new Texture(Gdx.files.internal("charms/unbreakable_strength.png"));
+        quickSlashIcon     = new Texture(Gdx.files.internal("charms/quick_slash.png"));
+        heavyBlowIcon      = new Texture(Gdx.files.internal("charms/heavy_blow.png"));
+        quickFocusIcon     = new Texture(Gdx.files.internal("charms/quick_focus.png"));
+        dashmasterIcon     = new Texture(Gdx.files.internal("charms/dashmaster.png"));
+        sharpShadowIcon    = new Texture(Gdx.files.internal("charms/sharp_shadow.png"));
+        voidHeartIcon      = new Texture(Gdx.files.internal("charms/void_heart.png"));
+        charmNotch = new Texture(Gdx.files.internal("charms/charm_notch.png"));
+        notchLit   = new Texture(Gdx.files.internal("charms/notch_lit.png"));
+        notchUnlit = new Texture(Gdx.files.internal("charms/notch_unlit.png"));
+    }
+
+    public static void loadCharmSounds() {
+        charmClickSound = Gdx.audio.newSound(Gdx.files.internal("music/charm_click_in.wav"));
     }
 
     public static void loadCrawlidAnimations() {
@@ -131,7 +180,7 @@ public class GameAssetManager {
     public static void loadCrystalGuardianAnimations() {
         crystalGuardianAtlas = new TextureAtlas(Gdx.files.internal("atlases/crystalGuardian.atlas"));
         crystalGuardianAnimations = loadAnimations(crystalGuardianAtlas, CrystalGuardianAnimationType.values(), "%s_%03d");
-        laserRegion = new TextureRegion(new Texture(Gdx.files.internal("animation/Crystallized/atlas0 #25304.png")));
+        laserRegion = effectsAtlas.findRegion("CrystalLaser");
     }
 
     public static void loadFalseKnightAnimations() {
@@ -180,9 +229,20 @@ public class GameAssetManager {
         if(crystalHunterAtlas != null) crystalHunterAtlas.dispose();
         if(huskHornheadAtlas != null) huskHornheadAtlas.dispose();
         if(crystalGuardianAtlas != null) crystalGuardianAtlas.dispose();
-        if(laserRegion != null) laserRegion.getTexture().dispose();
-        if(vengefulProjectileTex != null) vengefulProjectileTex.dispose();
-        if(wraithsAoeTex != null) wraithsAoeTex.dispose();
+        if(effectsAtlas != null) effectsAtlas.dispose();
+        if(charmsAtlas != null) charmsAtlas.dispose();
+        if(charmClickSound != null) charmClickSound.dispose();
+        if(soulCatcherIcon != null) soulCatcherIcon.dispose();
+        if(unbreakableStrengthIcon != null) unbreakableStrengthIcon.dispose();
+        if(quickSlashIcon != null) quickSlashIcon.dispose();
+        if(heavyBlowIcon != null) heavyBlowIcon.dispose();
+        if(quickFocusIcon != null) quickFocusIcon.dispose();
+        if(dashmasterIcon != null) dashmasterIcon.dispose();
+        if(sharpShadowIcon != null) sharpShadowIcon.dispose();
+        if(voidHeartIcon != null) voidHeartIcon.dispose();
+        if(charmNotch != null) charmNotch.dispose();
+        if(notchLit != null) notchLit.dispose();
+        if(notchUnlit != null) notchUnlit.dispose();
         if(falseKnightAtlas != null) falseKnightAtlas.dispose();
         if(hudAtlas != null) hudAtlas.dispose();
         if (zoteAtlas != null) zoteAtlas.dispose();

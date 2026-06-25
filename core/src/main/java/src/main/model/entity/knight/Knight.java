@@ -3,10 +3,16 @@ package src.main.model.entity.knight;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import src.main.model.entity.animation.AnimationSet;
+import src.main.model.entity.charm.CharmType;
+import src.main.model.entity.enemy.Enemy;
 import src.main.model.entity.Entity;
 import src.main.model.entity.spell.SpellType;
 import src.main.model.physics.PhysicsSystem;
 import src.main.view.GameAssetManager;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Knight extends Entity {
     private static final float MOVE_SPEED = 200f;
@@ -54,7 +60,14 @@ public class Knight extends Entity {
     private boolean justRespawned = false;
 
     // Soul
-    private int soul = 0;
+    private int soul = 99;
+
+    // Charms
+    private Set<CharmType> equippedCharms = new HashSet<>();
+    private int maxNotches = 3;
+    private float dashCooldownTimer = 0;
+    private static final float DASH_COOLDOWN = 0.5f;
+    private Set<Enemy> sharpShadowHitEnemies = new HashSet<>();
 
     // Focus
     private boolean isFocusing = false;
@@ -83,8 +96,13 @@ public class Knight extends Entity {
 
         if (isDashing) {
             dashTimer -= delta;
-            if (dashTimer <= 0) isDashing = false;
+            if (dashTimer <= 0) {
+                isDashing = false;
+                dashCooldownTimer = getDashCooldown();
+                sharpShadowHitEnemies.clear();
+            }
         }
+        if (dashCooldownTimer > 0) dashCooldownTimer -= delta;
 
         if (attackTimer > 0) {
             attackTimer -= delta;
@@ -104,7 +122,7 @@ public class Knight extends Entity {
             if (!isOnGround() || hp >= MAX_HP) {
                 cancelFocus();
             }
-            if (focusTimer >= FOCUS_DURATION) {
+            if (focusTimer >= getFocusDuration()) {
                 completeFocus();
             }
         }
@@ -185,7 +203,7 @@ public class Knight extends Entity {
             case CASTING_WRAITHS:  animType = KnightAnimationType.SCREAM; break;
             case FOCUSING:
                 if (focusTimer < 0.3f) animType = KnightAnimationType.FOCUS_START;
-                else if (focusTimer > FOCUS_DURATION - 0.2f) animType = KnightAnimationType.FOCUS_GET;
+                else if (focusTimer > getFocusDuration() - 0.2f) animType = KnightAnimationType.FOCUS_GET;
                 else animType = KnightAnimationType.FOCUS;
                 break;
             default:
@@ -224,27 +242,27 @@ public class Knight extends Entity {
     }
 
     public void dash() {
-        if (!isDashing && !isCasting) {
+        if (!isDashing && !isCasting && dashCooldownTimer <= 0) {
             isDashing = true;
-            dashTimer = DASH_DURATION;
+            dashTimer = DASH_DURATION * getDashLengthMultiplier();
             velocity.x = isFacingRight() ? DASH_SPEED : -DASH_SPEED;
             velocity.y = 0;
         }
     }
 
     public void dashDown() {
-        if (!isDashing && !isCasting) {
+        if (!isDashing && !isCasting && dashCooldownTimer <= 0) {
             isDashing = true;
-            dashTimer = DASH_DURATION;
+            dashTimer = DASH_DURATION * getDashLengthMultiplier();
             velocity.x = isFacingRight() ? DASH_SPEED : -DASH_SPEED;
             velocity.y = -DASH_SPEED;
         }
     }
 
     public void dashUp() {
-        if (!isDashing && !isCasting) {
+        if (!isDashing && !isCasting && dashCooldownTimer <= 0) {
             isDashing = true;
-            dashTimer = DASH_DURATION;
+            dashTimer = DASH_DURATION * getDashLengthMultiplier();
             velocity.x = 0;
             velocity.y = DASH_SPEED;
         }
@@ -253,7 +271,7 @@ public class Knight extends Entity {
     // --- ATTACK ---
     public void attack() {
         if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
-            attackTimer = ATTACK_DURATION;
+            attackTimer = getAttackDuration();
             velocity.x = 0;
             isPogoAttack = false;
             isAttackDown = false;
@@ -264,7 +282,7 @@ public class Knight extends Entity {
 
     public void attackDown() {
         if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
-            attackTimer = ATTACK_DURATION;
+            attackTimer = getAttackDuration();
             velocity.x = 0;
             isPogoAttack = false;
             isAttackDown = true;
@@ -275,7 +293,7 @@ public class Knight extends Entity {
 
     public void attackUp() {
         if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
-            attackTimer = ATTACK_DURATION;
+            attackTimer = getAttackDuration();
             velocity.x = 0;
             isPogoAttack = false;
             isAttackDown = false;
@@ -286,7 +304,7 @@ public class Knight extends Entity {
 
     public void pogoAttack() {
         if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
-            attackTimer = ATTACK_DURATION;
+            attackTimer = getAttackDuration();
             velocity.x = 0;
             isPogoAttack = true;
             isAttackDown = false;
@@ -371,6 +389,77 @@ public class Knight extends Entity {
 
     public boolean isCasting() { return isCasting; }
 
+    // --- CHARMS ---
+    public Set<CharmType> getEquippedCharms() {
+        return Collections.unmodifiableSet(equippedCharms);
+    }
+
+    public boolean equipCharm(CharmType charm) {
+        if (equippedCharms.contains(charm)) return true;
+        if (getUsedNotches() + charm.getNotchCost() > maxNotches) return false;
+        equippedCharms.add(charm);
+        return true;
+    }
+
+    public void unequipCharm(CharmType charm) {
+        equippedCharms.remove(charm);
+    }
+
+    public boolean isCharmEquipped(CharmType charm) {
+        return equippedCharms.contains(charm);
+    }
+
+    public int getUsedNotches() {
+        int sum = 0;
+        for (CharmType c : equippedCharms) sum += c.getNotchCost();
+        return sum;
+    }
+
+    public int getMaxNotches() { return maxNotches; }
+
+    // --- CHARM EFFECT MODIFIERS ---
+    public int getAttackDamage() {
+        return isCharmEquipped(CharmType.UNBREAKABLE_STRENGTH) ? 2 : 1;
+    }
+
+    public float getAttackDuration() {
+        return isCharmEquipped(CharmType.QUICK_SLASH) ? 0.15f : ATTACK_DURATION;
+    }
+
+    public float getFocusDuration() {
+        return isCharmEquipped(CharmType.QUICK_FOCUS) ? 0.75f : FOCUS_DURATION;
+    }
+
+    public float getDashCooldown() {
+        return isCharmEquipped(CharmType.DASHMASTER) ? 0.25f : DASH_COOLDOWN;
+    }
+
+    public int getSoulPerHit() {
+        return isCharmEquipped(CharmType.SOUL_CATCHER) ? 17 : SOUL_PER_HIT;
+    }
+
+    public int getSpellDamage() {
+        return isCharmEquipped(CharmType.VOID_HEART) ? 2 : 1;
+    }
+
+    public boolean hasSharpShadow() {
+        return isCharmEquipped(CharmType.SHARP_SHADOW);
+    }
+
+    public boolean isDashing() { return isDashing; }
+    public float getDashTimer() { return dashTimer; }
+
+    public float getDashLengthMultiplier() {
+        return isCharmEquipped(CharmType.SHARP_SHADOW) ? 1.2f : 1.0f;
+    }
+
+    public boolean trySharpShadowHit(Enemy enemy) {
+        if (!hasSharpShadow() || !isDashing) return false;
+        if (sharpShadowHitEnemies.contains(enemy)) return false;
+        sharpShadowHitEnemies.add(enemy);
+        return true;
+    }
+
     // --- FOCUS ---
     public void startFocus() {
         if (isFocusing || !isOnGround() || isDashing || attackTimer > 0 || hp >= MAX_HP || isCasting)
@@ -445,6 +534,9 @@ public class Knight extends Entity {
         focusTimer = 0;
         isCasting = false;
         castTimer = 0;
+        dashCooldownTimer = 0;
+        equippedCharms.clear();
+        sharpShadowHitEnemies.clear();
         justRespawned = true;
     }
 

@@ -19,12 +19,14 @@ public class VengefulProjectile {
     private Rectangle boundingBox = new Rectangle();
     private boolean dead = false;
     private boolean facingRight;
+    private boolean shadow;
     private Set<Enemy> hitEnemies = new HashSet<>();
     private float animTimer = 0;
     private static final float SPEED = 400f;
 
-    public VengefulProjectile(float x, float y, boolean facingRight) {
+    public VengefulProjectile(float x, float y, boolean facingRight, boolean shadow) {
         this.facingRight = facingRight;
+        this.shadow = shadow;
         position.set(x, y);
         velocity.set(facingRight ? SPEED : -SPEED, 0);
         boundingBox.setSize(16, 16);
@@ -65,7 +67,7 @@ public class VengefulProjectile {
 
     public void draw(SpriteBatch batch, float delta) {
         if (dead) return;
-        Animation<TextureRegion> anim = GameAssetManager.vengefulProjectileAnim;
+        Animation<TextureRegion> anim = shadow ? GameAssetManager.shadowProjectileAnim : GameAssetManager.vengefulProjectileAnim;
         if (anim != null) {
             TextureRegion frame = anim.getKeyFrame(animTimer);
             float s = 0.5f;

@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -238,6 +240,18 @@ public class GameScreen extends AbstractScreen {
 
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
+        if (game.getKnight().hasSharpShadow() && game.getKnight().isDashing()) {
+            Animation<TextureRegion> dashAnim = GameAssetManager.dashEffectAnim;
+            if (dashAnim != null) {
+                TextureRegion frame = dashAnim.getKeyFrame(game.getKnight().getDashTimer());
+                float s = 0.6f;
+                float w = frame.getRegionWidth() * s;
+                float h = frame.getRegionHeight() * s;
+                float kx = game.getKnight().getPosition().x;
+                float ky = game.getKnight().getPosition().y;
+                batch.draw(frame, kx, ky - 8, w, h);
+            }
+        }
         for (VengefulProjectile p : game.getSpellProjectiles())
             p.draw(batch, delta);
         for (HowlingWraithsAoe aoe : game.getSpellAoes())

@@ -11,14 +11,15 @@ public class HowlingWraithsAoe {
     private float timer = 0;
     private int tickCount = 0;
     private boolean done = false;
+    private boolean shadow;
     private static final float DURATION = 0.6f;
     private static final float INTERVAL = 0.2f;
     private static final int MAX_TICKS = 3;
     private static final float EXPAND_SIZE = 60f;
 
-    public HowlingWraithsAoe(float x, float y, float w, float h) {
-        bounds = new Rectangle(x - EXPAND_SIZE / 2, y + h,
-            w + EXPAND_SIZE, EXPAND_SIZE);
+    public HowlingWraithsAoe(float x, float y, float w, float h, boolean shadow) {
+        this.shadow = shadow;
+        bounds = new Rectangle(x - 30, y - 20, w + 60, h + 80);
     }
 
     public void update(float delta) {
@@ -34,7 +35,7 @@ public class HowlingWraithsAoe {
 
     public void draw(SpriteBatch batch, float delta) {
         if (done) return;
-        Animation<TextureRegion> anim = GameAssetManager.wraithsAoeAnim;
+        Animation<TextureRegion> anim = shadow ? GameAssetManager.shadowScreamAnim : GameAssetManager.wraithsAoeAnim;
         if (anim != null) {
             TextureRegion frame = anim.getKeyFrame(timer);
             float s = 0.5f;

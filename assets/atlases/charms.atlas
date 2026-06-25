@@ -1,0 +1,83 @@
+
+charms.png
+size: 406, 420
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+charm_notch
+  rotate: false
+  xy: 263, 48
+  size: 119, 105
+  orig: 119, 105
+  offset: 0, 0
+  index: -1
+dashmaster
+  rotate: false
+  xy: 274, 287
+  size: 132, 133
+  orig: 132, 133
+  offset: 0, 0
+  index: -1
+heavy_blow
+  rotate: false
+  xy: 0, 289
+  size: 137, 131
+  orig: 137, 131
+  offset: 0, 0
+  index: -1
+notch_lit
+  rotate: false
+  xy: 263, 0
+  size: 48, 46
+  orig: 48, 46
+  offset: 0, 0
+  index: -1
+notch_unlit
+  rotate: false
+  xy: 313, 18
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+quick_focus
+  rotate: false
+  xy: 0, 151
+  size: 131, 136
+  orig: 131, 136
+  offset: 0, 0
+  index: -1
+quick_slash
+  rotate: false
+  xy: 134, 14
+  size: 127, 136
+  orig: 127, 136
+  offset: 0, 0
+  index: -1
+sharp_shadow
+  rotate: false
+  xy: 0, 15
+  size: 132, 134
+  orig: 132, 134
+  offset: 0, 0
+  index: -1
+soul_catcher
+  rotate: false
+  xy: 262, 155
+  size: 128, 130
+  orig: 128, 130
+  offset: 0, 0
+  index: -1
+unbreakable_strength
+  rotate: false
+  xy: 133, 152
+  size: 127, 134
+  orig: 127, 134
+  offset: 0, 0
+  index: -1
+void_heart
+  rotate: false
+  xy: 139, 288
+  size: 133, 132
+  orig: 133, 132
+  offset: 0, 0
+  index: -1

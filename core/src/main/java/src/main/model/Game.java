@@ -17,6 +17,7 @@ import src.main.model.entity.enemy.groundEnemy.crawlid.Crawlid;
 import src.main.model.entity.npc.zote.Zote;
 import src.main.model.enviroment.MapLoader;
 import src.main.model.enviroment.SolidBlock;
+import src.main.model.entity.charm.CharmType;
 import src.main.model.entity.knight.Knight;
 import src.main.model.entity.spell.SpellType;
 import src.main.model.entity.spell.VengefulProjectile;
@@ -206,8 +207,9 @@ public class Game {
                 if (enemy instanceof FalseKnight fk && fk.isStunned()) {
                     if (hitbox.overlaps(fk.getStunHitbox())) {
                         knight.setHitRegistered(true);
-                        fk.takeDamage(1);
-                        knight.addSoul(SOUL_PER_HIT);
+                        fk.takeDamage(knight.getAttackDamage());
+                        knight.addSoul(knight.getSoulPerHit());
+                        applyHeavyBlowKnockback(enemy);
                         if (knight.isPogoAttack()) knight.doPogoBounce();
                         break;
                     }
@@ -216,8 +218,9 @@ public class Game {
 
                 if (hitbox.overlaps(enemy.getBoundingBox())) {
                     knight.setHitRegistered(true);
-                    enemy.takeDamage(1);
-                    knight.addSoul(SOUL_PER_HIT);
+                    enemy.takeDamage(knight.getAttackDamage());
+                    knight.addSoul(knight.getSoulPerHit());
+                    applyHeavyBlowKnockback(enemy);
                     if (knight.isPogoAttack()) knight.doPogoBounce();
                     break;
                 }
@@ -238,6 +241,13 @@ public class Game {
                     }
                 }
             }
+        }
+    }
+
+    private void applyHeavyBlowKnockback(Enemy enemy) {
+        if (!enemy.isDead() && knight.isCharmEquipped(CharmType.HEAVY_BLOW)) {
+            enemy.setVelocityX(enemy.getVelocityX() * 2f);
+            enemy.setVelocityY(enemy.getVelocityY() * 2f);
         }
     }
 
@@ -291,8 +301,14 @@ public class Game {
                 }
             }
 
-            if (enemy.getBoundingBox().overlaps(knight.getBoundingBox()) && !enemy.isDead())
-                knight.takeDamage();
+            if (enemy.getBoundingBox().overlaps(knight.getBoundingBox()) && !enemy.isDead()) {
+                if (knight.trySharpShadowHit(enemy)) {
+                    enemy.takeDamage(1);
+                    knight.addSoul(knight.getSoulPerHit());
+                } else {
+                    knight.takeDamage();
+                }
+            }
         }
     }
 
@@ -382,13 +398,15 @@ public class Game {
             ? knight.getBoundingBox().x + knight.getBoundingBox().width
             : knight.getBoundingBox().x - 16;
         float y = knight.getPosition().y + 20;
-        spellProjectiles.add(new VengefulProjectile(x, y, knight.isFacingRight()));
+        boolean shadow = knight.isCharmEquipped(CharmType.VOID_HEART);
+        spellProjectiles.add(new VengefulProjectile(x, y, knight.isFacingRight(), shadow));
     }
 
     private void fireHowlingWraiths() {
+        boolean shadow = knight.isCharmEquipped(CharmType.VOID_HEART);
         spellAoes.add(new HowlingWraithsAoe(
             knight.getBoundingBox().x, knight.getBoundingBox().y,
-            knight.getBoundingBox().width, knight.getBoundingBox().height));
+            knight.getBoundingBox().width, knight.getBoundingBox().height, shadow));
     }
 
     private void updateSpellProjectiles(float delta) {
@@ -404,8 +422,8 @@ public class Game {
             for (Enemy enemy : enemies) {
                 if (enemy.isDead() || enemy.isDeadAnimationDone()) continue;
                 if (p.getBoundingBox().overlaps(enemy.getBoundingBox()) && p.tryHit(enemy)) {
-                    enemy.takeDamage(1);
-                    knight.addSoul(SOUL_PER_HIT);
+                    enemy.takeDamage(knight.getSpellDamage());
+                    knight.addSoul(knight.getSoulPerHit());
                 }
             }
         }
@@ -422,8 +440,8 @@ public class Game {
                 for (Enemy enemy : enemies) {
                     if (enemy.isDead() || enemy.isDeadAnimationDone()) continue;
                     if (aoe.getBounds().overlaps(enemy.getBoundingBox())) {
-                        enemy.takeDamage(1);
-                        knight.addSoul(SOUL_PER_HIT);
+                        enemy.takeDamage(knight.getSpellDamage());
+                        knight.addSoul(knight.getSoulPerHit());
                     }
                 }
             }

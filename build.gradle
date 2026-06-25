@@ -65,6 +65,81 @@ task packTextures {
     }
 }
 
+task packEffects {
+    dependsOn buildscript.configurations.classpath
+    def outputDir = file("assets/atlases")
+    outputs.file file("$outputDir/effects.atlas")
+    outputs.file file("$outputDir/effects.png")
+    doLast {
+        def tmpDir = new File(project.buildDir, "tmp/effects-frames")
+        delete tmpDir
+        tmpDir.mkdirs()
+
+        file("assets/animation/Projectile").eachFileMatch(~".*_\\d{3}\\.png") { f ->
+            def cleanName = f.name.replaceAll("[ #]", "")
+            copy { from f.absolutePath; into tmpDir; rename { cleanName } }
+        }
+        file("assets/animation/Effects").eachFileMatch(~".*_\\d{3}\\.png") { f ->
+            def cleanName = f.name.replaceAll("[ #]", "")
+            copy { from f.absolutePath; into tmpDir; rename { cleanName } }
+        }
+        file("assets/animation/Crystallized").eachFileMatch(~".*_\\d{3}\\.png") { f ->
+            def cleanName = f.name.replaceAll("[ #]", "")
+            copy { from f.absolutePath; into tmpDir; rename { cleanName } }
+        }
+        // Single-frame laser
+        file("assets/animation/Crystallized").eachFileMatch(~".*\\.png") { f ->
+            if (!f.name.contains("_")) {
+                def cleanName = "CrystalLaser.png"
+                copy { from f.absolutePath; into tmpDir; rename { cleanName } }
+            }
+        }
+
+        def settings = new com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings()
+        settings.maxWidth = 4096
+        settings.maxHeight = 4096
+        settings.alias = false
+        settings.pot = false
+        settings.bleed = false
+        settings.useIndexes = false
+        settings.duplicatePadding = true
+        settings.edgePadding = false
+        com.badlogic.gdx.tools.texturepacker.TexturePacker.process(settings,
+            tmpDir.absolutePath, outputDir.absolutePath, "effects")
+    }
+}
+
+task packCharms {
+    dependsOn buildscript.configurations.classpath
+    def outputDir = file("assets/atlases")
+    outputs.file file("$outputDir/charms.atlas")
+    outputs.file file("$outputDir/charms.png")
+    doLast {
+        def tmpDir = new File(project.buildDir, "tmp/charms-frames")
+        delete tmpDir
+        tmpDir.mkdirs()
+
+        file("assets/charms").eachFileMatch(~".*\\.png") { f ->
+            copy { from f.absolutePath; into tmpDir }
+        }
+        file("assets/charms").eachFileMatch(~".*\\.wav") { f ->
+            // skip sound files
+        }
+
+        def settings = new com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings()
+        settings.maxWidth = 512
+        settings.maxHeight = 512
+        settings.alias = false
+        settings.pot = false
+        settings.bleed = false
+        settings.useIndexes = false
+        settings.duplicatePadding = true
+        settings.edgePadding = false
+        com.badlogic.gdx.tools.texturepacker.TexturePacker.process(settings,
+            tmpDir.absolutePath, outputDir.absolutePath, "charms")
+    }
+}
+
 task packHud {
     dependsOn buildscript.configurations.classpath
     def outputDir = file("assets/animation")

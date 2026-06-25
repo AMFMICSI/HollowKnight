@@ -9,10 +9,10 @@
         },
         "MainMap.tmx": {
             "scale": 0.25,
-            "selectedLayer": 1,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 2754,
-                "y": 2486
+                "x": 1984,
+                "y": 1500
             }
         },
         "MainMap.tmx#SpriteAtlasTexture": {
