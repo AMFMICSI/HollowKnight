@@ -64,7 +64,6 @@ public class GameAssetManager {
     private static TextureAtlas charmsAtlas;
     private static TextureAtlas zoteAtlas;
     public static Map<ZoteAnimationType, Animation<TextureRegion>> zoteAnimations;
-
     public static void init(){
         skin  = new Skin(Gdx.files.internal(Phats.UiSkin.getText()));
         loadKnightAnimations();
@@ -237,5 +236,6 @@ public class GameAssetManager {
         if (zoteAtlas != null) zoteAtlas.dispose();
         if (zoteGrunt1 != null) zoteGrunt1.dispose();
         if (zoteGrunt2 != null) zoteGrunt2.dispose();
+        GameMusic.disposeAll();
     }
 }

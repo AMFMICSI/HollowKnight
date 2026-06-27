@@ -184,8 +184,7 @@ public class GameScreen extends AbstractScreen {
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         mapRenderer.setView(camera);
-        mapRenderer.render(new int[]{0});
-        mapRenderer.render(new int[]{1});
+        mapRenderer.render(new int[]{0, 1, 2});
 
         batch.begin();
         game.getKnight().draw(batch, delta);
@@ -236,7 +235,7 @@ public class GameScreen extends AbstractScreen {
             }
         }
 
-        mapRenderer.render(new int[]{2});
+        mapRenderer.render(new int[]{3});
 
         batch.begin();
         batch.setProjectionMatrix(camera.combined);

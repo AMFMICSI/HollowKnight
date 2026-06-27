@@ -9,6 +9,7 @@ import src.main.model.entity.Entity;
 import src.main.model.entity.spell.SpellType;
 import src.main.model.physics.PhysicsSystem;
 import src.main.view.GameAssetManager;
+import src.main.view.GameMusic;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -277,6 +278,7 @@ public class Knight extends Entity {
             isAttackDown = false;
             isAttackUp = false;
             hitRegistered = false;
+            GameMusic.NAIL_SLASH.play();
         }
     }
 
@@ -288,6 +290,7 @@ public class Knight extends Entity {
             isAttackDown = true;
             isAttackUp = false;
             hitRegistered = false;
+            GameMusic.NAIL_SLASH.play();
         }
     }
 
@@ -299,6 +302,7 @@ public class Knight extends Entity {
             isAttackDown = false;
             isAttackUp = true;
             hitRegistered = false;
+            GameMusic.NAIL_SLASH.play();
         }
     }
 
@@ -310,6 +314,7 @@ public class Knight extends Entity {
             isAttackDown = false;
             isAttackUp = false;
             hitRegistered = false;
+            GameMusic.NAIL_SLASH.play();
         }
     }
 
@@ -483,6 +488,7 @@ public class Knight extends Entity {
     private void completeFocus() {
         if (spendSoul(SOUL_PER_HEAL)) {
             hp = Math.min(hp + 1, MAX_HP);
+            GameMusic.FOCUS_HEAL.play();
         }
         isFocusing = false;
         focusTimer = 0;
@@ -491,7 +497,10 @@ public class Knight extends Entity {
     public boolean isFocusing() { return isFocusing; }
 
     // --- SOUL ---
-    public void addSoul(int amount) { soul = Math.min(soul + amount, MAX_SOUL); }
+    public void addSoul(int amount) {
+        soul = Math.min(soul + amount, MAX_SOUL);
+        GameMusic.SOUL_PICKUP.play();
+    }
     public boolean spendSoul(int amount) {
         if (soul >= amount) { soul -= amount; return true; }
         return false;
@@ -511,6 +520,7 @@ public class Knight extends Entity {
         justDamaged = true;
         velocity.x = isFacingRight() ? -200f : 200f;
         velocity.y = 100f;
+        GameMusic.HERO_DAMAGE.play();
         if (hp <= 0) respawn();
     }
 

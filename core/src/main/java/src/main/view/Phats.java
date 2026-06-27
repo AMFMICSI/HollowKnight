@@ -23,6 +23,11 @@ public enum Phats {
     BrummGrunt1("music/Brumm_grunt_01.wav"),
     BrummGruntDouble("music/Brumm_grunt_double.wav"),
     KeyBindingsConfig("config/keyBindings.json"),
+    NailSlash("music/sword_1.wav"),
+    HeroDamage("music/hero_damage.wav"),
+    SoulPickup("music/soul_pickup_1.wav"),
+    FocusHeal("music/spa_heal.wav"),
+    GameSave("config/save.json"),
     ;
 
     private final String text;
