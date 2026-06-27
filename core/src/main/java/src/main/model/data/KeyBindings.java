@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import src.main.view.Phats;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +19,10 @@ public class KeyBindings {
         DEFAULTS.put("JUMP", Input.Keys.Z);
         DEFAULTS.put("DASH", Input.Keys.C);
         DEFAULTS.put("ATTACK", Input.Keys.X);
-        DEFAULTS.put("POGO", Input.Keys.DOWN);       // ↓ + X همزمان
+        DEFAULTS.put("POGO", Input.Keys.DOWN);
         DEFAULTS.put("FOCUS", Input.Keys.A);
-        DEFAULTS.put("SPELL_VENGEFUL", Input.Keys.Q);  // Vengeful Spirit
-        DEFAULTS.put("SPELL_WRAITHS", Input.Keys.W);   // Howling Wraiths
+        DEFAULTS.put("SPELL_VENGEFUL", Input.Keys.Q);
+        DEFAULTS.put("SPELL_WRAITHS", Input.Keys.W);
         DEFAULTS.put("INVENTORY", Input.Keys.I);
         DEFAULTS.put("PAUSE", Input.Keys.ESCAPE);
         DEFAULTS.put("INTERACT", Input.Keys.E);
@@ -35,6 +36,7 @@ public class KeyBindings {
             save();
         }
     }
+
     public int get(String action) { return bindings.get(action); }
     public void set(String action, int keycode) { bindings.put(action, keycode); }
     public void resetToDefaults() {
@@ -55,12 +57,12 @@ public class KeyBindings {
     public void save(){
         Json json = new Json();
         String data = json.toJson(bindings);
-        Gdx.files.local("config/keyBindings.json").writeString(data, false);
+        Gdx.files.local(Phats.KeyBindingsConfig.getText()).writeString(data, false);
     }
 
     @SuppressWarnings("unchecked")
-    public void load(){
-        FileHandle file =  Gdx.files.local("config/keyBindings.json");
+    public void load() {
+        FileHandle file = Gdx.files.local(Phats.KeyBindingsConfig.getText());
         if(file.exists()){
             Json json = new Json();
             bindings.clear();

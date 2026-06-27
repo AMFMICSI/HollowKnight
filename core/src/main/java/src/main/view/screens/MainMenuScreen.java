@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import src.main.view.GameMusic;
+import src.main.view.Phats;
 import src.main.view.UiManager;
 import src.main.view.screens.settings.SettingMenuScreen;
 
@@ -14,7 +15,7 @@ public class MainMenuScreen extends AbstractScreen {
     @Override
     public void show() {
         super.show();
-        setBackground("menus/mainBackGround.png");
+        setBackground(Phats.MainBackGround.getText());
 
         TextButton quitBtn = new TextButton("Quit", skin);
         TextButton settingsBtn = new TextButton("Settings", skin);

@@ -32,7 +32,7 @@ public class Knight extends Entity {
     private static final float CAST_DURATION = 0.3f;
     private static final int SOUL_PER_SPELL = 33;
 
-    private final AnimationSet animationSet;
+    private final AnimationSet<KnightAnimationType> animationSet;
     private KnightState currentState = KnightState.IDLE;
 
     // Movement
@@ -83,7 +83,7 @@ public class Knight extends Entity {
     private boolean runStartPlayed;
 
     public Knight(float x, float y) {
-        animationSet = new AnimationSet<>(GameAssetManager.knightAnimations, KnightAnimationType.IDLE);
+        animationSet = new AnimationSet<KnightAnimationType>(GameAssetManager.knightAnimations, KnightAnimationType.IDLE);
         position.set(x, y);
         spawnX = x;
         spawnY = y;
@@ -535,9 +535,13 @@ public class Knight extends Entity {
         isCasting = false;
         castTimer = 0;
         dashCooldownTimer = 0;
-        equippedCharms.clear();
         sharpShadowHitEnemies.clear();
         justRespawned = true;
+    }
+
+    public void setSpawnPoint(float x, float y) {
+        spawnX = x;
+        spawnY = y;
     }
 
     public boolean consumeJustRespawned() {

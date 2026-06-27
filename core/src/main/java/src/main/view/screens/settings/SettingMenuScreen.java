@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import src.main.view.GameMusic;
 import src.main.view.GameSettings;
+import src.main.view.Phats;
 import src.main.view.screens.AbstractScreen;
 import src.main.view.UiManager;
 import src.main.view.screens.MainMenuScreen;
@@ -14,7 +15,7 @@ public class SettingMenuScreen extends AbstractScreen {
     @Override
     public void show() {
         super.show();
-        setBackground("menus/mainBackGround.png");
+        setBackground(Phats.MainBackGround.getText());
         buildMainMenu();
     }
 
@@ -61,8 +62,10 @@ public class SettingMenuScreen extends AbstractScreen {
         sfxSlider.setValue(GameSettings.getInstance().getSfxVolume());
         sfxSlider.addListener(event -> {
             GameSettings.getInstance().setSfxVolume(sfxSlider.getValue());
-            GameSettings.getInstance().setSfxMuted(false);
-            sfxMuteBtn.setText("Mute");
+            if (GameSettings.getInstance().isSfxMuted()) {
+                GameSettings.getInstance().setSfxMuted(false);
+                sfxMuteBtn.setText("Mute");
+            }
             return false;
         });
 
@@ -93,12 +96,19 @@ public class SettingMenuScreen extends AbstractScreen {
         brightnessRow.add(brightnessSlider).width(200);
         center.add(brightnessRow).padBottom(15).row();
 
+        String[] languages = {"en", "fa"};
         TextButton langBtn = new TextButton("Language: " + GameSettings.getInstance().getLanguage().toUpperCase(), skin);
         langBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent e, float x, float y) {
                 String current = GameSettings.getInstance().getLanguage();
-                String next = current.equals("en") ? "fa" : "en";
+                String next = languages[0];
+                for (int i = 0; i < languages.length; i++) {
+                    if (languages[i].equals(current)) {
+                        next = languages[(i + 1) % languages.length];
+                        break;
+                    }
+                }
                 GameSettings.getInstance().setLanguage(next);
                 langBtn.setText("Language: " + next.toUpperCase());
             }
@@ -123,9 +133,8 @@ public class SettingMenuScreen extends AbstractScreen {
                 GameMusic.MENU.setVolume(GameSettings.getInstance().getMusicVolume());
                 musicSlider.setValue(GameSettings.getInstance().getMusicVolume());
                 sfxSlider.setValue(GameSettings.getInstance().getSfxVolume());
-                musicMuteBtn.setText("Mute");
-                sfxMuteBtn.setText("Mute");
-                if (GameMusic.MENU.isMuted()) GameMusic.MENU.toggleMute();
+                musicMuteBtn.setText(GameMusic.MENU.isMuted() ? "Unmute" : "Mute");
+                sfxMuteBtn.setText(GameSettings.getInstance().isSfxMuted() ? "Unmute" : "Mute");
             }
         });
 
@@ -145,3 +154,4 @@ public class SettingMenuScreen extends AbstractScreen {
         setupMenuPointer(musicMuteBtn, sfxMuteBtn, langBtn, keyBtn, resetSoundBtn, backBtn);
     }
 }
+

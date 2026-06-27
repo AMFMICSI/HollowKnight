@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import src.main.model.entity.Entity;
 
 import com.badlogic.gdx.math.Rectangle;
-import src.main.model.entity.enemy.groundEnemy.crawlid.Crawlid;
 import src.main.model.enviroment.SolidBlock;
 
 import java.util.List;
@@ -18,6 +17,7 @@ public abstract class Enemy extends Entity {
     protected float deathTimer;
     protected Rectangle zone;
     protected Vector2 spawnPosition = new Vector2();
+    public float respawnDistance = 700f;
     protected List<SolidBlock> solidBlocks;
 
     public void draw(SpriteBatch batch, float delta) {
@@ -38,7 +38,7 @@ public abstract class Enemy extends Entity {
 
     public abstract TextureRegion getFrame(float delta);
 
-    private void drawCorpse(SpriteBatch batch, float delta) {
+    public void drawCorpse(SpriteBatch batch, float delta) {
         TextureRegion frame = getCorpseFrame();
         if (frame == null) return;
         float spriteW = boundingBox.width * DRAW_SCALE;
@@ -90,4 +90,8 @@ public abstract class Enemy extends Entity {
     public void setSolidBlocks(List<SolidBlock> solidBlocks) { this.solidBlocks = solidBlocks; }
     public Rectangle getZone() { return zone; }
     public void setZone(Rectangle zone) { this.zone = zone; }
+
+    public float getRespawnDistance() {
+        return respawnDistance;
+    }
 }

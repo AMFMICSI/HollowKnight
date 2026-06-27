@@ -14,6 +14,26 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
+            "id": 14,
+            "members": [
+            ],
+            "name": "BossGate",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
             "id": 5,
             "members": [
                 {
@@ -169,10 +189,10 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
-            "id": 14,
+            "id": 15,
             "members": [
             ],
-            "name": "BossGate",
+            "name": "SafePoint",
             "type": "class",
             "useAs": [
                 "property",

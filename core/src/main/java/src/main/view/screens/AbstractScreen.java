@@ -44,7 +44,6 @@ public abstract class AbstractScreen implements Screen {
         mainStack.add(modalStack);
         mainStack.add(toastStack);
 
-
         stage.addActor(mainStack);
 
         Gdx.input.setInputProcessor(stage);
@@ -62,7 +61,6 @@ public abstract class AbstractScreen implements Screen {
         stage.getViewport().update(width, height, true);
     }
 
-
     @Override
     public void pause() {
 
@@ -75,12 +73,19 @@ public abstract class AbstractScreen implements Screen {
 
     @Override
     public void hide() {
-
+        if (Gdx.input.getInputProcessor() == stage) {
+            Gdx.input.setInputProcessor(null);
+        }
     }
 
     @Override
     public void dispose() {
-        if (backgroundTexture != null) backgroundTexture.dispose();
+        if (stage != null) {
+            stage.dispose();
+        }
+        if (backgroundTexture != null) {
+            backgroundTexture.dispose();
+        }
     }
 
     public Stack getModalStack() {
@@ -88,13 +93,13 @@ public abstract class AbstractScreen implements Screen {
     }
 
     public void openToast(String message){
-        Table wrapper =  new Table();
+        Table wrapper = new Table();
         wrapper.pad(10).right().bottom();
         Table toast = new Table();
         toast.pad(5);
         toast.setBackground(skin.getDrawable("window"));
 
-        Label messageLabel =   new Label(message, skin);
+        Label messageLabel = new Label(message, skin);
 
         toast.add(messageLabel).growX();
 
@@ -112,8 +117,8 @@ public abstract class AbstractScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 toast.addAction(
                     Actions.sequence(
-                        Actions.alpha(0, 0.75f,  Interpolation.smoother),
-                        Actions.run(() -> wrapper.remove())
+                        Actions.alpha(0, 0.75f, Interpolation.smoother),
+                        Actions.run(wrapper::remove)
                     )
                 );
             }
@@ -167,4 +172,5 @@ public abstract class AbstractScreen implements Screen {
             });
         }
     }
+
 }

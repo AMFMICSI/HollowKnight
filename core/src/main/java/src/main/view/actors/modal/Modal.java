@@ -10,10 +10,10 @@ import src.main.view.GameAssetManager;
 import src.main.view.UiManager;
 
 public class Modal extends Table {
-    protected  Skin skin;
+    protected Skin skin;
     private Table wrapperTable;
 
-    public  Modal() {
+    public Modal() {
         skin = GameAssetManager.skin;
         wrapperTable = new Table();
         wrapperTable.setTouchable(Touchable.enabled);
@@ -39,7 +39,7 @@ public class Modal extends Table {
 
             @Override
             public boolean keyUp(InputEvent event, int keycode) {
-                return  true;
+                return true;
             }
         });
     }
@@ -52,6 +52,5 @@ public class Modal extends Table {
     public void hide(){
         wrapperTable.remove();
     }
-
 }
 

@@ -10,7 +10,7 @@ public class UiManager {
         UiManager.main = main;
     }
 
-    public static  void setScreen (Screen screen) {
+    public static void setScreen(Screen screen) {
         main.setScreen(screen);
     }
 

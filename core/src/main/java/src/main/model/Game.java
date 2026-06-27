@@ -1,8 +1,8 @@
 package src.main.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import src.main.model.data.KeyBindings;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardian;
@@ -24,16 +24,15 @@ import src.main.model.entity.spell.VengefulProjectile;
 import src.main.model.entity.spell.HowlingWraithsAoe;
 import src.main.model.enviroment.Spike;
 import src.main.model.physics.CollisionSystem;
+import src.main.model.physics.PhysicsSystem;
 import src.main.view.GameAssetManager;
-import src.main.view.actors.modal.DialogueBox;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class Game {
-    private static final int SOUL_PER_HIT = 11;
-    private static final float RESPAWN_DISTANCE = 600f;
+    private static final float SAFE_POINT_INTERACT_RANGE = 40f;
 
     private Knight knight;
     private KeyBindings keyBindings = new KeyBindings();
@@ -53,6 +52,7 @@ public class Game {
     private List<VengefulProjectile> spellProjectiles = new ArrayList<>();
     private List<HowlingWraithsAoe> spellAoes = new ArrayList<>();
     private String pendingToast = null;
+    private List<Vector2> safePoints;
 
     public Knight getKnight() { return knight; }
     public KeyBindings getKeyBindings() { return keyBindings; }
@@ -108,12 +108,20 @@ public class Game {
 
         Vector2 zs = mapLoader.getZoteSpawnPoint();
         zote = new Zote(zs.x, zs.y);
+        safePoints = mapLoader.getSafePoints();
     }
 
     public void update(float delta) {
         delta = Math.min(delta, 0.033f);
 
         updateBossArena();
+        for (Vector2 sp : safePoints) {
+            if (knight.getPosition().dst(sp) < SAFE_POINT_INTERACT_RANGE
+                && Gdx.input.isKeyJustPressed(keyBindings.get("INTERACT"))) {
+                knight.setSpawnPoint(sp.x, sp.y);
+                break;
+            }
+        }
         updateKnight(delta);
 
         if (inBossFight && knight.consumeJustRespawned()) {
@@ -255,6 +263,12 @@ public class Game {
         for (Enemy enemy : enemies) {
             if (enemy.isDead()) {
                 enemy.update(delta);
+                if (!(enemy instanceof FalseKnight) && !enemy.isDeadAnimationDone()) {
+                    if (!enemy.isOnGround()) {
+                        enemy.setVelocityY(enemy.getVelocityY() - PhysicsSystem.GRAVITY * delta);
+                    }
+                    CollisionSystem.resolve(enemy, mapLoader.getSolidBlocks(), delta);
+                }
                 continue;
             }
             float prevVx = enemy.getVelocityX();
@@ -316,7 +330,7 @@ public class Game {
         for (Enemy enemy : enemies) {
             if (enemy instanceof CrystalHunter ch) {
                 updateCrystalProjectiles(delta, ch);
-            }else if(enemy instanceof CrystalGuardian cg && cg.getLaser().isActive()){
+            } else if (enemy instanceof CrystalGuardian cg && cg.getLaser().isActive()) {
                 updateCrystalGuardianLasers(delta, cg);
             }
         }
@@ -335,7 +349,7 @@ public class Game {
             }
         }
     }
-    private void updateCrystalGuardianLasers(float delta , CrystalGuardian cg){
+    private void updateCrystalGuardianLasers(float delta, CrystalGuardian cg) {
         CrystalGuardianLaser laser = cg.getLaser();
         laser.update(delta);
         if (laser.getBounds().overlaps(knight.getBoundingBox())) {
@@ -354,7 +368,7 @@ public class Game {
             if (enemy.canRespawn(
                 Vector2.dst(knight.getPosition().x, knight.getPosition().y,
                     enemy.getPosition().x, enemy.getPosition().y),
-                RESPAWN_DISTANCE)) {
+                enemy.getRespawnDistance())) {
                 enemy.respawn();
             }
         }

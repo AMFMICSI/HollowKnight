@@ -7,18 +7,38 @@
         "": {
             "scaleInDock": 1
         },
+        "C:/Users/mjmos/Downloads/Compressed/Hollow-Knight-master/Hollow-Knight-master/assets/map/break0000.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/mjmos/Downloads/Compressed/Hollow-Knight-master/Hollow-Knight-master/assets/map/test.tmx": {
+            "scale": 0.7352,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 12124.591947769317,
+                "y": 7697.225244831339
+            }
+        },
         "MainMap.tmx": {
-            "scale": 0.25,
+            "scale": 0.33,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 1984,
-                "y": 1500
+                "x": 1954.5454545454545,
+                "y": 2133.3333333333335
             }
         },
         "MainMap.tmx#SpriteAtlasTexture": {
             "scaleInDock": 0.25
         },
+        "MainMap.tmx#cd_broken_wall": {
+            "scaleInDock": 1
+        },
+        "MainMap.tmx#cd_wall_01": {
+            "scaleInDock": 1
+        },
         "MainMap.tmx#flame": {
+            "scaleInDock": 1
+        },
+        "MainMap.tmx#wall_01": {
             "scaleInDock": 1
         },
         "crystalPeaks/crystalPeaks.tmx": {
@@ -124,6 +144,7 @@
     "property.type": "object",
     "recentFiles": [
         "MainMap.tmx",
+        "C:/Users/mjmos/Downloads/Compressed/Hollow-Knight-master/Hollow-Knight-master/assets/map/test.tmx",
         "crystalPeaks/crystalPeaks.tmx",
         "tilesets/SpriteAtlasTexturesprite.tsx",
         "tilesets/small spike.tsx",
@@ -133,8 +154,7 @@
         "tilesets/spike.tsx",
         "tilesets/ground.tsx",
         "crystalPeaks/spike.tsx",
-        "tilesets/SpriteAtlasTexture.tsx",
-        "tilesets/crystal.tsx"
+        "tilesets/SpriteAtlasTexture.tsx"
     ],
     "tileset.embedInMap": true,
     "tileset.lastUsedFormat": "tsx",

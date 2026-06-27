@@ -69,8 +69,7 @@ public class CrystalGuardian extends Enemy {
                 if (stateTimer <= 0 && animSet.getStateTime() >= 0.3f) {
                     laser.fire(
                         isFacingRight() ? position.x + boundingBox.width : position.x - 600f,
-                        position.y + boundingBox.height / 2f,
-                        isFacingRight()
+                        position.y + boundingBox.height / 2f
                     );
                     currentState = CrystalGuardianState.ENRAGED;
                     stateTimer = 2f;

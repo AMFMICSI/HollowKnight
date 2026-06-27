@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import src.main.view.Phats;
 import src.main.view.UiManager;
 
 public class AchievementMenuScreen extends AbstractScreen {
@@ -12,7 +13,7 @@ public class AchievementMenuScreen extends AbstractScreen {
     @Override
     public void show() {
         super.show();
-        setBackground("menus/mainBackGround.png");
+        setBackground(Phats.MainBackGround.getText());
 
         Label title = new Label("Achievements", skin);
         Label empty = new Label("No achievements yet!", skin);

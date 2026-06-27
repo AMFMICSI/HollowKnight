@@ -273,6 +273,7 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void dispose() {
+        super.dispose();
         if (mapRenderer != null) mapRenderer.dispose();
         batch.dispose();
         game.getMapLoader().dispose();

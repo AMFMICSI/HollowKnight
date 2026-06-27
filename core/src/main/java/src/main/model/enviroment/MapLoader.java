@@ -6,7 +6,6 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.PointMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -25,6 +24,7 @@ public class MapLoader {
     private List<EnemySpawnInfo> enemySpawnInfos = new ArrayList<>();
     List<Rectangle> zoneRects = new ArrayList<>();
     private List<Rectangle> bossGates = new ArrayList<>();
+    private List<Vector2> safePoints = new ArrayList<>();
 
     public TiledMap getTiledMap() { return tiledMap; }
     public List<SolidBlock> getSolidBlocks() { return solidBlocks; }
@@ -35,6 +35,7 @@ public class MapLoader {
     public Vector2 getZoteSpawnPoint() { return zoteSpawnPoint; }
     public List<Rectangle> getZones() { return zoneRects; }
     public List<Rectangle> getBossGates() { return bossGates; }
+    public List<Vector2> getSafePoints() { return safePoints; }
 
     public static class EnemySpawnInfo {
         public Vector2 position;
@@ -87,6 +88,10 @@ public class MapLoader {
             }
             if ("SpawnZote".equals(obj.getName()) && obj instanceof PointMapObject p) {
                 zoteSpawnPoint.set(p.getPoint().x, p.getPoint().y);
+                continue;
+            }
+            if ("SafePoint".equals(obj.getName()) && obj instanceof PointMapObject p) {
+                safePoints.add(new Vector2(p.getPoint().x, p.getPoint().y));
                 continue;
             }
             if (obj instanceof PointMapObject p) {

@@ -23,18 +23,6 @@ public class GameController implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (game.isDialogueActive()) {
-            if (keycode == keys.get("INTERACT") || keycode == Input.Keys.ENTER || keycode == Input.Keys.NUMPAD_ENTER) {
-                game.requestDialogueAdvance();
-            }
-            return true;
-        }
-
-        if (keycode == keys.get("INTERACT")) {
-            game.interact();
-            return true;
-        }
-
         if (keycode == Input.Keys.F3) {
             GameSettings.getInstance().setDebugMode(!GameSettings.getInstance().isDebugMode());
             return true;
@@ -49,9 +37,28 @@ public class GameController implements InputProcessor {
             return true;
         }
 
-        if (keycode == keys.get("MOVE_RIGHT")) { game.getKnight().setMovingRight(true); game.getKnight().setMovingLeft(false); game.getKnight().setFacingRight(true); return true; }
-        else if (keycode == keys.get("MOVE_LEFT")) { game.getKnight().setMovingLeft(true); game.getKnight().setMovingRight(false); game.getKnight().setFacingRight(false); return true; }
-        else if (keycode == keys.get("JUMP")) { game.getKnight().jump(); return true; }
+        if (keycode == keys.get("INVENTORY")) {
+            if (!game.isDialogueActive()) {
+                new InventoryModal(game).show();
+            }
+            return true;
+        }
+
+        if (game.isDialogueActive()) {
+            if (keycode == keys.get("INTERACT") || keycode == Input.Keys.ENTER || keycode == Input.Keys.NUMPAD_ENTER) {
+                game.requestDialogueAdvance();
+            }
+            return true;
+        }
+
+        if (keycode == keys.get("INTERACT")) {
+            game.interact();
+            return true;
+        }
+
+        if (keycode == keys.get("MOVE_RIGHT")) { game.getKnight().setMovingRight(true); game.getKnight().setFacingRight(true); return true; }
+        if (keycode == keys.get("MOVE_LEFT")) { game.getKnight().setMovingLeft(true); game.getKnight().setFacingRight(false); return true; }
+        if (keycode == keys.get("JUMP")) { game.getKnight().jump(); return true; }
         else if (keycode == keys.get("DASH")) {
             if (Gdx.input.isKeyPressed(keys.get("POGO"))) {
                 game.getKnight().dashDown();
@@ -88,27 +95,15 @@ public class GameController implements InputProcessor {
             game.getKnight().startCast(SpellType.WRAITHS);
             return true;
         }
-        else if (keycode == keys.get("INVENTORY")) {
-            if (!game.isDialogueActive()) {
-                new InventoryModal(game).show();
-            }
-            return true;
-        }
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        if (game.isDialogueActive()) {
-            if (keycode == keys.get("MOVE_RIGHT")) { game.getKnight().setMovingRight(false); return true; }
-            if (keycode == keys.get("MOVE_LEFT")) { game.getKnight().setMovingLeft(false); return true; }
-            return true;
-        }
-
         if (keycode == keys.get("MOVE_RIGHT")) { game.getKnight().setMovingRight(false); return true; }
         if (keycode == keys.get("MOVE_LEFT")) { game.getKnight().setMovingLeft(false); return true; }
-        else if (keycode == keys.get("JUMP")) { game.getKnight().jumpReleased(); return true; }
-        else if (keycode == keys.get("FOCUS")) {
+        if (keycode == keys.get("JUMP")) { game.getKnight().jumpReleased(); return true; }
+        if (keycode == keys.get("FOCUS")) {
             game.getKnight().cancelFocus();
             return true;
         }

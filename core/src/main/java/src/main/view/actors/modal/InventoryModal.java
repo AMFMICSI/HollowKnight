@@ -1,6 +1,5 @@
 package src.main.view.actors.modal;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -47,7 +46,7 @@ public class InventoryModal extends Modal {
             Table cell = new Table();
             cell.setName(charm.name());
 
-            TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(getCharmTexture(charm)));
+            TextureRegionDrawable drawable = new TextureRegionDrawable(getCharmTexture(charm));
             ImageButton btn = new ImageButton(drawable);
             charmButtons.put(charm, btn);
 
@@ -104,7 +103,7 @@ public class InventoryModal extends Modal {
         updateButtonHighlights();
     }
 
-    private Texture getCharmTexture(CharmType charm) {
+    private TextureRegion getCharmTexture(CharmType charm) {
         return switch (charm) {
             case SOUL_CATCHER          -> GameAssetManager.soulCatcherIcon;
             case DASHMASTER            -> GameAssetManager.dashmasterIcon;
@@ -149,7 +148,7 @@ public class InventoryModal extends Modal {
         int max = knight.getMaxNotches();
         for (int i = 0; i < max; i++) {
             notchIcons[i].setDrawable(new TextureRegionDrawable(
-                new TextureRegion(i < used ? GameAssetManager.notchLit : GameAssetManager.notchUnlit)));
+                i < used ? GameAssetManager.notchLit : GameAssetManager.notchUnlit));
         }
     }
 

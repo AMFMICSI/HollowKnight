@@ -6,10 +6,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class Entity {
-    protected static final float DRAW_SCALE = 5f;
-
+    protected float DRAW_SCALE = 5f;
     protected Vector2 position = new Vector2();
-    protected Vector2 velocity =  new Vector2();
+    protected Vector2 velocity = new Vector2();
     private boolean isOnGround = false;
     private boolean movingLeft = false, movingRight = false;
     private boolean facingRight = false;

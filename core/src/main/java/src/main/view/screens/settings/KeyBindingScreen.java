@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import src.main.model.data.KeyBindings;
+import src.main.view.Phats;
 import src.main.view.UiManager;
 import src.main.view.screens.AbstractScreen;
 
@@ -18,7 +19,7 @@ public class KeyBindingScreen extends AbstractScreen implements InputProcessor {
     @Override
     public void show() {
         super.show();
-        setBackground("menus/mainBackGround.png");
+        setBackground(Phats.MainBackGround.getText());
         buildUI();
     }
 

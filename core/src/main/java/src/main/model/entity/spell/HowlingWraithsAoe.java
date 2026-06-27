@@ -15,7 +15,6 @@ public class HowlingWraithsAoe {
     private static final float DURATION = 0.6f;
     private static final float INTERVAL = 0.2f;
     private static final int MAX_TICKS = 3;
-    private static final float EXPAND_SIZE = 60f;
 
     public HowlingWraithsAoe(float x, float y, float w, float h, boolean shadow) {
         this.shadow = shadow;

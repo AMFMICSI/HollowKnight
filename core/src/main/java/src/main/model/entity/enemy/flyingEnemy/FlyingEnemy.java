@@ -71,6 +71,12 @@ public abstract class FlyingEnemy extends Enemy {
     }
 
     @Override
+    public void respawn() {
+        super.respawn();
+        hasDetectedPlayer = false;
+    }
+
+    @Override
     public void takeDamage(int amount) {
         if (!isDead) diedInAir = true;
         super.takeDamage(amount);

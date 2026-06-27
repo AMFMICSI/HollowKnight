@@ -20,7 +20,7 @@ public class CrystalGuardianLaser {
         bounds = new Rectangle();
     }
 
-    public void fire(float startX, float startY, boolean facingRight) {
+    public void fire(float startX, float startY) {
         position.set(startX, startY);
         width = LASER_WIDTH;
         height = LASER_HEIGHT;

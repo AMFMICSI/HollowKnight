@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
 public enum GameMusic {
-    MENU("music/Title.wav"),
+    MENU(Phats.TitleMusic.getText()),
     ;
     private final String path;
     private Music music;

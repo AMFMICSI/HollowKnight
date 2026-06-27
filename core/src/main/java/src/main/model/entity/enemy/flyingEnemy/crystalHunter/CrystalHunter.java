@@ -1,5 +1,6 @@
 package src.main.model.entity.enemy.flyingEnemy.crystalHunter;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -22,11 +23,13 @@ public class CrystalHunter extends FlyingEnemy {
     private boolean projectileSpawned;
 
     public CrystalHunter(float x, float y, Rectangle zone, KnightRef knightRef) {
+        DRAW_SCALE = 2f;
         spawnPosition.set(x, y);
         hp = maxHp = MAX_HP;
         position.set(x, y);
         boundingBox.setSize(24, 20);
         chaseSpeed = FLY_SPEED;
+        respawnDistance = 2500f;
         animSet = new AnimationSet<>(GameAssetManager.crystalHunterAnimations, CrystalHunterAnimationType.FLY);
         this.knightRef = knightRef;
         setFacingRight(true);

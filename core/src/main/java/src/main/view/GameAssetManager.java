@@ -43,7 +43,6 @@ public class GameAssetManager {
     public static Animation<TextureRegion> shadowScreamAnim;
     public static Animation<TextureRegion> dashEffectAnim;
     private static TextureAtlas effectsAtlas;
-    private static TextureAtlas charmsAtlas;
     private static TextureAtlas falseKnightAtlas;
     public static Map<FalseKnightAnimationType, Animation<TextureRegion>> falseKnightAnimations;
     private static TextureAtlas hudAtlas;
@@ -51,22 +50,23 @@ public class GameAssetManager {
     public static Sound zoteGrunt1;
     public static Sound zoteGrunt2;
     public static Sound charmClickSound;
-    public static Texture soulCatcherIcon;
-    public static Texture unbreakableStrengthIcon;
-    public static Texture quickSlashIcon;
-    public static Texture heavyBlowIcon;
-    public static Texture quickFocusIcon;
-    public static Texture dashmasterIcon;
-    public static Texture sharpShadowIcon;
-    public static Texture voidHeartIcon;
-    public static Texture charmNotch;
-    public static Texture notchLit;
-    public static Texture notchUnlit;
+    public static TextureRegion soulCatcherIcon;
+    public static TextureRegion unbreakableStrengthIcon;
+    public static TextureRegion quickSlashIcon;
+    public static TextureRegion heavyBlowIcon;
+    public static TextureRegion quickFocusIcon;
+    public static TextureRegion dashmasterIcon;
+    public static TextureRegion sharpShadowIcon;
+    public static TextureRegion voidHeartIcon;
+    public static TextureRegion charmNotch;
+    public static TextureRegion notchLit;
+    public static TextureRegion notchUnlit;
+    private static TextureAtlas charmsAtlas;
     private static TextureAtlas zoteAtlas;
     public static Map<ZoteAnimationType, Animation<TextureRegion>> zoteAnimations;
 
     public static void init(){
-        skin  = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        skin  = new Skin(Gdx.files.internal(Phats.UiSkin.getText()));
         loadKnightAnimations();
         loadSpellTextures();
         loadCrawlidAnimations();
@@ -82,7 +82,6 @@ public class GameAssetManager {
         loadCharmTextures();
         loadCharmSounds();
     }
-
 
     public static void loadMenuPointers() {
         menuPointerLeft = new Texture(Gdx.files.internal(Phats.MenuPointerLeft.getText()));
@@ -105,12 +104,12 @@ public class GameAssetManager {
     }
 
     public static void loadKnightAnimations(){
-        knightAtlas = new TextureAtlas(Gdx.files.internal("atlases/knight.atlas"));
+        knightAtlas = new TextureAtlas(Gdx.files.internal(Phats.KnightAtlas.getText()));
         knightAnimations = loadAnimations(knightAtlas, KnightAnimationType.values(), "%s_%03d");
     }
 
     public static void loadSpellTextures() {
-        effectsAtlas = new TextureAtlas(Gdx.files.internal("atlases/effects.atlas"));
+        effectsAtlas = new TextureAtlas(Gdx.files.internal(Phats.EffectsAtlas.getText()));
 
         TextureRegion[] vFrames = new TextureRegion[4];
         for (int i = 0; i < 4; i++)
@@ -144,62 +143,63 @@ public class GameAssetManager {
     }
 
     public static void loadCharmTextures() {
-        soulCatcherIcon    = new Texture(Gdx.files.internal("charms/soul_catcher.png"));
-        unbreakableStrengthIcon = new Texture(Gdx.files.internal("charms/unbreakable_strength.png"));
-        quickSlashIcon     = new Texture(Gdx.files.internal("charms/quick_slash.png"));
-        heavyBlowIcon      = new Texture(Gdx.files.internal("charms/heavy_blow.png"));
-        quickFocusIcon     = new Texture(Gdx.files.internal("charms/quick_focus.png"));
-        dashmasterIcon     = new Texture(Gdx.files.internal("charms/dashmaster.png"));
-        sharpShadowIcon    = new Texture(Gdx.files.internal("charms/sharp_shadow.png"));
-        voidHeartIcon      = new Texture(Gdx.files.internal("charms/void_heart.png"));
-        charmNotch = new Texture(Gdx.files.internal("charms/charm_notch.png"));
-        notchLit   = new Texture(Gdx.files.internal("charms/notch_lit.png"));
-        notchUnlit = new Texture(Gdx.files.internal("charms/notch_unlit.png"));
+        charmsAtlas = new TextureAtlas(Gdx.files.internal(Phats.CharmsAtlas.getText()));
+        soulCatcherIcon = charmsAtlas.findRegion("soul_catcher");
+        unbreakableStrengthIcon = charmsAtlas.findRegion("unbreakable_strength");
+        quickSlashIcon = charmsAtlas.findRegion("quick_slash");
+        heavyBlowIcon = charmsAtlas.findRegion("heavy_blow");
+        quickFocusIcon = charmsAtlas.findRegion("quick_focus");
+        dashmasterIcon = charmsAtlas.findRegion("dashmaster");
+        sharpShadowIcon = charmsAtlas.findRegion("sharp_shadow");
+        voidHeartIcon = charmsAtlas.findRegion("void_heart");
+        charmNotch = charmsAtlas.findRegion("charm_notch");
+        notchLit = charmsAtlas.findRegion("notch_lit");
+        notchUnlit = charmsAtlas.findRegion("notch_unlit");
     }
 
     public static void loadCharmSounds() {
-        charmClickSound = Gdx.audio.newSound(Gdx.files.internal("music/charm_click_in.wav"));
+        charmClickSound = Gdx.audio.newSound(Gdx.files.internal(Phats.CharmClickSound.getText()));
     }
 
     public static void loadCrawlidAnimations() {
-        crawlidAtlas = new TextureAtlas(Gdx.files.internal("atlases/crawlid.atlas"));
+        crawlidAtlas = new TextureAtlas(Gdx.files.internal(Phats.CrawlidAtlas.getText()));
         crawlidAnimations = loadAnimations(crawlidAtlas, CrawlidAnimationType.values(), "%s_%03d");
     }
 
     public static void loadCrystalHunterAnimations() {
-        crystalHunterAtlas = new TextureAtlas(Gdx.files.internal("atlases/crystalHunter.atlas"));
+        crystalHunterAtlas = new TextureAtlas(Gdx.files.internal(Phats.CrystalHunterAtlas.getText()));
         crystalHunterAnimations = loadAnimations(crystalHunterAtlas, CrystalHunterAnimationType.values(), "%s_%03d");
         crystalProjectileRegion = crystalHunterAtlas.findRegion("Crystal_000");
     }
 
     public static void loadHuskHornheadAnimations() {
-        huskHornheadAtlas = new TextureAtlas(Gdx.files.internal("atlases/huskHornhead.atlas"));
+        huskHornheadAtlas = new TextureAtlas(Gdx.files.internal(Phats.HuskHornheadAtlas.getText()));
         huskHornheadAnimations = loadAnimations(huskHornheadAtlas, HuskHornheadAnimationType.values(), "%s_%03d");
     }
 
     public static void loadCrystalGuardianAnimations() {
-        crystalGuardianAtlas = new TextureAtlas(Gdx.files.internal("atlases/crystalGuardian.atlas"));
+        crystalGuardianAtlas = new TextureAtlas(Gdx.files.internal(Phats.CrystalGuardianAtlas.getText()));
         crystalGuardianAnimations = loadAnimations(crystalGuardianAtlas, CrystalGuardianAnimationType.values(), "%s_%03d");
         laserRegion = effectsAtlas.findRegion("CrystalLaser");
     }
 
     public static void loadFalseKnightAnimations() {
-        falseKnightAtlas = new TextureAtlas(Gdx.files.internal("atlases/falseKnight.atlas"));
+        falseKnightAtlas = new TextureAtlas(Gdx.files.internal(Phats.FalseKnightAtlas.getText()));
         falseKnightAnimations = loadAnimations(falseKnightAtlas, FalseKnightAnimationType.values(), "%s_%03d");
     }
 
     public static void loadZoteAnimations() {
-        zoteAtlas = new TextureAtlas(Gdx.files.internal("atlases/zote.atlas"));
+        zoteAtlas = new TextureAtlas(Gdx.files.internal(Phats.ZoteAtlas.getText()));
         zoteAnimations = loadAnimations(zoteAtlas, ZoteAnimationType.values(), "%s_%03d");
     }
 
     public static void loadZoteSounds() {
-        zoteGrunt1 = Gdx.audio.newSound(Gdx.files.internal("music/Brumm_grunt_01.wav"));
-        zoteGrunt2 = Gdx.audio.newSound(Gdx.files.internal("music/Brumm_grunt_double.wav"));
+        zoteGrunt1 = Gdx.audio.newSound(Gdx.files.internal(Phats.BrummGrunt1.getText()));
+        zoteGrunt2 = Gdx.audio.newSound(Gdx.files.internal(Phats.BrummGruntDouble.getText()));
     }
 
     public static void loadHudAtlas() {
-        hudAtlas = new TextureAtlas(Gdx.files.internal("atlases/hud.atlas"));
+        hudAtlas = new TextureAtlas(Gdx.files.internal(Phats.HudAtlas.getText()));
     }
 
     public static void loadSoulAnimations() {
@@ -230,19 +230,8 @@ public class GameAssetManager {
         if(huskHornheadAtlas != null) huskHornheadAtlas.dispose();
         if(crystalGuardianAtlas != null) crystalGuardianAtlas.dispose();
         if(effectsAtlas != null) effectsAtlas.dispose();
-        if(charmsAtlas != null) charmsAtlas.dispose();
         if(charmClickSound != null) charmClickSound.dispose();
-        if(soulCatcherIcon != null) soulCatcherIcon.dispose();
-        if(unbreakableStrengthIcon != null) unbreakableStrengthIcon.dispose();
-        if(quickSlashIcon != null) quickSlashIcon.dispose();
-        if(heavyBlowIcon != null) heavyBlowIcon.dispose();
-        if(quickFocusIcon != null) quickFocusIcon.dispose();
-        if(dashmasterIcon != null) dashmasterIcon.dispose();
-        if(sharpShadowIcon != null) sharpShadowIcon.dispose();
-        if(voidHeartIcon != null) voidHeartIcon.dispose();
-        if(charmNotch != null) charmNotch.dispose();
-        if(notchLit != null) notchLit.dispose();
-        if(notchUnlit != null) notchUnlit.dispose();
+        if(charmsAtlas != null) charmsAtlas.dispose();
         if(falseKnightAtlas != null) falseKnightAtlas.dispose();
         if(hudAtlas != null) hudAtlas.dispose();
         if (zoteAtlas != null) zoteAtlas.dispose();
