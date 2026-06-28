@@ -13,8 +13,17 @@ import src.main.view.screens.AbstractScreen;
 
 public class KeyBindingScreen extends AbstractScreen implements InputProcessor {
     private final KeyBindings keys = new KeyBindings();
+    private final Runnable onBack;
     private String pendingAction = null;
     private TextButton pendingButton = null;
+
+    public KeyBindingScreen() {
+        this(null);
+    }
+
+    public KeyBindingScreen(Runnable onBack) {
+        this.onBack = onBack;
+    }
 
     @Override
     public void show() {
@@ -72,10 +81,11 @@ public class KeyBindingScreen extends AbstractScreen implements InputProcessor {
         ScrollPane scrollPane = new ScrollPane(scrollContent, skin);
         scrollPane.setFadeScrollBars(false);
         scrollPane.setScrollingDisabled(true, false);
-        rootTable.add(scrollPane).width(400).height(350).padBottom(20).row();
+        rootTable.add(scrollPane).growX().height(350).padBottom(20).row();
 
         Table bottomRow = new Table();
         TextButton resetBtn = new TextButton("Reset to Defaults", skin);
+        resetBtn.getLabel().setFontScale(0.65f);
         resetBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent e, float x, float y) {
@@ -86,16 +96,17 @@ public class KeyBindingScreen extends AbstractScreen implements InputProcessor {
         });
 
         TextButton backBtn = new TextButton("Back to Settings", skin);
+        backBtn.getLabel().setFontScale(0.65f);
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent e, float x, float y) {
-                UiManager.setScreen(new SettingMenuScreen());
+                UiManager.setScreen(new SettingMenuScreen(onBack));
             }
         });
 
-        bottomRow.add(resetBtn).width(180).padRight(20);
-        bottomRow.add(backBtn).width(180);
-        rootTable.add(bottomRow);
+        bottomRow.add(resetBtn).growX().padRight(10);
+        bottomRow.add(backBtn).growX();
+        rootTable.add(bottomRow).growX();
     }
 
     @Override

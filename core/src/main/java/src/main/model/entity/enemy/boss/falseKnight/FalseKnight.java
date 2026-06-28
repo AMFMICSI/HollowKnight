@@ -338,7 +338,8 @@ public class FalseKnight extends Enemy {
         lastMove = "OFFENSIVE_LEAP";
         velocity.set(dx > 0 ? LEAP_VX : -LEAP_VX, LEAP_VY);
         setOnGround(false);
-        changeState(FalseKnightState.JUMP);
+        isPowerfulLanding = true;
+        changeState(FalseKnightState.JUMP_ATTACK);
     }
 
     private void startDefensiveLeap(float dx) {
@@ -466,6 +467,14 @@ public class FalseKnight extends Enemy {
             velocity.set(0, 0);
             changeState(FalseKnightState.DEATH_FALL);
         }
+    }
+
+    public void forceKill() {
+        if (isDead) return;
+        hp = 0;
+        isDead = true;
+        velocity.set(0, 0);
+        changeState(FalseKnightState.DEATH_FALL);
     }
 
     public float getDamageTakenTimer() { return damageTakenTimer; }

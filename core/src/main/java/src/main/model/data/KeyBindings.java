@@ -27,6 +27,14 @@ public class KeyBindings {
         DEFAULTS.put("PAUSE", Input.Keys.ESCAPE);
         DEFAULTS.put("INTERACT", Input.Keys.E);
         DEFAULTS.put("DIALOGUE_NEXT", Input.Keys.ENTER);
+        // Cheat codes
+        DEFAULTS.put("CHEAT_MODIFIER", Input.Keys.CONTROL_LEFT);
+        DEFAULTS.put("CHEAT_TELEPORT", Input.Keys.T);
+        DEFAULTS.put("CHEAT_NOCLIP", Input.Keys.N);
+        DEFAULTS.put("CHEAT_HEAL", Input.Keys.H);
+        DEFAULTS.put("CHEAT_SOUL", Input.Keys.R);
+        DEFAULTS.put("CHEAT_GOD", Input.Keys.G);
+        DEFAULTS.put("CHEAT_INSTAKILL", Input.Keys.K);
     }
 
     public KeyBindings() {
@@ -34,6 +42,15 @@ public class KeyBindings {
         if (bindings.isEmpty()) {
             resetToDefaults();
             save();
+        } else {
+            boolean changed = false;
+            for (Map.Entry<String, Integer> e : DEFAULTS.entrySet()) {
+                if (!bindings.containsKey(e.getKey())) {
+                    bindings.put(e.getKey(), e.getValue());
+                    changed = true;
+                }
+            }
+            if (changed) save();
         }
     }
 
@@ -46,10 +63,6 @@ public class KeyBindings {
     public Map<String, Integer> getAll() { return bindings; }
 
     public static String keyName(int keycode) {
-        if (keycode == Input.Keys.LEFT) return "←";
-        if (keycode == Input.Keys.RIGHT) return "→";
-        if (keycode == Input.Keys.UP) return "↑";
-        if (keycode == Input.Keys.DOWN) return "↓";
         String name = Input.Keys.toString(keycode);
         return name != null ? name : "KEY_" + keycode;
     }

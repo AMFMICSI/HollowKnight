@@ -19,19 +19,23 @@ import src.main.model.enviroment.MapLoader;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.entity.charm.CharmType;
 import src.main.model.entity.knight.Knight;
+import src.main.model.entity.spell.SpellManager;
 import src.main.model.entity.spell.SpellType;
-import src.main.model.entity.spell.VengefulProjectile;
-import src.main.model.entity.spell.HowlingWraithsAoe;
 import src.main.model.enviroment.Spike;
 import src.main.model.physics.CollisionSystem;
 import src.main.model.physics.PhysicsSystem;
+import src.main.view.AchievementManager;
 import src.main.view.GameAssetManager;
+import src.main.view.UiManager;
+import src.main.model.data.SaveData;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class Game {
+    public record EndGameData(int deathCount, int totalKilled, float playTime) {}
+
     private static final float SAFE_POINT_INTERACT_RANGE = 40f;
 
     private Knight knight;
@@ -49,10 +53,16 @@ public class Game {
     private boolean gatesActivated = false;
     private FalseKnight falseKnight;
     private List<SolidBlock> bossGateBlocks = new ArrayList<>();
-    private List<VengefulProjectile> spellProjectiles = new ArrayList<>();
-    private List<HowlingWraithsAoe> spellAoes = new ArrayList<>();
     private String pendingToast = null;
+    private SpellManager spellManager;
     private List<Vector2> safePoints;
+    private AchievementManager achievementManager = UiManager.achievements;
+    private int saveSlot = -1;
+    private float playTime = 0;
+    private int deathCount = 0;
+    private int totalEnemiesKilled = 0;
+    private boolean gameCompleted = false;
+    private EndGameData pendingEndGameData = null;
 
     public Knight getKnight() { return knight; }
     public KeyBindings getKeyBindings() { return keyBindings; }
@@ -69,6 +79,10 @@ public class Game {
     }
 
     public Game() {
+        this(-1, null);
+    }
+
+    public Game(int slot, SaveData data) {
         mapLoader = new MapLoader();
         knight = new Knight(mapLoader.getSpawnPoint().x, mapLoader.getSpawnPoint().y);
         enemies = new ArrayList<>();
@@ -81,7 +95,10 @@ public class Game {
                 case "HuskHornhead" -> new HuskHornhead(
                     info.position.x, info.position.y, () -> knight.getPosition());
                 case "CrystalGuardian" -> new CrystalGuardian(
-                    info.position.x, info.position.y, info.zone, () -> knight.getPosition());
+                    info.position.x, info.position.y, info.zone, new CrystalGuardian.KnightRef() {
+                        public Vector2 getPosition() { return knight.getPosition(); }
+                        public Rectangle getBoundingBox() { return knight.getBoundingBox(); }
+                    });
                 case "FalseKnight" -> {
                     FalseKnight fk = new FalseKnight(
                         info.position.x, info.position.y, () -> knight.getPosition());
@@ -109,10 +126,22 @@ public class Game {
         Vector2 zs = mapLoader.getZoteSpawnPoint();
         zote = new Zote(zs.x, zs.y);
         safePoints = mapLoader.getSafePoints();
+
+        spellManager = new SpellManager(knight, enemies, mapLoader.getSolidBlocks());
+        spellManager.setOnKill(enemy -> {
+            totalEnemiesKilled++;
+            achievementManager.onEnemyKilled(enemy.getClass().getSimpleName());
+        });
+
+        if (slot >= 0 && data != null) {
+            saveSlot = slot;
+            data.applyTo(knight, achievementManager);
+        }
     }
 
     public void update(float delta) {
         delta = Math.min(delta, 0.033f);
+        playTime += delta;
 
         updateBossArena();
         for (Vector2 sp : safePoints) {
@@ -124,15 +153,16 @@ public class Game {
         }
         updateKnight(delta);
 
-        if (inBossFight && knight.consumeJustRespawned()) {
-            releaseBossFight();
+        if (knight.consumeJustRespawned()) {
+            deathCount++;
+            if (inBossFight) releaseBossFight();
         }
 
         updateCombat(delta);
         updateEnemies(delta);
-        firePendingSpell();
-        updateSpellProjectiles(delta);
-        updateSpellAoes(delta);
+        spellManager.firePending(knight.consumePendingCastResult());
+        spellManager.updateProjectiles(delta);
+        spellManager.updateAoes(delta);
         if (knight.consumePendingSoulToast()) {
             pendingToast = "Not enough Soul!";
         }
@@ -143,6 +173,7 @@ public class Game {
         }
 
         respawnEnemies();
+        checkPogoAchievement();
         knight.updateAnimationState();
         updateZote(delta);
 
@@ -150,9 +181,15 @@ public class Game {
     }
 
     private void updateKnight(float delta) {
+        if (knight.isDead()) {
+            knight.update(delta);
+            return;
+        }
         knight.update(delta);
-        CollisionSystem.resolve(knight, mapLoader.getSolidBlocks(),
-            mapLoader.getSpikes(), mapLoader.getClimbableWalls(), delta);
+        if (!knight.isNoclipMode()) {
+            CollisionSystem.resolve(knight, mapLoader.getSolidBlocks(),
+                mapLoader.getSpikes(), mapLoader.getClimbableWalls(), delta);
+        }
     }
 
     private void updateBossArena() {
@@ -185,6 +222,12 @@ public class Game {
         if (inBossFight && falseKnight != null && falseKnight.isDead()
             && falseKnight.isDeadAnimationDone()) {
             releaseBossFight();
+            if (!gameCompleted) {
+                gameCompleted = true;
+                achievementManager.onBossDefeated();
+                achievementManager.onGameCompleted(playTime);
+                pendingEndGameData = new EndGameData(deathCount, totalEnemiesKilled, playTime);
+            }
         }
     }
 
@@ -230,6 +273,10 @@ public class Game {
                     knight.addSoul(knight.getSoulPerHit());
                     applyHeavyBlowKnockback(enemy);
                     if (knight.isPogoAttack()) knight.doPogoBounce();
+                    if (enemy.isDead()) {
+                        totalEnemiesKilled++;
+                        achievementManager.onEnemyKilled(enemy.getClass().getSimpleName());
+                    }
                     break;
                 }
             }
@@ -365,12 +412,34 @@ public class Game {
 
     private void respawnEnemies() {
         for (Enemy enemy : enemies) {
+            if(enemy instanceof FalseKnight) continue;
             if (enemy.canRespawn(
                 Vector2.dst(knight.getPosition().x, knight.getPosition().y,
                     enemy.getPosition().x, enemy.getPosition().y),
                 enemy.getRespawnDistance())) {
                 enemy.respawn();
             }
+        }
+    }
+
+    // --- CHEATS ---
+    public void teleportToBossArena() {
+        if (bossArena == null) return;
+        knight.getPosition().set(bossArena.x + bossArena.width / 2f, bossArena.y + bossArena.height / 2f);
+        knight.getBoundingBox().setPosition(knight.getPosition());
+        knight.setSpawnPoint(knight.getPosition().x, knight.getPosition().y);
+    }
+
+    public void instaKillAllEnemies() {
+        for (Enemy e : enemies) {
+            if (e.isDead()) continue;
+            if (e instanceof FalseKnight) {
+                ((FalseKnight) e).forceKill();
+            } else {
+                e.takeDamage(999);
+            }
+            totalEnemiesKilled++;
+            achievementManager.onEnemyKilled(e.getClass().getSimpleName());
         }
     }
 
@@ -390,83 +459,15 @@ public class Game {
     public boolean isInBossFight() { return inBossFight; }
     public float getCameraShakeTimer() { return cameraShakeTimer; }
     public float getCameraShakeIntensity() { return cameraShakeIntensity; }
-    public List<VengefulProjectile> getSpellProjectiles() { return spellProjectiles; }
-    public List<HowlingWraithsAoe> getSpellAoes() { return spellAoes; }
     public FalseKnight getFalseKnight() { return falseKnight; }
-
-    private void firePendingSpell() {
-        SpellType type = knight.consumePendingCastResult();
-        if (type == null) return;
-        switch (type) {
-            case VENGEFUL:
-                fireVengefulSpirit();
-                break;
-            case WRAITHS:
-                fireHowlingWraiths();
-                break;
-        }
-    }
-
-    private void fireVengefulSpirit() {
-        float x = knight.isFacingRight()
-            ? knight.getBoundingBox().x + knight.getBoundingBox().width
-            : knight.getBoundingBox().x - 16;
-        float y = knight.getPosition().y + 20;
-        boolean shadow = knight.isCharmEquipped(CharmType.VOID_HEART);
-        spellProjectiles.add(new VengefulProjectile(x, y, knight.isFacingRight(), shadow));
-    }
-
-    private void fireHowlingWraiths() {
-        boolean shadow = knight.isCharmEquipped(CharmType.VOID_HEART);
-        spellAoes.add(new HowlingWraithsAoe(
-            knight.getBoundingBox().x, knight.getBoundingBox().y,
-            knight.getBoundingBox().width, knight.getBoundingBox().height, shadow));
-    }
-
-    private void updateSpellProjectiles(float delta) {
-        Iterator<VengefulProjectile> it = spellProjectiles.iterator();
-        while (it.hasNext()) {
-            VengefulProjectile p = it.next();
-            if (p.isDead()) { it.remove(); continue; }
-            if (p.checkWallCollision(delta, mapLoader.getSolidBlocks())) {
-                it.remove();
-                continue;
-            }
-            p.update(delta);
-            for (Enemy enemy : enemies) {
-                if (enemy.isDead() || enemy.isDeadAnimationDone()) continue;
-                if (p.getBoundingBox().overlaps(enemy.getBoundingBox()) && p.tryHit(enemy)) {
-                    enemy.takeDamage(knight.getSpellDamage());
-                    knight.addSoul(knight.getSoulPerHit());
-                }
-            }
-        }
-    }
-
-    private void updateSpellAoes(float delta) {
-        Iterator<HowlingWraithsAoe> it = spellAoes.iterator();
-        while (it.hasNext()) {
-            HowlingWraithsAoe aoe = it.next();
-            if (aoe.isDone()) { it.remove(); continue; }
-            int prevTick = aoe.getTickCount();
-            aoe.update(delta);
-            if (aoe.getTickCount() > prevTick) {
-                for (Enemy enemy : enemies) {
-                    if (enemy.isDead() || enemy.isDeadAnimationDone()) continue;
-                    if (aoe.getBounds().overlaps(enemy.getBoundingBox())) {
-                        enemy.takeDamage(knight.getSpellDamage());
-                        knight.addSoul(knight.getSoulPerHit());
-                    }
-                }
-            }
-        }
-    }
+    public SpellManager getSpellManager() { return spellManager; }
 
     public String consumePendingToast() {
         String v = pendingToast;
         pendingToast = null;
         return v;
     }
+    public void setPendingToast(String msg) { pendingToast = msg; }
 
     public void interact() {
         if (!dialogueActive) {
@@ -487,5 +488,37 @@ public class Game {
                 currentDialogueText = null;
             }
         }
+    }
+
+    private void checkPogoAchievement() {
+        if (knight.isPogoAttack() && knight.isHitRegistered()) {
+            achievementManager.onPogoBounce(playTime);
+        }
+        if (knight.isOnGround()) {
+            achievementManager.onLand();
+        }
+    }
+
+    public void saveGame() {
+        if (saveSlot < 0) return;
+        SaveData.save(knight, achievementManager, playTime, saveSlot);
+    }
+
+    public void saveGameToSlot(int slot) {
+        saveSlot = slot;
+        saveGame();
+    }
+
+    public AchievementManager getAchievementManager() { return achievementManager; }
+    public int getSaveSlot() { return saveSlot; }
+    public void setSaveSlot(int slot) { saveSlot = slot; }
+    public float getPlayTime() { return playTime; }
+    public void setPlayTime(float t) { playTime = t; }
+    public int getDeathCount() { return deathCount; }
+    public int getTotalEnemiesKilled() { return totalEnemiesKilled; }
+    public EndGameData consumePendingEndGameData() {
+        EndGameData v = pendingEndGameData;
+        pendingEndGameData = null;
+        return v;
     }
 }

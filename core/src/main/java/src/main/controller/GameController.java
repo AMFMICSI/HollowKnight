@@ -15,6 +15,7 @@ import src.main.view.screens.MainMenuScreen;
 public class GameController implements InputProcessor {
     private final Game game;
     private final KeyBindings keys;
+    private boolean ctrlHeld = false;
 
     public GameController(Game game, KeyBindings keys) {
         this.game = game;
@@ -28,8 +29,22 @@ public class GameController implements InputProcessor {
             return true;
         }
 
+        if (keycode == Input.Keys.CONTROL_LEFT || keycode == Input.Keys.CONTROL_RIGHT) {
+            ctrlHeld = true;
+        }
+
+        // Cheat codes (Ctrl + key)
+        if (ctrlHeld) {
+            if (keycode == keys.get("CHEAT_TELEPORT")) { game.teleportToBossArena(); game.setPendingToast("Teleported to Boss Arena"); return true; }
+            if (keycode == keys.get("CHEAT_NOCLIP")) { game.getKnight().toggleNoclip(); game.setPendingToast("Noclip: " + (game.getKnight().isNoclipMode() ? "ON" : "OFF")); return true; }
+            if (keycode == keys.get("CHEAT_HEAL")) { game.getKnight().emergencyHeal(); game.setPendingToast("Emergency Heal"); return true; }
+            if (keycode == keys.get("CHEAT_SOUL")) { game.getKnight().refillSoul(); game.setPendingToast("Soul Refilled"); return true; }
+            if (keycode == keys.get("CHEAT_GOD")) { game.getKnight().toggleGodMode(); game.setPendingToast("God Mode: " + (game.getKnight().isGodMode() ? "ON" : "OFF")); return true; }
+            if (keycode == keys.get("CHEAT_INSTAKILL")) { game.instaKillAllEnemies(); game.setPendingToast("Insta-Kill"); return true; }
+        }
+
         if (keycode == keys.get("PAUSE")) {
-            PauseModal pauseModal = new PauseModal() {
+            PauseModal pauseModal = new PauseModal(game) {
                 @Override public void onResume() { hide(); }
                 @Override public void onExit() { UiManager.setScreen(new MainMenuScreen()); }
             };
@@ -100,6 +115,9 @@ public class GameController implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
+        if (keycode == Input.Keys.CONTROL_LEFT || keycode == Input.Keys.CONTROL_RIGHT) {
+            ctrlHeld = false;
+        }
         if (keycode == keys.get("MOVE_RIGHT")) { game.getKnight().setMovingRight(false); return true; }
         if (keycode == keys.get("MOVE_LEFT")) { game.getKnight().setMovingLeft(false); return true; }
         if (keycode == keys.get("JUMP")) { game.getKnight().jumpReleased(); return true; }

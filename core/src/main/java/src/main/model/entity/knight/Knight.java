@@ -1,5 +1,7 @@
 package src.main.model.entity.knight;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import src.main.model.entity.animation.AnimationSet;
@@ -17,7 +19,7 @@ import java.util.Set;
 
 public class Knight extends Entity {
     private static final float MOVE_SPEED = 200f;
-    private static final float JUMP_VELOCITY = 700f;
+    private static final float JUMP_VELOCITY = 500f;
     private static final float DASH_SPEED = 500f;
     private static final float DASH_DURATION = 0.2f;
     private static final float ATTACK_DURATION = 0.3f;
@@ -32,6 +34,7 @@ public class Knight extends Entity {
     private static final float WALL_JUMP_HORIZONTAL = 300f;
     private static final float CAST_DURATION = 0.3f;
     private static final int SOUL_PER_SPELL = 33;
+    private static final float DEATH_DURATION = 1.44f;
 
     private final AnimationSet<KnightAnimationType> animationSet;
     private KnightState currentState = KnightState.IDLE;
@@ -82,6 +85,12 @@ public class Knight extends Entity {
     private boolean pendingSoulToast = false;
 
     private boolean runStartPlayed;
+    private boolean isDead = false;
+    private float deathTimer = 0;
+
+    // Cheats
+    private boolean noclipMode = false;
+    private boolean godMode = false;
 
     public Knight(float x, float y) {
         animationSet = new AnimationSet<KnightAnimationType>(GameAssetManager.knightAnimations, KnightAnimationType.IDLE);
@@ -93,6 +102,16 @@ public class Knight extends Entity {
 
     @Override
     public void update(float delta) {
+        if (isDead) {
+            deathTimer -= delta;
+            updateAnimationState();
+            if (deathTimer <= 0) {
+                isDead = false;
+                respawn();
+            }
+            return;
+        }
+
         if (invincibleTimer > 0) invincibleTimer -= delta;
 
         if (isDashing) {
@@ -142,24 +161,42 @@ public class Knight extends Entity {
         if (!jumpKeyHeld && velocity.y > 0)
             velocity.y *= 0.85f;
 
-        if (!isDashing && !isFocusing && !isCasting) {
-            if (isOnWall) {
-                velocity.y = -WALL_SLIDE_SPEED;
-                velocity.x = 0;
-            } else {
-                if (isMovingLeft() && !isMovingRight()) velocity.x = -MOVE_SPEED;
-                else if (isMovingRight() && !isMovingLeft()) velocity.x = MOVE_SPEED;
-                else velocity.x = 0;
+        if (noclipMode) {
+            velocity.y = 0;
+            velocity.x = 0;
+            if (isMovingLeft()) velocity.x = -MOVE_SPEED * 2;
+            if (isMovingRight()) velocity.x = MOVE_SPEED * 2;
+            if (Gdx.input.isKeyPressed(Input.Keys.UP)) velocity.y = MOVE_SPEED * 2;
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) velocity.y = -MOVE_SPEED * 2;
+        } else {
+            if (!isDashing && !isFocusing && !isCasting) {
+                if (isOnWall) {
+                    velocity.y = -WALL_SLIDE_SPEED;
+                    velocity.x = 0;
+                } else {
+                    if (isMovingLeft() && !isMovingRight()) velocity.x = -MOVE_SPEED;
+                    else if (isMovingRight() && !isMovingLeft()) velocity.x = MOVE_SPEED;
+                    else velocity.x = 0;
+                }
             }
+            if (!isDashing && !isOnWall) velocity.y -= PhysicsSystem.GRAVITY * delta;
         }
-
-        if (!isDashing && !isOnWall) velocity.y -= PhysicsSystem.GRAVITY * delta;
 
         updateAnimationState();
         boundingBox.setPosition(position.x, position.y);
     }
 
     public void updateAnimationState() {
+        if (isDead) {
+            currentState = KnightState.DEAD;
+            animationSet.setAnimation(KnightAnimationType.DEATH);
+            return;
+        }
+        if (noclipMode && attackTimer <= 0 && !isFocusing && !isCasting && !isDashing) {
+            currentState = KnightState.IDLE;
+            animationSet.setAnimation(KnightAnimationType.IDLE);
+            return;
+        }
         if (isCasting) {
             // keep currentState as set by startCast (CASTING_VENGEFUL or CASTING_WRAITHS)
         } else if (isFocusing) {
@@ -216,6 +253,7 @@ public class Knight extends Entity {
 
     // --- MOVEMENT ---
     public void jump() {
+        if (isDead) return;
         if (isCasting) return;
         if (isOnWall) {                                                     // (Wall Jump)
             velocity.y = JUMP_VELOCITY;
@@ -238,39 +276,47 @@ public class Knight extends Entity {
     }
 
     public void jumpReleased() {
+        if (isDead) return;
         jumpKeyHeld = false;
         if (velocity.y > 0) velocity.y *= 0.4f;
     }
 
     public void dash() {
+        if (isDead) return;
         if (!isDashing && !isCasting && dashCooldownTimer <= 0) {
             isDashing = true;
             dashTimer = DASH_DURATION * getDashLengthMultiplier();
             velocity.x = isFacingRight() ? DASH_SPEED : -DASH_SPEED;
             velocity.y = 0;
+            GameMusic.DASH.play();
         }
     }
 
     public void dashDown() {
+        if (isDead) return;
         if (!isDashing && !isCasting && dashCooldownTimer <= 0) {
             isDashing = true;
             dashTimer = DASH_DURATION * getDashLengthMultiplier();
             velocity.x = isFacingRight() ? DASH_SPEED : -DASH_SPEED;
             velocity.y = -DASH_SPEED;
+            GameMusic.DASH.play();
         }
     }
 
     public void dashUp() {
+        if (isDead) return;
         if (!isDashing && !isCasting && dashCooldownTimer <= 0) {
             isDashing = true;
             dashTimer = DASH_DURATION * getDashLengthMultiplier();
             velocity.x = 0;
             velocity.y = DASH_SPEED;
+            GameMusic.DASH.play();
         }
     }
 
     // --- ATTACK ---
     public void attack() {
+        if (isDead) return;
         if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
             attackTimer = getAttackDuration();
             velocity.x = 0;
@@ -283,6 +329,7 @@ public class Knight extends Entity {
     }
 
     public void attackDown() {
+        if (isDead) return;
         if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
             attackTimer = getAttackDuration();
             velocity.x = 0;
@@ -295,6 +342,7 @@ public class Knight extends Entity {
     }
 
     public void attackUp() {
+        if (isDead) return;
         if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
             attackTimer = getAttackDuration();
             velocity.x = 0;
@@ -307,6 +355,7 @@ public class Knight extends Entity {
     }
 
     public void pogoAttack() {
+        if (isDead) return;
         if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
             attackTimer = getAttackDuration();
             velocity.x = 0;
@@ -327,6 +376,9 @@ public class Knight extends Entity {
     }
 
     public boolean isAttacking() { return attackTimer > 0; }
+    public boolean isAttackDown() { return isAttackDown; }
+    public boolean isAttackUp() { return isAttackUp; }
+    public float getAttackElapsed() { return getAttackDuration() - attackTimer; }
     public boolean isPogoAttack() { return isPogoAttack; }
     public boolean isHitRegistered() { return hitRegistered; }
     public void setHitRegistered(boolean v) { hitRegistered = v; }
@@ -348,6 +400,7 @@ public class Knight extends Entity {
 
     // --- CASTING ---
     public void startCast(SpellType type) {
+        if (isDead) return;
         if (isCasting || isDashing || attackTimer > 0 || isFocusing || !isOnGround())
             return;
         if (soul < SOUL_PER_SPELL) {
@@ -409,6 +462,9 @@ public class Knight extends Entity {
     public void unequipCharm(CharmType charm) {
         equippedCharms.remove(charm);
     }
+    public void clearCharms() {
+        equippedCharms.clear();
+    }
 
     public boolean isCharmEquipped(CharmType charm) {
         return equippedCharms.contains(charm);
@@ -467,6 +523,7 @@ public class Knight extends Entity {
 
     // --- FOCUS ---
     public void startFocus() {
+        if (isDead) return;
         if (isFocusing || !isOnGround() || isDashing || attackTimer > 0 || hp >= MAX_HP || isCasting)
             return;
         if (soul < SOUL_PER_HEAL) {
@@ -512,16 +569,23 @@ public class Knight extends Entity {
     public void takeDamage() { takeDamage(1); }
 
     public void takeDamage(int amount) {
+        if (isDead) return;
+        if (godMode) return;
         if (invincibleTimer > 0) return;
         if (isFocusing) cancelFocus();
         if (isCasting) cancelCast();
         hp -= amount;
         invincibleTimer = INVINCIBLE_DURATION;
         justDamaged = true;
+        if (hp <= 0) {
+            isDead = true;
+            deathTimer = DEATH_DURATION;
+            velocity.set(0, 0);
+            return;
+        }
         velocity.x = isFacingRight() ? -200f : 200f;
         velocity.y = 100f;
         GameMusic.HERO_DAMAGE.play();
-        if (hp <= 0) respawn();
     }
 
     public boolean consumeJustDamaged() {
@@ -531,6 +595,8 @@ public class Knight extends Entity {
     }
 
     public void respawn() {
+        isDead = false;
+        deathTimer = 0;
         position.set(spawnX, spawnY);
         velocity.set(0, 0);
         hp = MAX_HP;
@@ -565,7 +631,7 @@ public class Knight extends Entity {
 
     @Override
     public void draw(SpriteBatch batch, float delta) {
-        if (invincibleTimer > 0 && (Math.floor(invincibleTimer * 10) % 2 == 0)) return;
+        if (!isDead && invincibleTimer > 0 && (Math.floor(invincibleTimer * 10) % 2 == 0)) return;
         TextureRegion frame = getFrame(delta);
         float spriteW = boundingBox.width * DRAW_SCALE;
         float spriteH = spriteW * frame.getRegionHeight() / (float) frame.getRegionWidth();
@@ -577,10 +643,38 @@ public class Knight extends Entity {
             isFacingRight() ? -1 : 1, 1, 0);
     }
 
+    // --- CHEATS ---
+    public void toggleGodMode() { godMode = !godMode; }
+    public boolean isGodMode() { return godMode; }
+    public void toggleNoclip() { noclipMode = !noclipMode; }
+    public boolean isNoclipMode() { return noclipMode; }
+    public void emergencyHeal() {
+        if (isDead || hp <= 0) {
+            hp = 1;
+            isDead = false;
+            deathTimer = 0;
+            position.set(spawnX, spawnY);
+            velocity.set(0, 0);
+            setOnGround(false);
+            jumpCount = 0;
+            isDashing = false;
+            isFocusing = false;
+            isCasting = false;
+            invincibleTimer = INVINCIBLE_DURATION;
+        } else {
+            hp = Math.min(hp + 1, MAX_HP);
+            invincibleTimer = INVINCIBLE_DURATION;
+        }
+    }
+    public void refillSoul() { soul = MAX_SOUL; }
+
     public void resetJump() { jumpCount = 0; }
     public int getHp() { return hp; }
     public int getMaxHp() { return MAX_HP; }
     public float getInvincibleTimer() { return invincibleTimer; }
     public void resetInvincibleTimer() { invincibleTimer = 0; }
     public KnightState getCurrentState() { return currentState; }
+    public boolean isDead() { return isDead; }
+    public void setHp(int hp) { this.hp = Math.min(hp, MAX_HP); }
+    public void setSoul(int soul) { this.soul = Math.min(soul, MAX_SOUL); }
 }

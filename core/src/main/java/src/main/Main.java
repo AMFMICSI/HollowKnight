@@ -82,4 +82,8 @@ public class Main extends Game {
         }
         super.setScreen(screen);
     }
+
+    public void switchScreen(com.badlogic.gdx.Screen screen) {
+        super.setScreen(screen);
+    }
 }

@@ -7,7 +7,7 @@ public enum Phats {
     MapProjectFile("maps/hollowKnight.tiled-project"),
     MainBackGround("menus/mainBackGround.png"),
     Cursor("cursor/Cursor.png"),
-    UiSkin("ui/uiskin.json"),
+    UiSkin("ui/skin/Hollow Knight skin.json"),
     KnightAtlas("atlases/knight.atlas"),
     EffectsAtlas("atlases/effects.atlas"),
     CharmsAtlas("atlases/charms.atlas"),
@@ -23,11 +23,12 @@ public enum Phats {
     BrummGrunt1("music/Brumm_grunt_01.wav"),
     BrummGruntDouble("music/Brumm_grunt_double.wav"),
     KeyBindingsConfig("config/keyBindings.json"),
-    NailSlash("music/sword_1.wav"),
+    NailSlash("music/sword_hit_reject.wav"),
     HeroDamage("music/hero_damage.wav"),
     SoulPickup("music/soul_pickup_1.wav"),
     FocusHeal("music/spa_heal.wav"),
-    GameSave("config/save.json"),
+    HeroDash("music/hero_dash.wav"),
+    BossDefeat("music/Boss Defeat.wav"),
     ;
 
     private final String text;
@@ -37,5 +38,9 @@ public enum Phats {
     }
     public String getText() {
         return text;
+    }
+
+    public static String saveSlotPath(int slot) {
+        return "config/save_" + slot + ".json";
     }
 }

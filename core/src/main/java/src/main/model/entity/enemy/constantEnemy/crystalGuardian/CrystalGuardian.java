@@ -21,9 +21,9 @@ public class CrystalGuardian extends Enemy {
     private CrystalGuardianLaser laser;
     private KnightRef knightRef;
 
-    @FunctionalInterface
     public interface KnightRef {
         Vector2 getPosition();
+        Rectangle getBoundingBox();
     }
 
     public CrystalGuardian(float x, float y, Rectangle zone, KnightRef knightRef) {
@@ -50,7 +50,8 @@ public class CrystalGuardian extends Enemy {
 
         stateTimer -= delta;
         Vector2 knightPos = knightRef.getPosition();
-        boolean seePlayer = zone != null && zone.contains(knightPos) && hasLineOfSight(knightPos);
+        Rectangle knightBox = knightRef.getBoundingBox();
+        boolean seePlayer = position.dst(knightPos) < 500f;
 
         switch (currentState) {
             case IDLE:
@@ -67,9 +68,11 @@ public class CrystalGuardian extends Enemy {
                 animSet.setAnimation(CrystalGuardianAnimationType.SHOOT);
                 velocity.x = 0;
                 if (stateTimer <= 0 && animSet.getStateTime() >= 0.3f) {
+                    setFacingRight(knightPos.x > position.x);
                     laser.fire(
-                        isFacingRight() ? position.x + boundingBox.width : position.x - 600f,
-                        position.y + boundingBox.height / 2f
+                        isFacingRight() ? position.x + boundingBox.width : position.x,
+                        position.y + boundingBox.height / 2f - 12f,
+                        isFacingRight()
                     );
                     currentState = CrystalGuardianState.ENRAGED;
                     stateTimer = 2f;
@@ -78,7 +81,6 @@ public class CrystalGuardian extends Enemy {
 
             case ENRAGED:
                 animSet.setAnimation(CrystalGuardianAnimationType.RUN);
-                setFacingRight(knightPos.x > position.x);
                 velocity.x = isFacingRight() ? ENRAGED_SPEED : -ENRAGED_SPEED;
                 if (stateTimer <= 0) {
                     currentState = CrystalGuardianState.COOLDOWN;
@@ -100,12 +102,14 @@ public class CrystalGuardian extends Enemy {
         laser.update(delta);
     }
 
-    private boolean hasLineOfSight(Vector2 to) {
+    private boolean hasLineOfSight(Rectangle targetBounds) {
         float sx = position.x + boundingBox.width / 2f;
         float sy = position.y + boundingBox.height / 2f;
+        float tx = targetBounds.x + targetBounds.width / 2f;
+        float ty = targetBounds.y + targetBounds.height / 2f;
         if (solidBlocks == null) return true;
         for (SolidBlock block : solidBlocks) {
-            if (Intersector.intersectSegmentRectangle(sx, sy, to.x, to.y, block.getBounds()))
+            if (Intersector.intersectSegmentRectangle(sx, sy, tx, ty, block.getBounds()))
                 return false;
         }
         return true;

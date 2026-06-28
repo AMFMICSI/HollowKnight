@@ -19,20 +19,26 @@
             }
         },
         "MainMap.tmx": {
-            "scale": 0.33,
-            "selectedLayer": 3,
+            "scale": 0.75,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 1954.5454545454545,
-                "y": 2133.3333333333335
+                "x": 2065.333333333333,
+                "y": 1635.3333333333333
             }
         },
         "MainMap.tmx#SpriteAtlasTexture": {
             "scaleInDock": 0.25
         },
+        "MainMap.tmx#brk_Crystal2": {
+            "scaleInDock": 1
+        },
         "MainMap.tmx#cd_broken_wall": {
             "scaleInDock": 1
         },
         "MainMap.tmx#cd_wall_01": {
+            "scaleInDock": 1
+        },
+        "MainMap.tmx#cryst_cave_0000_Layer-8": {
             "scaleInDock": 1
         },
         "MainMap.tmx#flame": {

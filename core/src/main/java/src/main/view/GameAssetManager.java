@@ -37,11 +37,16 @@ public class GameAssetManager {
     private static TextureAtlas crystalGuardianAtlas;
     public static Map<CrystalGuardianAnimationType, Animation<TextureRegion>> crystalGuardianAnimations;
     public static TextureRegion laserRegion;
+    private static Texture crystalLaserTexture;
+    public static Animation<TextureRegion> laserCircleAnim;
     public static Animation<TextureRegion> vengefulProjectileAnim;
     public static Animation<TextureRegion> wraithsAoeAnim;
     public static Animation<TextureRegion> shadowProjectileAnim;
     public static Animation<TextureRegion> shadowScreamAnim;
     public static Animation<TextureRegion> dashEffectAnim;
+    public static Animation<TextureRegion> slashEffectAnim;
+    public static Animation<TextureRegion> downSlashEffectAnim;
+    public static Animation<TextureRegion> upSlashEffectAnim;
     private static TextureAtlas effectsAtlas;
     private static TextureAtlas falseKnightAtlas;
     public static Map<FalseKnightAnimationType, Animation<TextureRegion>> falseKnightAnimations;
@@ -66,6 +71,8 @@ public class GameAssetManager {
     public static Map<ZoteAnimationType, Animation<TextureRegion>> zoteAnimations;
     public static void init(){
         skin  = new Skin(Gdx.files.internal(Phats.UiSkin.getText()));
+        skin.getFont("default").getData().setScale(0.7f);
+        skin.getFont("title").getData().setScale(0.7f);
         loadKnightAnimations();
         loadSpellTextures();
         loadCrawlidAnimations();
@@ -139,6 +146,24 @@ public class GameAssetManager {
             deFrames[i] = effectsAtlas.findRegion("DashEffect_" + String.format("%03d", i));
         dashEffectAnim = new Animation<>(0.05f, deFrames);
         dashEffectAnim.setPlayMode(Animation.PlayMode.NORMAL);
+
+        TextureRegion[] slashFrames = new TextureRegion[6];
+        for (int i = 0; i < 6; i++)
+            slashFrames[i] = effectsAtlas.findRegion("SlashEffect_" + String.format("%03d", i));
+        slashEffectAnim = new Animation<>(0.05f, slashFrames);
+        slashEffectAnim.setPlayMode(Animation.PlayMode.NORMAL);
+
+        TextureRegion[] downSlashFrames = new TextureRegion[6];
+        for (int i = 0; i < 6; i++)
+            downSlashFrames[i] = effectsAtlas.findRegion("DownSlashEffect_" + String.format("%03d", i));
+        downSlashEffectAnim = new Animation<>(0.05f, downSlashFrames);
+        downSlashEffectAnim.setPlayMode(Animation.PlayMode.NORMAL);
+
+        TextureRegion[] upSlashFrames = new TextureRegion[6];
+        for (int i = 0; i < 6; i++)
+            upSlashFrames[i] = effectsAtlas.findRegion("UpSlashEffect_" + String.format("%03d", i));
+        upSlashEffectAnim = new Animation<>(0.05f, upSlashFrames);
+        upSlashEffectAnim.setPlayMode(Animation.PlayMode.NORMAL);
     }
 
     public static void loadCharmTextures() {
@@ -179,7 +204,13 @@ public class GameAssetManager {
     public static void loadCrystalGuardianAnimations() {
         crystalGuardianAtlas = new TextureAtlas(Gdx.files.internal(Phats.CrystalGuardianAtlas.getText()));
         crystalGuardianAnimations = loadAnimations(crystalGuardianAtlas, CrystalGuardianAnimationType.values(), "%s_%03d");
-        laserRegion = effectsAtlas.findRegion("CrystalLaser");
+        crystalLaserTexture = new Texture(Gdx.files.internal("animation/Effects/CrystalLaser.png"));
+        laserRegion = new TextureRegion(crystalLaserTexture);
+        TextureRegion[] lcFrames = new TextureRegion[4];
+        for (int i = 0; i < 4; i++)
+            lcFrames[i] = effectsAtlas.findRegion(String.format("LaserCircle_%03d", i));
+        laserCircleAnim = new Animation<>(0.1f, lcFrames);
+        laserCircleAnim.setPlayMode(Animation.PlayMode.NORMAL);
     }
 
     public static void loadFalseKnightAnimations() {
@@ -228,6 +259,7 @@ public class GameAssetManager {
         if(crystalHunterAtlas != null) crystalHunterAtlas.dispose();
         if(huskHornheadAtlas != null) huskHornheadAtlas.dispose();
         if(crystalGuardianAtlas != null) crystalGuardianAtlas.dispose();
+        if (crystalLaserTexture != null) crystalLaserTexture.dispose();
         if(effectsAtlas != null) effectsAtlas.dispose();
         if(charmClickSound != null) charmClickSound.dispose();
         if(charmsAtlas != null) charmsAtlas.dispose();

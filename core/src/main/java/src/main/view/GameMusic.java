@@ -9,7 +9,9 @@ public enum GameMusic {
     NAIL_SLASH(Phats.NailSlash, Type.SFX),
     HERO_DAMAGE(Phats.HeroDamage, Type.SFX),
     SOUL_PICKUP(Phats.SoulPickup, Type.SFX),
-    FOCUS_HEAL(Phats.FocusHeal, Type.SFX);
+    FOCUS_HEAL(Phats.FocusHeal, Type.SFX),
+    DASH(Phats.HeroDash, Type.SFX),
+    BOSS_DEFEAT(Phats.BossDefeat, Type.SFX);
 
     private enum Type { MUSIC, SFX }
 
@@ -45,6 +47,7 @@ public enum GameMusic {
     }
 
     public void toggleMute() {
+        if (type != Type.MUSIC) return;
         boolean muted = !GameSettings.getInstance().isMusicMuted();
         GameSettings.getInstance().setMusicMuted(muted);
         getMusic().setVolume(muted ? 0 : GameSettings.getInstance().getMusicVolume());
@@ -61,10 +64,12 @@ public enum GameMusic {
     }
 
     public void setVolume(float vol) {
+        if (type != Type.MUSIC) return;
         getMusic().setVolume(vol);
     }
 
     public float getVolume() {
+        if (type != Type.MUSIC) return 0;
         return getMusic().getVolume();
     }
 

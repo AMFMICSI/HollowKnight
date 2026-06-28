@@ -36,7 +36,7 @@ public class InventoryModal extends Modal {
         this.game = game;
         int maxNotches = game.getKnight().getMaxNotches();
         notchIcons = new Image[maxNotches];
-        highlightBg = skin.getDrawable("selection");
+        highlightBg = skin.getDrawable("bgGray");
 
         defaults().space(3);
         add(new Label("Inventory", skin)).colspan(2).center().padBottom(8).row();

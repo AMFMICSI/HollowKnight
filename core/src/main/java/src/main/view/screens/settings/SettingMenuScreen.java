@@ -11,6 +11,15 @@ import src.main.view.UiManager;
 import src.main.view.screens.MainMenuScreen;
 
 public class SettingMenuScreen extends AbstractScreen {
+    private final Runnable onBack;
+
+    public SettingMenuScreen() {
+        this(null);
+    }
+
+    public SettingMenuScreen(Runnable onBack) {
+        this.onBack = onBack;
+    }
 
     @Override
     public void show() {
@@ -119,7 +128,7 @@ public class SettingMenuScreen extends AbstractScreen {
         keyBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent e, float x, float y) {
-                UiManager.setScreen(new KeyBindingScreen());
+                UiManager.setScreen(new KeyBindingScreen(onBack));
             }
         });
         center.add(keyBtn).width(200).padBottom(20).row();
@@ -142,7 +151,11 @@ public class SettingMenuScreen extends AbstractScreen {
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent e, float x, float y) {
-                UiManager.setScreen(new MainMenuScreen());
+                if (onBack != null) {
+                    onBack.run();
+                } else {
+                    UiManager.setScreen(new MainMenuScreen());
+                }
             }
         });
 

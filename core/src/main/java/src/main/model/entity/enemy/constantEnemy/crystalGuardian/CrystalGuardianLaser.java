@@ -1,43 +1,68 @@
 package src.main.model.entity.enemy.constantEnemy.crystalGuardian;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 
 public class CrystalGuardianLaser {
-    private Vector2 position;
+    private float startX, startY;
     private float width, height;
     private boolean active;
     private float lifeTimer;
     private static final float LASER_DURATION = 0.6f;
-    private static final float LASER_WIDTH = 600f;
-    private static final float LASER_HEIGHT = 8f;
+    private static final float LASER_LENGTH = 600f;
+    private static final float LASER_HEIGHT = 24f;
     private Rectangle bounds;
+    private boolean facingRight;
+    private float impactTimer;
+    private static final float IMPACT_DURATION = 0.4f;
 
     public CrystalGuardianLaser() {
-        position = new Vector2();
         bounds = new Rectangle();
     }
 
-    public void fire(float startX, float startY) {
-        position.set(startX, startY);
-        width = LASER_WIDTH;
+    public void fire(float startX, float startY, boolean facingRight) {
+        this.startX = startX;
+        this.startY = startY;
+        this.facingRight = facingRight;
+        width = LASER_LENGTH;
         height = LASER_HEIGHT;
         active = true;
         lifeTimer = LASER_DURATION;
-        bounds.set(position.x, position.y, width, height);
+        impactTimer = 0;
+        updateBounds();
+    }
+
+    private void updateBounds() {
+        if (facingRight) {
+            bounds.set(startX, startY, width, height);
+        } else {
+            bounds.set(startX - width, startY, width, height);
+        }
     }
 
     public void update(float delta) {
         if (!active) return;
         lifeTimer -= delta;
+        impactTimer += delta;
         if (lifeTimer <= 0) active = false;
     }
 
-    public void draw(SpriteBatch batch, TextureRegion region) {
+    public void draw(SpriteBatch batch, TextureRegion region, Animation<TextureRegion> impactAnim) {
         if (!active) return;
-        batch.draw(region, position.x, position.y, width, height);
+        if (facingRight) {
+            batch.draw(region, startX, startY, 0, 0, width, height, 1, 1, 0);
+        } else {
+            batch.draw(region, startX, startY, 0, 0, width, height, -1, 1, 0);
+        }
+        if (impactAnim != null && impactTimer <= IMPACT_DURATION) {
+            TextureRegion impactFrame = impactAnim.getKeyFrame(impactTimer);
+            float ix = facingRight ? startX + width : startX - width;
+            float iy = startY + height / 2f - impactFrame.getRegionHeight() * 0.5f;
+            batch.draw(impactFrame, ix, iy,
+                impactFrame.getRegionWidth() * 0.5f, impactFrame.getRegionHeight() * 0.5f);
+        }
     }
 
     public boolean isActive() { return active; }

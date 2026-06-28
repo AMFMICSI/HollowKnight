@@ -97,7 +97,7 @@ public abstract class AbstractScreen implements Screen {
         wrapper.pad(10).right().bottom();
         Table toast = new Table();
         toast.pad(5);
-        toast.setBackground(skin.getDrawable("window"));
+        toast.setBackground(skin.getDrawable("bgDark"));
 
         Label messageLabel = new Label(message, skin);
 
@@ -115,6 +115,7 @@ public abstract class AbstractScreen implements Screen {
         toast.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                wrapper.clearActions();
                 toast.addAction(
                     Actions.sequence(
                         Actions.alpha(0, 0.75f, Interpolation.smoother),
@@ -123,6 +124,22 @@ public abstract class AbstractScreen implements Screen {
                 );
             }
         });
+
+        wrapper.addAction(
+            Actions.sequence(
+                Actions.delay(2f),
+                Actions.run(() -> {
+                    if (toast.getColor().a > 0) {
+                        toast.addAction(
+                            Actions.sequence(
+                                Actions.alpha(0, 0.75f, Interpolation.smoother),
+                                Actions.run(wrapper::remove)
+                            )
+                        );
+                    }
+                })
+            )
+        );
     }
 
     protected void setBackground(String assetPath) {

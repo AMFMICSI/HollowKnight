@@ -18,7 +18,7 @@ public class Modal extends Table {
         wrapperTable = new Table();
         wrapperTable.setTouchable(Touchable.enabled);
         setTouchable(Touchable.enabled);
-        setBackground(skin.getDrawable("window"));
+        setBackground(skin.getDrawable("bgDark"));
         pad(10);
         wrapperTable.add(this);
 
