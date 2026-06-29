@@ -56,6 +56,7 @@ public class GameScreen extends AbstractScreen {
 
     private DialogueBox dialogueBox;
     private boolean resourcesCreated;
+    private String lastArea = null;
 
     public GameScreen() {
         this.game = null;
@@ -177,6 +178,7 @@ public class GameScreen extends AbstractScreen {
             game.update(STEP);
             accumulator -= STEP;
         }
+        updateAreaMusic();
         float targetX = game.getKnight().getPosition().x;
         float targetY = game.getKnight().getPosition().y + 30;
 
@@ -326,6 +328,28 @@ public class GameScreen extends AbstractScreen {
 
         stage.act(delta);
         stage.draw();
+    }
+
+    private void updateAreaMusic() {
+        String area;
+        if (game.isInBossFight()) {
+            area = "BATTLE";
+        } else {
+            area = game.getCurrentArea();
+            if (area == null) area = "SILENT";
+        }
+        if (area.equals(lastArea)) return;
+        lastArea = area;
+
+        GameMusic.CROSSROADS.stop();
+        GameMusic.CRYSTAL_PEAKS.stop();
+        GameMusic.BATTLE.stop();
+
+        switch (area) {
+            case "Forgotten Crossroads" -> GameMusic.CROSSROADS.play();
+            case "Crystal Peaks" -> GameMusic.CRYSTAL_PEAKS.play();
+            case "BATTLE" -> GameMusic.BATTLE.play();
+        }
     }
 
     @Override

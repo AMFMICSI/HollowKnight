@@ -29,6 +29,9 @@ public enum Phats {
     FocusHeal("music/spa_heal.wav"),
     HeroDash("music/hero_dash.wav"),
     BossDefeat("music/Boss Defeat.wav"),
+    CrossroadsMusic("music/S19 Crossroads Main.wav"),
+    CrystalPeaksMusic("music/S26 Crystal MAIN.wav"),
+    BossBattleMusic("music/Boss Battle 1.wav"),
     ;
 
     private final String text;

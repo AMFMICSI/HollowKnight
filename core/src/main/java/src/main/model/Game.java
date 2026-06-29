@@ -63,6 +63,7 @@ public class Game {
     private int totalEnemiesKilled = 0;
     private boolean gameCompleted = false;
     private EndGameData pendingEndGameData = null;
+    private String currentArea = null;
 
     public Knight getKnight() { return knight; }
     public KeyBindings getKeyBindings() { return keyBindings; }
@@ -144,6 +145,7 @@ public class Game {
         playTime += delta;
 
         updateBossArena();
+        updateCurrentArea();
         for (Vector2 sp : safePoints) {
             if (knight.getPosition().dst(sp) < SAFE_POINT_INTERACT_RANGE
                 && Gdx.input.isKeyJustPressed(keyBindings.get("INTERACT"))) {
@@ -455,8 +457,21 @@ public class Game {
         if (falseKnight != null) falseKnight.setActive(false);
     }
 
+    private void updateCurrentArea() {
+        Vector2 pos = knight.getPosition();
+        String newArea = null;
+        for (var entry : mapLoader.getNamedZones().entrySet()) {
+            if (entry.getValue().contains(pos.x, pos.y)) {
+                newArea = entry.getKey();
+                break;
+            }
+        }
+        currentArea = newArea;
+    }
+
     public Rectangle getBossArena() { return bossArena; }
     public boolean isInBossFight() { return inBossFight; }
+    public String getCurrentArea() { return currentArea; }
     public float getCameraShakeTimer() { return cameraShakeTimer; }
     public float getCameraShakeIntensity() { return cameraShakeIntensity; }
     public FalseKnight getFalseKnight() { return falseKnight; }

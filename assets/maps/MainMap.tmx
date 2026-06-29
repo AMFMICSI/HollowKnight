@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.11" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="500" height="500" tilewidth="8" tileheight="8" infinite="0" nextlayerid="9" nextobjectid="94">
+<map version="1.11" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="500" height="500" tilewidth="8" tileheight="8" infinite="0" nextlayerid="9" nextobjectid="97">
  <properties>
   <property name="level" value="crystal peak"/>
  </properties>
@@ -2154,5 +2154,7 @@
   <object id="93" name="SafePoint" type="SafePoint" x="2873.49" y="1934.72">
    <point/>
   </object>
+  <object id="95" name="Crystal Peaks" type="Zone" x="133.333" y="396.825" width="3780.95" height="1168.25"/>
+  <object id="96" name="Forgotten Crossroads" type="Zone" x="149.206" y="1577.78" width="3533.33" height="1203.17"/>
  </objectgroup>
 </map>

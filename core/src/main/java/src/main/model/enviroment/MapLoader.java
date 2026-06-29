@@ -12,7 +12,9 @@ import com.badlogic.gdx.math.Vector2;
 import src.main.view.Phats;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MapLoader {
     private TiledMap tiledMap;
@@ -23,6 +25,7 @@ public class MapLoader {
     private Vector2 zoteSpawnPoint = new Vector2();
     private List<EnemySpawnInfo> enemySpawnInfos = new ArrayList<>();
     List<Rectangle> zoneRects = new ArrayList<>();
+    Map<String, Rectangle> namedZones = new HashMap<>();
     private List<Rectangle> bossGates = new ArrayList<>();
     private List<Vector2> safePoints = new ArrayList<>();
 
@@ -34,6 +37,7 @@ public class MapLoader {
     public List<EnemySpawnInfo> getEnemySpawnInfos() { return enemySpawnInfos; }
     public Vector2 getZoteSpawnPoint() { return zoteSpawnPoint; }
     public List<Rectangle> getZones() { return zoneRects; }
+    public Map<String, Rectangle> getNamedZones() { return namedZones; }
     public List<Rectangle> getBossGates() { return bossGates; }
     public List<Vector2> getSafePoints() { return safePoints; }
 
@@ -78,6 +82,19 @@ public class MapLoader {
             if (obj instanceof RectangleMapObject r && "BossGate".equals(obj.getName())) {
                 Rectangle rect = r.getRectangle();
                 bossGates.add(new Rectangle(rect));
+            }
+        }
+
+        // Collect named zones (type="Zone" with a non-empty name like "Crystal Peaks")
+        for (MapObject obj : objects) {
+            String name = obj.getName();
+            if (name == null || name.isEmpty() || "Zone".equals(name) || "SolidBlock".equals(name)) continue;
+            if (obj instanceof RectangleMapObject r) {
+                String type = obj.getProperties().get("type", String.class);
+                if ("Zone".equals(type)) {
+                    Rectangle rect = r.getRectangle();
+                    namedZones.put(name, new Rectangle(rect));
+                }
             }
         }
 

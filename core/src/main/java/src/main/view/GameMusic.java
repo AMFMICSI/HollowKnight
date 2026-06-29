@@ -6,6 +6,9 @@ import com.badlogic.gdx.audio.Sound;
 
 public enum GameMusic {
     MENU(Phats.TitleMusic, Type.MUSIC),
+    CROSSROADS(Phats.CrossroadsMusic, Type.MUSIC),
+    CRYSTAL_PEAKS(Phats.CrystalPeaksMusic, Type.MUSIC),
+    BATTLE(Phats.BossBattleMusic, Type.MUSIC),
     NAIL_SLASH(Phats.NailSlash, Type.SFX),
     HERO_DAMAGE(Phats.HeroDamage, Type.SFX),
     SOUL_PICKUP(Phats.SoulPickup, Type.SFX),

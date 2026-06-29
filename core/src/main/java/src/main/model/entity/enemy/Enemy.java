@@ -17,7 +17,7 @@ public abstract class Enemy extends Entity {
     protected float deathTimer;
     protected Rectangle zone;
     protected Vector2 spawnPosition = new Vector2();
-    public float respawnDistance = 700f;
+    public float respawnDistance = 2500f;
     protected List<SolidBlock> solidBlocks;
 
     public void draw(SpriteBatch batch, float delta) {
