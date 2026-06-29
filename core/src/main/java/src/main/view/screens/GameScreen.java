@@ -250,13 +250,23 @@ public class GameScreen extends AbstractScreen {
                 offY = 10;
             } else {
                 slashAnim = GameAssetManager.slashEffectAnim;
-                offX = game.getKnight().isFacingRight() ? 0 : -10;
                 offY = 4;
             }
             TextureRegion frame = slashAnim.getKeyFrame(game.getKnight().getAttackElapsed());
             float s = 0.6f;
             float w = frame.getRegionWidth() * s;
             float h = frame.getRegionHeight() * s;
+            float bbox = game.getKnight().getBoundingBox().width;
+            if (slashAnim == GameAssetManager.slashEffectAnim) {
+                float drawScale = game.getKnight().getDrawScale();
+                if (game.getKnight().isFacingRight()) {
+                    offX = bbox * (1 + drawScale) / 2 - w / 2;
+                } else {
+                    offX = bbox * (1 - drawScale) / 2 - w / 2;
+                }
+            } else {
+                offX = (bbox - w) / 2f;
+            }
             float flipX = game.getKnight().isFacingRight() ? -1 : 1;
             batch.draw(frame,
                 game.getKnight().getPosition().x + offX,

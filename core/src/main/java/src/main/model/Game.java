@@ -162,7 +162,9 @@ public class Game {
 
         updateCombat(delta);
         updateEnemies(delta);
-        spellManager.firePending(knight.consumePendingCastResult());
+        SpellType castType = knight.consumePendingCastResult();
+        if (castType != null) triggerCameraShake(2f, 0.2f);
+        spellManager.firePending(castType);
         spellManager.updateProjectiles(delta);
         spellManager.updateAoes(delta);
         if (knight.consumePendingSoulToast()) {

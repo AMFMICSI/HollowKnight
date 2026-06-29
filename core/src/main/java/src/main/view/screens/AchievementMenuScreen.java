@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import src.main.view.AchievementManager;
-import src.main.view.Phats;
 import src.main.view.UiManager;
 
 public class AchievementMenuScreen extends AbstractScreen {
@@ -15,7 +14,7 @@ public class AchievementMenuScreen extends AbstractScreen {
     @Override
     public void show() {
         super.show();
-        setBackground(Phats.MainBackGround.getText());
+        applyThemeBackground();
 
         AchievementManager am = UiManager.achievements;
 

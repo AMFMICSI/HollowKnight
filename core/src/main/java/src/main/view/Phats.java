@@ -32,6 +32,8 @@ public enum Phats {
     CrossroadsMusic("music/S19 Crossroads Main.wav"),
     CrystalPeaksMusic("music/S26 Crystal MAIN.wav"),
     BossBattleMusic("music/Boss Battle 1.wav"),
+    ThemeBG1("menus/BGtheme1.png"),
+    ThemeBG0("menus/BGtheme0.png"),
     ;
 
     private final String text;

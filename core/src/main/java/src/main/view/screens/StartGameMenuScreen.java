@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import src.main.model.Game;
 import src.main.model.data.SaveData;
-import src.main.view.Phats;
 import src.main.view.UiManager;
 
 public class StartGameMenuScreen extends AbstractScreen {
@@ -15,7 +14,7 @@ public class StartGameMenuScreen extends AbstractScreen {
     @Override
     public void show() {
         super.show();
-        setBackground(Phats.MainBackGround.getText());
+        applyThemeBackground();
 
         Label title = new Label("Select Slot", skin);
 

@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import src.main.view.GameAssetManager;
+import src.main.view.GameSettings;
 
 public abstract class AbstractScreen implements Screen {
     protected Stage stage;
@@ -140,6 +141,10 @@ public abstract class AbstractScreen implements Screen {
                 })
             )
         );
+    }
+
+    protected void applyThemeBackground() {
+        setBackground(GameSettings.getInstance().getThemePath());
     }
 
     protected void setBackground(String assetPath) {

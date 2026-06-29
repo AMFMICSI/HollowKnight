@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import src.main.view.GameMusic;
 import src.main.view.GameSettings;
-import src.main.view.Phats;
 import src.main.view.screens.AbstractScreen;
 import src.main.view.UiManager;
 import src.main.view.screens.MainMenuScreen;
@@ -24,7 +23,7 @@ public class SettingMenuScreen extends AbstractScreen {
     @Override
     public void show() {
         super.show();
-        setBackground(Phats.MainBackGround.getText());
+        applyThemeBackground();
         buildMainMenu();
     }
 
@@ -124,6 +123,19 @@ public class SettingMenuScreen extends AbstractScreen {
         });
         center.add(langBtn).width(250).padBottom(15).row();
 
+        TextButton themeBtn = new TextButton("Theme: " + (GameSettings.getInstance().getTheme() + 1) + "/3", skin);
+        themeBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent e, float x, float y) {
+                GameSettings s = GameSettings.getInstance();
+                int next = (s.getTheme() + 1) % 3;
+                s.setTheme(next);
+                themeBtn.setText("Theme: " + (next + 1) + "/3");
+                applyThemeBackground();
+            }
+        });
+        center.add(themeBtn).width(250).padBottom(15).row();
+
         TextButton keyBtn = new TextButton("Key Bindings", skin);
         keyBtn.addListener(new ClickListener() {
             @Override
@@ -164,7 +176,7 @@ public class SettingMenuScreen extends AbstractScreen {
         center.add(bottomRow);
 
         rootTable.add(center).expand().center();
-        setupMenuPointer(musicMuteBtn, sfxMuteBtn, langBtn, keyBtn, resetSoundBtn, backBtn);
+        setupMenuPointer(musicMuteBtn, sfxMuteBtn, langBtn, themeBtn, keyBtn, resetSoundBtn, backBtn);
     }
 }
 

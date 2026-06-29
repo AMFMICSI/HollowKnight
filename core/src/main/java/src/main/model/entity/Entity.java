@@ -37,4 +37,5 @@ public abstract class Entity {
     public void setMovingRight(boolean v) { movingRight = v; }
     public boolean isFacingRight() { return facingRight; }
     public void setFacingRight(boolean v) { facingRight = v; }
+    public float getDrawScale() { return DRAW_SCALE; }
 }

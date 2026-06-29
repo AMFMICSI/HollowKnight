@@ -29,6 +29,9 @@
         "MainMap.tmx#SpriteAtlasTexture": {
             "scaleInDock": 0.25
         },
+        "MainMap.tmx#SpriteAtlasTexture-WP_hanging_lamp-512x512-fmt12": {
+            "scaleInEditor": 1
+        },
         "MainMap.tmx#brk_Crystal2": {
             "scaleInDock": 1
         },
@@ -42,7 +45,8 @@
             "scaleInDock": 1
         },
         "MainMap.tmx#flame": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "MainMap.tmx#wall_01": {
             "scaleInDock": 1
@@ -96,6 +100,9 @@
         "tilesets/Obstáculo.tsx": {
             "scaleInDock": 1
         },
+        "tilesets/SpriteAtlasTexture-WP_hanging_lamp-512x512-fmt12.tsx": {
+            "scaleInDock": 1
+        },
         "tilesets/SpriteAtlasTexture-spike.tsx": {
             "scaleInDock": 0.75
         },
@@ -142,6 +149,8 @@
             "scaleInEditor": 1
         }
     },
+    "frame.defaultDuration": 200,
+    "last.externalTilesetPath": "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/tilesets",
     "last.imagePath": "D:/Sharif/2_Term/Uni/AP/Tamrin/3/assets/maps/tilesets",
     "openFiles": [
         "MainMap.tmx"
@@ -164,9 +173,11 @@
     ],
     "tileset.embedInMap": true,
     "tileset.lastUsedFormat": "tsx",
+    "tileset.margin": 0,
+    "tileset.spacing": 0,
     "tileset.tileSize": {
-        "height": 8,
-        "width": 8
+        "height": 170,
+        "width": 170
     },
     "tileset.type": 0
 }

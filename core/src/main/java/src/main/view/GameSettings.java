@@ -2,6 +2,7 @@ package src.main.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import src.main.view.Phats;
 
 public class GameSettings {
     private static final String PREFS = "hollowknight";
@@ -35,6 +36,16 @@ public class GameSettings {
 
     public String getLanguage() { return prefs.getString("language", "en"); }
     public void setLanguage(String v) { prefs.putString("language", v).flush(); }
+
+    private static final String[] THEME_PATHS = {
+        Phats.MainBackGround.getText(),
+        Phats.ThemeBG0.getText(),
+        Phats.ThemeBG1.getText()
+    };
+
+    public int getTheme() { return prefs.getInteger("theme", 0); }
+    public void setTheme(int v) { prefs.putInteger("theme", Math.min(2, Math.max(0, v))).flush(); }
+    public String getThemePath() { return THEME_PATHS[getTheme()]; }
 
     private boolean debugMode = false;
     public boolean isDebugMode() { return debugMode; }
