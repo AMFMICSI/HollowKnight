@@ -22,6 +22,7 @@ import src.main.model.entity.knight.Knight;
 import src.main.model.entity.spell.SpellManager;
 import src.main.model.entity.spell.SpellType;
 import src.main.model.enviroment.Spike;
+import src.main.model.enviroment.CrackedWall;
 import src.main.model.physics.CollisionSystem;
 import src.main.model.physics.PhysicsSystem;
 import src.main.view.AchievementManager;
@@ -56,6 +57,7 @@ public class Game {
     private String pendingToast = null;
     private SpellManager spellManager;
     private List<Vector2> safePoints;
+    private List<CrackedWall> crackedWalls;
     private AchievementManager achievementManager = UiManager.achievements;
     private int saveSlot = -1;
     private float playTime = 0;
@@ -127,6 +129,7 @@ public class Game {
         Vector2 zs = mapLoader.getZoteSpawnPoint();
         zote = new Zote(zs.x, zs.y);
         safePoints = mapLoader.getSafePoints();
+        crackedWalls = mapLoader.getCrackedWalls();
 
         spellManager = new SpellManager(knight, enemies, mapLoader.getSolidBlocks());
         spellManager.setOnKill(enemy -> {
@@ -192,7 +195,7 @@ public class Game {
         knight.update(delta);
         if (!knight.isNoclipMode()) {
             CollisionSystem.resolve(knight, mapLoader.getSolidBlocks(),
-                mapLoader.getSpikes(), mapLoader.getClimbableWalls(), delta);
+                mapLoader.getSpikes(), mapLoader.getClimbableWalls(), crackedWalls, delta);
         }
     }
 
@@ -289,6 +292,17 @@ public class Game {
                 knight.setHitRegistered(true);
                 zote.takeDamage();
                 zote.setFacingRight(knight.getPosition().x >= zote.getPosition().x);
+            }
+
+            if (!knight.isHitRegistered()) {
+                for (CrackedWall wall : crackedWalls) {
+                    if (!wall.isIntact()) continue;
+                    if (hitbox.overlaps(wall.getBounds())) {
+                        knight.setHitRegistered(true);
+                        wall.registerHit();
+                        break;
+                    }
+                }
             }
 
             if (knight.isPogoAttack() && !knight.isHitRegistered()) {

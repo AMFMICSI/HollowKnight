@@ -7,16 +7,51 @@ import src.main.model.entity.knight.Knight;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.enviroment.Spike;
 import src.main.model.enviroment.ClimbableWall;
+import src.main.model.enviroment.CrackedWall;
 
 import java.util.List;
 
 public class CollisionSystem {
     public static void resolve(Knight knight, List<SolidBlock> blocks, List<Spike> spikes,
-                               List<ClimbableWall> climbableWalls, float delta) {
+                               List<ClimbableWall> climbableWalls, List<CrackedWall> crackedWalls, float delta) {
         boolean wasOnGround = knight.isOnGround();
         resolveEntity(knight, blocks, delta);
         if (!wasOnGround && knight.isOnGround())
             knight.resetJump();
+
+        // --- Cracked Wall (only when intact) ---
+        for (CrackedWall wall : crackedWalls) {
+            if (!wall.isIntact()) continue;
+            // Resolve X
+            knight.getPosition().x += knight.getVelocityX() * delta;
+            knight.getBoundingBox().setPosition(knight.getPosition().x, knight.getPosition().y);
+            if (knight.getBoundingBox().overlaps(wall.getBounds())) {
+                if (knight.getVelocityX() > 0)
+                    knight.getPosition().x = wall.getBounds().x - knight.getBoundingBox().width;
+                else if (knight.getVelocityX() < 0)
+                    knight.getPosition().x = wall.getBounds().x + wall.getBounds().width;
+                knight.setVelocityX(0);
+                knight.getBoundingBox().x = knight.getPosition().x;
+            }
+            // Resolve Y
+            knight.getPosition().y += knight.getVelocityY() * delta;
+            knight.getBoundingBox().setPosition(knight.getPosition().x, knight.getPosition().y);
+            boolean wasOnGroundBefore = knight.isOnGround();
+            knight.setOnGround(false);
+            if (knight.getBoundingBox().overlaps(wall.getBounds())) {
+                if (knight.getVelocityY() > 0) {
+                    knight.getPosition().y = wall.getBounds().y - knight.getBoundingBox().height;
+                    knight.setVelocityY(0);
+                } else if (knight.getVelocityY() < 0) {
+                    knight.getPosition().y = wall.getBounds().y + wall.getBounds().height;
+                    knight.setVelocityY(0);
+                    knight.setOnGround(true);
+                }
+                knight.getBoundingBox().setPosition(knight.getPosition().x, knight.getPosition().y);
+            } else {
+                knight.setOnGround(wasOnGroundBefore);
+            }
+        }
 
         // --- Spike ---
         for (Spike spike : spikes) {

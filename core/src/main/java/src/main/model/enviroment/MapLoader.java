@@ -21,6 +21,7 @@ public class MapLoader {
     private List<SolidBlock> solidBlocks = new ArrayList<>();
     private List<Spike> spikes = new ArrayList<>();
     private List<ClimbableWall> climbableWalls = new ArrayList<>();
+    private List<CrackedWall> crackedWalls = new ArrayList<>();
     private Vector2 spawnPoint = new Vector2();
     private Vector2 zoteSpawnPoint = new Vector2();
     private List<EnemySpawnInfo> enemySpawnInfos = new ArrayList<>();
@@ -33,6 +34,7 @@ public class MapLoader {
     public List<SolidBlock> getSolidBlocks() { return solidBlocks; }
     public List<Spike> getSpikes() { return spikes; }
     public List<ClimbableWall> getClimbableWalls() { return climbableWalls; }
+    public List<CrackedWall> getCrackedWalls() { return crackedWalls; }
     public Vector2 getSpawnPoint() { return spawnPoint; }
     public List<EnemySpawnInfo> getEnemySpawnInfos() { return enemySpawnInfos; }
     public Vector2 getZoteSpawnPoint() { return zoteSpawnPoint; }
@@ -66,6 +68,8 @@ public class MapLoader {
                     climbableWalls.add(new ClimbableWall(rect.x, rect.y, rect.width, rect.height));
                     solidBlocks.add(new SolidBlock(rect.x, rect.y, rect.width, rect.height));
                 }
+                if ("CrackedWall".equals(name))
+                    crackedWalls.add(new CrackedWall(rect.x, rect.y, rect.width, rect.height));
             }
         }
 
