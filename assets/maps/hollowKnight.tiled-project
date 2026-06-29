@@ -34,6 +34,26 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
+            "id": 16,
+            "members": [
+            ],
+            "name": "CrackedWall",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
             "id": 5,
             "members": [
                 {
@@ -64,10 +84,50 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
+            "id": 15,
+            "members": [
+            ],
+            "name": "SafePoint",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
             "id": 7,
             "members": [
             ],
             "name": "SolidBlock",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 18,
+            "members": [
+            ],
+            "name": "SpawnHiddenRoom",
             "type": "class",
             "useAs": [
                 "property",
@@ -189,10 +249,10 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
-            "id": 15,
+            "id": 20,
             "members": [
             ],
-            "name": "SafePoint",
+            "name": "RespawnAfterHiddenRoom",
             "type": "class",
             "useAs": [
                 "property",

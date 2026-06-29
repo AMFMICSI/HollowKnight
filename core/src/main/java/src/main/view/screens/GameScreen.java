@@ -26,7 +26,6 @@ import src.main.model.entity.npc.zote.Zote;
 import src.main.model.enviroment.ClimbableWall;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.enviroment.Spike;
-import src.main.model.enviroment.CrackedWall;
 import src.main.view.AchievementManager;
 import src.main.view.GameAssetManager;
 import src.main.view.GameMusic;
@@ -122,16 +121,6 @@ public class GameScreen extends AbstractScreen {
             shapeRenderer.rect(w.getBounds().x, w.getBounds().y,
                 w.getBounds().width, w.getBounds().height);
         }
-        shapeRenderer.setColor(Color.BLUE);
-        for (CrackedWall w : game.getMapLoader().getCrackedWalls()) {
-            if (w.isIntact()) {
-                shapeRenderer.setColor(Color.BLUE);
-            } else {
-                shapeRenderer.setColor(Color.GRAY);
-            }
-            shapeRenderer.rect(w.getBounds().x, w.getBounds().y,
-                w.getBounds().width, w.getBounds().height);
-        }
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.rect(game.getKnight().getBoundingBox().x, game.getKnight().getBoundingBox().y,
             game.getKnight().getBoundingBox().width, game.getKnight().getBoundingBox().height);
@@ -211,17 +200,6 @@ public class GameScreen extends AbstractScreen {
         } else {
             targetX = Math.min(Math.max(targetX, halfW), mapW - halfW);
             targetY = Math.min(Math.max(targetY, halfH), mapH - halfH);
-        }
-
-        // Clamp camera around intact cracked walls (don't reveal behind wall)
-        for (CrackedWall wall : game.getMapLoader().getCrackedWalls()) {
-            if (!wall.isIntact()) continue;
-            Rectangle wb = wall.getBounds();
-            float kx = game.getKnight().getPosition().x;
-            if (kx < wb.x)
-                targetX = Math.min(targetX, wb.x - halfW);
-            else if (kx > wb.x + wb.width)
-                targetX = Math.max(targetX, wb.x + wb.width + halfW);
         }
 
         // Smooth camera follow (lerp)
