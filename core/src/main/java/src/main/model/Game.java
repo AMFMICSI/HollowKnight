@@ -58,6 +58,8 @@ public class Game {
     private SpellManager spellManager;
     private List<Vector2> safePoints;
     private List<CrackedWall> crackedWalls;
+    private Vector2 spawnHiddenRoom;
+    private Vector2 respawnAfterHiddenRoom;
     private AchievementManager achievementManager = UiManager.achievements;
     private int saveSlot = -1;
     private float playTime = 0;
@@ -130,6 +132,8 @@ public class Game {
         zote = new Zote(zs.x, zs.y);
         safePoints = mapLoader.getSafePoints();
         crackedWalls = mapLoader.getCrackedWalls();
+        spawnHiddenRoom = mapLoader.getSpawnHiddenRoom();
+        respawnAfterHiddenRoom = mapLoader.getRespawnAfterHiddenRoom();
 
         spellManager = new SpellManager(knight, enemies, mapLoader.getSolidBlocks());
         spellManager.setOnKill(enemy -> {
@@ -300,6 +304,7 @@ public class Game {
                     if (hitbox.overlaps(wall.getBounds())) {
                         knight.setHitRegistered(true);
                         wall.registerHit();
+                        if (!wall.isIntact()) teleportForWall(wall);
                         break;
                     }
                 }
@@ -315,6 +320,23 @@ public class Game {
                 }
             }
         }
+    }
+
+    private void teleportForWall(CrackedWall wall) {
+        Rectangle wb = wall.getBounds();
+        if (wb.x > 2000) {
+            knight.getPosition().set(spawnHiddenRoom.x, spawnHiddenRoom.y);
+            knight.getBoundingBox().setPosition(spawnHiddenRoom.x, spawnHiddenRoom.y);
+            if (!knight.isCharmEquipped(CharmType.VOID_HEART)) {
+                knight.equipCharm(CharmType.VOID_HEART);
+                pendingToast = "Void Heart acquired!";
+            }
+        } else {
+            knight.getPosition().set(respawnAfterHiddenRoom.x, respawnAfterHiddenRoom.y);
+            knight.getBoundingBox().setPosition(respawnAfterHiddenRoom.x, respawnAfterHiddenRoom.y);
+        }
+        knight.setVelocityX(0);
+        knight.setVelocityY(0);
     }
 
     private void applyHeavyBlowKnockback(Enemy enemy) {

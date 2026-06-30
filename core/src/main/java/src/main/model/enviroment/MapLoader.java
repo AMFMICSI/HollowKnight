@@ -29,6 +29,8 @@ public class MapLoader {
     Map<String, Rectangle> namedZones = new HashMap<>();
     private List<Rectangle> bossGates = new ArrayList<>();
     private List<Vector2> safePoints = new ArrayList<>();
+    private Vector2 spawnHiddenRoom = new Vector2();
+    private Vector2 respawnAfterHiddenRoom = new Vector2();
 
     public TiledMap getTiledMap() { return tiledMap; }
     public List<SolidBlock> getSolidBlocks() { return solidBlocks; }
@@ -42,6 +44,8 @@ public class MapLoader {
     public Map<String, Rectangle> getNamedZones() { return namedZones; }
     public List<Rectangle> getBossGates() { return bossGates; }
     public List<Vector2> getSafePoints() { return safePoints; }
+    public Vector2 getSpawnHiddenRoom() { return spawnHiddenRoom; }
+    public Vector2 getRespawnAfterHiddenRoom() { return respawnAfterHiddenRoom; }
 
     public static class EnemySpawnInfo {
         public Vector2 position;
@@ -113,6 +117,14 @@ public class MapLoader {
             }
             if ("SafePoint".equals(obj.getName()) && obj instanceof PointMapObject p) {
                 safePoints.add(new Vector2(p.getPoint().x, p.getPoint().y));
+                continue;
+            }
+            if ("SpawnHiddenRoom".equals(obj.getName()) && obj instanceof PointMapObject p) {
+                spawnHiddenRoom.set(p.getPoint().x, p.getPoint().y);
+                continue;
+            }
+            if ("RespawnAfterHiddenRoom".equals(obj.getName()) && obj instanceof PointMapObject p) {
+                respawnAfterHiddenRoom.set(p.getPoint().x, p.getPoint().y);
                 continue;
             }
             if (obj instanceof PointMapObject p) {

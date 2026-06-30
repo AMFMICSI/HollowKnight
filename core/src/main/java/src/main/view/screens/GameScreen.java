@@ -26,6 +26,7 @@ import src.main.model.entity.npc.zote.Zote;
 import src.main.model.enviroment.ClimbableWall;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.enviroment.Spike;
+import src.main.model.enviroment.CrackedWall;
 import src.main.view.AchievementManager;
 import src.main.view.GameAssetManager;
 import src.main.view.GameMusic;
@@ -52,7 +53,7 @@ public class GameScreen extends AbstractScreen {
     private static final float STEP = 1 / 60f;
     private float accumulator;
     private float mapW, mapH;
-    private static final float CAMERA_LERP = 0.06f;
+    private static final float CAMERA_LERP = 0.15f;
 
     private DialogueBox dialogueBox;
     private boolean resourcesCreated;

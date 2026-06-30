@@ -23,7 +23,6 @@ public class CollisionSystem {
         for (CrackedWall wall : crackedWalls) {
             if (!wall.isIntact()) continue;
             // Resolve X
-            knight.getPosition().x += knight.getVelocityX() * delta;
             knight.getBoundingBox().setPosition(knight.getPosition().x, knight.getPosition().y);
             if (knight.getBoundingBox().overlaps(wall.getBounds())) {
                 if (knight.getVelocityX() > 0)
@@ -34,7 +33,6 @@ public class CollisionSystem {
                 knight.getBoundingBox().x = knight.getPosition().x;
             }
             // Resolve Y
-            knight.getPosition().y += knight.getVelocityY() * delta;
             knight.getBoundingBox().setPosition(knight.getPosition().x, knight.getPosition().y);
             boolean wasOnGroundBefore = knight.isOnGround();
             knight.setOnGround(false);
