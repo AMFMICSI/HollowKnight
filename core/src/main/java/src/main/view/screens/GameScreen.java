@@ -51,6 +51,7 @@ public class GameScreen extends AbstractScreen {
     private Viewport gameViewport;
 
     private static final float STEP = 1 / 60f;
+    private static final int MAX_STEPS = 5;
     private float accumulator;
     private float mapW, mapH;
     private static final float CAMERA_LERP = 0.15f;
@@ -175,6 +176,7 @@ public class GameScreen extends AbstractScreen {
     public void render(float delta) {
         gameViewport.apply();
         accumulator += delta;
+        accumulator = Math.min(accumulator, STEP * MAX_STEPS);
         while (accumulator >= STEP) {
             game.update(STEP);
             accumulator -= STEP;
@@ -332,6 +334,8 @@ public class GameScreen extends AbstractScreen {
             p.draw(batch, delta);
         for (var aoe : game.getSpellManager().getAoes())
             aoe.draw(batch, delta);
+        for (var p : game.getButterflies())
+            p.draw(batch, GameAssetManager.butterflyAnim);
         batch.end();
 
         if (GameSettings.getInstance().isDebugMode())

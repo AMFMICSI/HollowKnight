@@ -15,6 +15,7 @@ import src.main.model.entity.enemy.boss.falseKnight.FalseKnightState;
 import src.main.model.entity.enemy.groundEnemy.GroundEnemy;
 import src.main.model.entity.enemy.groundEnemy.crawlid.Crawlid;
 import src.main.model.entity.npc.zote.Zote;
+import src.main.model.entity.particle.ButterflyParticle;
 import src.main.model.enviroment.MapLoader;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.entity.charm.CharmType;
@@ -68,6 +69,9 @@ public class Game {
     private boolean gameCompleted = false;
     private EndGameData pendingEndGameData = null;
     private String currentArea = null;
+    private List<ButterflyParticle> butterflies = new ArrayList<>();
+    private List<ButterflyParticle> ambientButterflies = new ArrayList<>();
+    private List<Vector2> butterflySpawnPoints;
 
     public Knight getKnight() { return knight; }
     public KeyBindings getKeyBindings() { return keyBindings; }
@@ -134,6 +138,9 @@ public class Game {
         crackedWalls = mapLoader.getCrackedWalls();
         spawnHiddenRoom = mapLoader.getSpawnHiddenRoom();
         respawnAfterHiddenRoom = mapLoader.getRespawnAfterHiddenRoom();
+        butterflySpawnPoints = mapLoader.getButterflySpawnPoints();
+        for (Vector2 sp : butterflySpawnPoints)
+            ambientButterflies.add(new ButterflyParticle(sp.x, sp.y, true));
 
         spellManager = new SpellManager(knight, enemies, mapLoader.getSolidBlocks());
         spellManager.setOnKill(enemy -> {
@@ -148,7 +155,6 @@ public class Game {
     }
 
     public void update(float delta) {
-        delta = Math.min(delta, 0.033f);
         playTime += delta;
 
         updateBossArena();
@@ -168,6 +174,7 @@ public class Game {
         }
 
         updateCombat(delta);
+        checkCrackedWallTeleport();
         updateEnemies(delta);
         SpellType castType = knight.consumePendingCastResult();
         if (castType != null) triggerCameraShake(2f, 0.2f);
@@ -187,6 +194,7 @@ public class Game {
         checkPogoAchievement();
         knight.updateAnimationState();
         updateZote(delta);
+        updateButterflies(delta);
 
         if (cameraShakeTimer > 0) cameraShakeTimer -= delta;
     }
@@ -240,6 +248,29 @@ public class Game {
                 pendingEndGameData = new EndGameData(deathCount, totalEnemiesKilled, playTime);
             }
         }
+    }
+
+    private void updateButterflies(float delta) {
+        for (int i = 0; i < ambientButterflies.size(); i++) {
+            ButterflyParticle b = ambientButterflies.get(i);
+            b.update(delta);
+            if (b.isDead()) {
+                Vector2 sp = butterflySpawnPoints.get(i);
+                ambientButterflies.set(i, new ButterflyParticle(sp.x, sp.y, true));
+            }
+        }
+        for (ButterflyParticle b : butterflies) b.update(delta);
+        butterflies.removeIf(ButterflyParticle::isDead);
+    }
+
+    public void spawnButterfly(float x, float y) {
+        butterflies.add(new ButterflyParticle(x, y));
+    }
+
+    public List<ButterflyParticle> getButterflies() {
+        List<ButterflyParticle> all = new ArrayList<>(ambientButterflies);
+        all.addAll(butterflies);
+        return all;
     }
 
     private void updateZote(float delta) {
@@ -337,6 +368,16 @@ public class Game {
         }
         knight.setVelocityX(0);
         knight.setVelocityY(0);
+    }
+
+    private void checkCrackedWallTeleport() {
+        for (CrackedWall wall : crackedWalls) {
+            if (wall.isIntact()) continue;
+            if (knight.getBoundingBox().overlaps(wall.getBounds())) {
+                teleportForWall(wall);
+                break;
+            }
+        }
     }
 
     private void applyHeavyBlowKnockback(Enemy enemy) {
@@ -529,6 +570,7 @@ public class Game {
                 knight.setMovingLeft(false);
                 knight.stopX();
                 zote.interact();
+                spawnButterfly(zote.getPosition().x + 10, zote.getPosition().y + 30);
                 currentDialogueText = zote.getCurrentDialogue();
                 dialogueActive = true;
             }

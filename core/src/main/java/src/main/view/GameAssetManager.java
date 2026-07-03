@@ -48,6 +48,8 @@ public class GameAssetManager {
     public static Animation<TextureRegion> downSlashEffectAnim;
     public static Animation<TextureRegion> upSlashEffectAnim;
     private static TextureAtlas effectsAtlas;
+    public static Animation<TextureRegion> butterflyAnim;
+    private static TextureAtlas butterflyAtlas;
     private static TextureAtlas falseKnightAtlas;
     public static Map<FalseKnightAnimationType, Animation<TextureRegion>> falseKnightAnimations;
     private static TextureAtlas hudAtlas;
@@ -87,6 +89,7 @@ public class GameAssetManager {
         loadZoteSounds();
         loadCharmTextures();
         loadCharmSounds();
+        loadButterflyAnimation();
     }
 
     public static void loadMenuPointers() {
@@ -164,6 +167,15 @@ public class GameAssetManager {
             upSlashFrames[i] = effectsAtlas.findRegion("UpSlashEffect_" + String.format("%03d", i));
         upSlashEffectAnim = new Animation<>(0.05f, upSlashFrames);
         upSlashEffectAnim.setPlayMode(Animation.PlayMode.NORMAL);
+    }
+
+    public static void loadButterflyAnimation() {
+        butterflyAtlas = new TextureAtlas(Gdx.files.internal(Phats.ButterflyAtlas.getText()));
+        TextureRegion[] frames = new TextureRegion[4];
+        for (int i = 0; i < 4; i++)
+            frames[i] = butterflyAtlas.findRegion("butterfly_00" + i);
+        butterflyAnim = new Animation<>(0.12f, frames);
+        butterflyAnim.setPlayMode(Animation.PlayMode.LOOP);
     }
 
     public static void loadCharmTextures() {
@@ -268,6 +280,7 @@ public class GameAssetManager {
         if (zoteAtlas != null) zoteAtlas.dispose();
         if (zoteGrunt1 != null) zoteGrunt1.dispose();
         if (zoteGrunt2 != null) zoteGrunt2.dispose();
+        if (butterflyAtlas != null) butterflyAtlas.dispose();
         GameMusic.disposeAll();
     }
 }

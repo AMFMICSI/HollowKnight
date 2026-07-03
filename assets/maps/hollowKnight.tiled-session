@@ -20,11 +20,11 @@
             }
         },
         "MainMap.tmx": {
-            "scale": 2,
-            "selectedLayer": 4,
+            "scale": 0.8758,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 403.5,
-                "y": 3095
+                "x": 335.6930806120119,
+                "y": 2304.1790363096598
             }
         },
         "MainMap.tmx#927-2@2x": {

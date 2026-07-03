@@ -6,7 +6,6 @@ public class CrackedWall {
     private Rectangle bounds;
     private int hitCount = 0;
     private static final int MAX_HITS = 3;
-    private boolean justBroke = false;
 
     public CrackedWall(float x, float y, float width, float height) {
         this.bounds = new Rectangle(x, y, width, height);
@@ -21,12 +20,8 @@ public class CrackedWall {
     public void registerHit() {
         if (isIntact()) {
             hitCount++;
-            if (!isIntact()) justBroke = true;
         }
     }
-
-    public boolean isJustBroke() { return justBroke; }
-    public void clearJustBroke() { justBroke = false; }
 
     public int getHitCount() {
         return hitCount;

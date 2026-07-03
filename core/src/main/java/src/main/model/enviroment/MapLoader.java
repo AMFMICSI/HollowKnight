@@ -31,6 +31,7 @@ public class MapLoader {
     private List<Vector2> safePoints = new ArrayList<>();
     private Vector2 spawnHiddenRoom = new Vector2();
     private Vector2 respawnAfterHiddenRoom = new Vector2();
+    private List<Vector2> butterflySpawnPoints = new ArrayList<>();
 
     public TiledMap getTiledMap() { return tiledMap; }
     public List<SolidBlock> getSolidBlocks() { return solidBlocks; }
@@ -46,6 +47,7 @@ public class MapLoader {
     public List<Vector2> getSafePoints() { return safePoints; }
     public Vector2 getSpawnHiddenRoom() { return spawnHiddenRoom; }
     public Vector2 getRespawnAfterHiddenRoom() { return respawnAfterHiddenRoom; }
+    public List<Vector2> getButterflySpawnPoints() { return butterflySpawnPoints; }
 
     public static class EnemySpawnInfo {
         public Vector2 position;
@@ -117,6 +119,10 @@ public class MapLoader {
             }
             if ("SafePoint".equals(obj.getName()) && obj instanceof PointMapObject p) {
                 safePoints.add(new Vector2(p.getPoint().x, p.getPoint().y));
+                continue;
+            }
+            if ("ButterflySpawn".equals(obj.getName()) && obj instanceof PointMapObject p) {
+                butterflySpawnPoints.add(new Vector2(p.getPoint().x, p.getPoint().y));
                 continue;
             }
             if ("SpawnHiddenRoom".equals(obj.getName()) && obj instanceof PointMapObject p) {

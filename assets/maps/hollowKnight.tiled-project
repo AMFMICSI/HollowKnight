@@ -84,6 +84,26 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
+            "id": 20,
+            "members": [
+            ],
+            "name": "RespawnAfterHiddenRoom",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
             "id": 15,
             "members": [
             ],
@@ -249,10 +269,10 @@
         {
             "color": "#ffa0a0a4",
             "drawFill": true,
-            "id": 20,
+            "id": 21,
             "members": [
             ],
-            "name": "RespawnAfterHiddenRoom",
+            "name": "ButterflySpawn",
             "type": "class",
             "useAs": [
                 "property",
