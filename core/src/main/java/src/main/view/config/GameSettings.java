@@ -1,8 +1,7 @@
-package src.main.view;
+package src.main.view.config;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import src.main.view.Phats;
 
 public class GameSettings {
     private static final String PREFS = "hollowknight";

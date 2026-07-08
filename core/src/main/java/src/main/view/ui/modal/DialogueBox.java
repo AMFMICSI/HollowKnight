@@ -1,4 +1,4 @@
-package src.main.view.actors.modal;
+package src.main.view.ui.modal;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;

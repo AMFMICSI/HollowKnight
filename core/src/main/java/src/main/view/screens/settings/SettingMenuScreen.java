@@ -3,10 +3,11 @@ package src.main.view.screens.settings;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import src.main.view.GameMusic;
-import src.main.view.GameSettings;
+import src.main.view.config.TranslationManager;
+import src.main.view.manager.GameMusic;
+import src.main.view.config.GameSettings;
 import src.main.view.screens.AbstractScreen;
-import src.main.view.UiManager;
+import src.main.view.manager.UiManager;
 import src.main.view.screens.MainMenuScreen;
 
 public class SettingMenuScreen extends AbstractScreen {
@@ -33,19 +34,20 @@ public class SettingMenuScreen extends AbstractScreen {
         Table center = new Table();
         center.center();
 
-        Label title = new Label("Settings", skin);
+        Label title = new Label(TranslationManager.get("settings.title"), skin);
         center.add(title).padBottom(30).row();
 
-        Label musicLabel = new Label("Music", skin);
-        TextButton musicMuteBtn = new TextButton(GameMusic.MENU.isMuted() ? "Unmute" : "Mute", skin);
+        Label musicLabel = new Label(TranslationManager.get("settings.music"), skin);
+        TextButton musicMuteBtn = new TextButton(GameMusic.MENU.isMuted() ? TranslationManager.get("settings.unmute") : TranslationManager.get("settings.mute"), skin);
         Slider musicSlider = new Slider(0, 1, 0.05f, false, skin);
         musicSlider.setValue(GameSettings.getInstance().getMusicVolume());
         musicSlider.addListener(event -> {
             GameSettings.getInstance().setMusicVolume(musicSlider.getValue());
-            GameMusic.MENU.setVolume(musicSlider.getValue());
+            GameMusic.setVolumeAll(musicSlider.getValue());
             if (GameMusic.MENU.isMuted() && musicSlider.getValue() > 0) {
-                GameMusic.MENU.toggleMute();
-                musicMuteBtn.setText("Mute");
+                GameSettings.getInstance().setMusicMuted(false);
+                GameMusic.applyMuteToAll();
+                musicMuteBtn.setText(TranslationManager.get("settings.mute"));
             }
             return false;
         });
@@ -53,8 +55,9 @@ public class SettingMenuScreen extends AbstractScreen {
         musicMuteBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent e, float x, float y) {
-                GameMusic.MENU.toggleMute();
-                musicMuteBtn.setText(GameMusic.MENU.isMuted() ? "Unmute" : "Mute");
+                GameSettings.getInstance().setMusicMuted(!GameMusic.MENU.isMuted());
+                GameMusic.applyMuteToAll();
+                musicMuteBtn.setText(GameMusic.MENU.isMuted() ? TranslationManager.get("settings.unmute") : TranslationManager.get("settings.mute"));
             }
         });
 
@@ -64,15 +67,15 @@ public class SettingMenuScreen extends AbstractScreen {
         musicRow.add(musicMuteBtn).width(80);
         center.add(musicRow).padBottom(15).row();
 
-        Label sfxLabel = new Label("SFX", skin);
-        TextButton sfxMuteBtn = new TextButton(GameSettings.getInstance().isSfxMuted() ? "Unmute" : "Mute", skin);
+        Label sfxLabel = new Label(TranslationManager.get("settings.sfx"), skin);
+        TextButton sfxMuteBtn = new TextButton(GameSettings.getInstance().isSfxMuted() ? TranslationManager.get("settings.unmute") : TranslationManager.get("settings.mute"), skin);
         Slider sfxSlider = new Slider(0, 1, 0.05f, false, skin);
         sfxSlider.setValue(GameSettings.getInstance().getSfxVolume());
         sfxSlider.addListener(event -> {
             GameSettings.getInstance().setSfxVolume(sfxSlider.getValue());
             if (GameSettings.getInstance().isSfxMuted()) {
                 GameSettings.getInstance().setSfxMuted(false);
-                sfxMuteBtn.setText("Mute");
+                sfxMuteBtn.setText(TranslationManager.get("settings.mute"));
             }
             return false;
         });
@@ -81,7 +84,7 @@ public class SettingMenuScreen extends AbstractScreen {
             @Override
             public void clicked(InputEvent e, float x, float y) {
                 GameSettings.getInstance().setSfxMuted(!GameSettings.getInstance().isSfxMuted());
-                sfxMuteBtn.setText(GameSettings.getInstance().isSfxMuted() ? "Unmute" : "Mute");
+                sfxMuteBtn.setText(GameSettings.getInstance().isSfxMuted() ? TranslationManager.get("settings.unmute") : TranslationManager.get("settings.mute"));
             }
         });
 
@@ -91,7 +94,7 @@ public class SettingMenuScreen extends AbstractScreen {
         sfxRow.add(sfxMuteBtn).width(80);
         center.add(sfxRow).padBottom(15).row();
 
-        Label brightnessLabel = new Label("Brightness", skin);
+        Label brightnessLabel = new Label(TranslationManager.get("settings.brightness"), skin);
         Slider brightnessSlider = new Slider(0.2f, 1, 0.05f, false, skin);
         brightnessSlider.setValue(GameSettings.getInstance().getBrightness());
         brightnessSlider.addListener(event -> {
@@ -104,8 +107,8 @@ public class SettingMenuScreen extends AbstractScreen {
         brightnessRow.add(brightnessSlider).width(200);
         center.add(brightnessRow).padBottom(15).row();
 
-        String[] languages = {"en", "fa"};
-        TextButton langBtn = new TextButton("Language: " + GameSettings.getInstance().getLanguage().toUpperCase(), skin);
+        String[] languages = {"en", "fr"};
+        TextButton langBtn = new TextButton(TranslationManager.get("settings.language") + ": " + GameSettings.getInstance().getLanguage().toUpperCase(), skin);
         langBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent e, float x, float y) {
@@ -118,25 +121,26 @@ public class SettingMenuScreen extends AbstractScreen {
                     }
                 }
                 GameSettings.getInstance().setLanguage(next);
-                langBtn.setText("Language: " + next.toUpperCase());
+                TranslationManager.reload();
+                buildMainMenu();
             }
         });
         center.add(langBtn).width(250).padBottom(15).row();
 
-        TextButton themeBtn = new TextButton("Theme: " + (GameSettings.getInstance().getTheme() + 1) + "/3", skin);
+        TextButton themeBtn = new TextButton(TranslationManager.get("settings.theme") + ": " + (GameSettings.getInstance().getTheme() + 1) + "/3", skin);
         themeBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent e, float x, float y) {
                 GameSettings s = GameSettings.getInstance();
                 int next = (s.getTheme() + 1) % 3;
                 s.setTheme(next);
-                themeBtn.setText("Theme: " + (next + 1) + "/3");
+                themeBtn.setText(TranslationManager.get("settings.theme") + ": " + (next + 1) + "/3");
                 applyThemeBackground();
             }
         });
         center.add(themeBtn).width(250).padBottom(15).row();
 
-        TextButton keyBtn = new TextButton("Key Bindings", skin);
+        TextButton keyBtn = new TextButton(TranslationManager.get("settings.key_bindings"), skin);
         keyBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent e, float x, float y) {
@@ -146,20 +150,21 @@ public class SettingMenuScreen extends AbstractScreen {
         center.add(keyBtn).width(200).padBottom(20).row();
 
         Table bottomRow = new Table();
-        TextButton resetSoundBtn = new TextButton("Reset Sound", skin);
+        TextButton resetSoundBtn = new TextButton(TranslationManager.get("settings.reset_sound"), skin);
         resetSoundBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent e, float x, float y) {
                 GameSettings.getInstance().resetSound();
-                GameMusic.MENU.setVolume(GameSettings.getInstance().getMusicVolume());
+                GameMusic.setVolumeAll(GameSettings.getInstance().getMusicVolume());
+                GameMusic.applyMuteToAll();
                 musicSlider.setValue(GameSettings.getInstance().getMusicVolume());
                 sfxSlider.setValue(GameSettings.getInstance().getSfxVolume());
-                musicMuteBtn.setText(GameMusic.MENU.isMuted() ? "Unmute" : "Mute");
-                sfxMuteBtn.setText(GameSettings.getInstance().isSfxMuted() ? "Unmute" : "Mute");
+                musicMuteBtn.setText(GameMusic.MENU.isMuted() ? TranslationManager.get("settings.unmute") : TranslationManager.get("settings.mute"));
+                sfxMuteBtn.setText(GameSettings.getInstance().isSfxMuted() ? TranslationManager.get("settings.unmute") : TranslationManager.get("settings.mute"));
             }
         });
 
-        TextButton backBtn = new TextButton("Back", skin);
+        TextButton backBtn = new TextButton(TranslationManager.get("settings.back"), skin);
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent e, float x, float y) {

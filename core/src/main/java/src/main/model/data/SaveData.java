@@ -3,7 +3,7 @@ package src.main.model.data;
 import com.badlogic.gdx.utils.Json;
 import src.main.model.entity.charm.CharmType;
 import src.main.model.entity.knight.Knight;
-import src.main.view.AchievementManager;
+import src.main.view.manager.AchievementManager;
 
 import java.util.ArrayList;
 import java.util.List;

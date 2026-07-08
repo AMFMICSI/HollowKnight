@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import src.main.model.entity.animation.AnimationSet;
 import src.main.model.entity.enemy.groundEnemy.GroundEnemy;
-import src.main.view.GameAssetManager;
+import src.main.view.manager.GameAssetManager;
 
 public class Crawlid extends GroundEnemy {
     private static final float WALK_SPEED = 30f;

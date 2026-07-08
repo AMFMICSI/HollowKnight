@@ -7,7 +7,7 @@ import src.main.model.entity.animation.AnimationSet;
 import src.main.model.entity.enemy.groundEnemy.GroundEnemy;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.physics.PhysicsSystem;
-import src.main.view.GameAssetManager;
+import src.main.view.manager.GameAssetManager;
 
 import java.util.List;
 

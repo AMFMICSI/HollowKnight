@@ -22,18 +22,15 @@ import src.main.model.entity.enemy.boss.falseKnight.FalseKnight;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalHunter;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalProjectile;
 import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardian;
-import src.main.model.entity.npc.zote.Zote;
 import src.main.model.enviroment.ClimbableWall;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.enviroment.Spike;
-import src.main.model.enviroment.CrackedWall;
-import src.main.view.AchievementManager;
-import src.main.view.GameAssetManager;
-import src.main.view.GameMusic;
-import src.main.view.GameSettings;
-import src.main.view.HudRenderer;
+import src.main.view.manager.GameAssetManager;
+import src.main.view.manager.GameMusic;
+import src.main.view.config.GameSettings;
+import src.main.view.ui.renderer.HudRenderer;
 import src.main.view.popup.AchievementPopup;
-import src.main.view.actors.modal.DialogueBox;
+import src.main.view.ui.modal.DialogueBox;
 
 public class GameScreen extends AbstractScreen {
     private static GameScreen currentInstance;
@@ -291,7 +288,7 @@ public class GameScreen extends AbstractScreen {
 
         Game.EndGameData endData = game.consumePendingEndGameData();
         if (endData != null) {
-            new src.main.view.actors.modal.EndGameModal(endData).show();
+            new src.main.view.ui.modal.EndGameModal(endData).show();
         }
 
         if (game.consumeDialogueAdvance()) {

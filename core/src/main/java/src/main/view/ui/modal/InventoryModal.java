@@ -1,10 +1,9 @@
-package src.main.view.actors.modal;
+package src.main.view.ui.modal;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -18,7 +17,8 @@ import com.badlogic.gdx.utils.Align;
 import src.main.model.Game;
 import src.main.model.entity.charm.CharmType;
 import src.main.model.entity.knight.Knight;
-import src.main.view.GameAssetManager;
+import src.main.view.config.TranslationManager;
+import src.main.view.manager.GameAssetManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class InventoryModal extends Modal {
         pix.dispose();
 
         defaults().space(3);
-        add(new Label("Inventory", skin)).colspan(2).center().padBottom(8).row();
+        add(new Label(TranslationManager.get("inventory.title"), skin)).colspan(2).center().padBottom(8).row();
 
         int col = 0;
         for (CharmType charm : CharmType.values()) {
@@ -80,7 +80,7 @@ public class InventoryModal extends Modal {
         }
         if (col % 2 != 0) row();
 
-        descLabel = new Label("Select a charm", skin);
+        descLabel = new Label(TranslationManager.get("inventory.select"), skin);
         descLabel.setWrap(true);
         add(descLabel).colspan(2).width(370).padTop(8).row();
 
@@ -91,7 +91,7 @@ public class InventoryModal extends Modal {
         }
         add(notchTable).colspan(2).padTop(4).row();
 
-        equipBtn = new TextButton("Equip", skin);
+        equipBtn = new TextButton(TranslationManager.get("inventory.equip"), skin);
         equipBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -100,7 +100,7 @@ public class InventoryModal extends Modal {
         });
         add(equipBtn).colspan(2).width(150).padTop(4).row();
 
-        TextButton closeBtn = new TextButton("Close", skin);
+        TextButton closeBtn = new TextButton(TranslationManager.get("inventory.close"), skin);
         closeBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -130,7 +130,7 @@ public class InventoryModal extends Modal {
         selectedCharm = charm;
         descLabel.setText(charm.getName() + ": " + charm.getDescription());
         Knight knight = game.getKnight();
-        equipBtn.setText(knight.isCharmEquipped(charm) ? "Unequip" : "Equip");
+        equipBtn.setText(knight.isCharmEquipped(charm) ? TranslationManager.get("inventory.unequip") : TranslationManager.get("inventory.equip"));
         updateButtonHighlights();
     }
 
@@ -142,14 +142,14 @@ public class InventoryModal extends Modal {
             GameAssetManager.charmClickSound.play();
         } else {
             if (!knight.equipCharm(selectedCharm)) {
-                descLabel.setText("Not enough notches!");
+                descLabel.setText(TranslationManager.get("inventory.no_notches"));
                 return;
             }
             GameAssetManager.charmClickSound.play();
         }
         updateNotchDisplay();
         updateButtonHighlights();
-        equipBtn.setText(knight.isCharmEquipped(selectedCharm) ? "Unequip" : "Equip");
+        equipBtn.setText(knight.isCharmEquipped(selectedCharm) ? TranslationManager.get("inventory.unequip") : TranslationManager.get("inventory.equip"));
     }
 
     private void updateNotchDisplay() {

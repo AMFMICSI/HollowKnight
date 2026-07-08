@@ -1,4 +1,4 @@
-package src.main.view;
+package src.main.view.manager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -16,6 +16,7 @@ import src.main.model.entity.knight.KnightAnimationType;
 import src.main.model.entity.animation.AnimationType;
 import src.main.model.entity.hud.SoulFillStage;
 import src.main.model.entity.npc.zote.ZoteAnimationType;
+import src.main.view.config.Phats;
 
 import java.util.HashMap;
 import java.util.Map;

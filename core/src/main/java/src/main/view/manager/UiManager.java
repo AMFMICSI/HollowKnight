@@ -1,4 +1,4 @@
-package src.main.view;
+package src.main.view.manager;
 
 import com.badlogic.gdx.Screen;
 import src.main.Main;

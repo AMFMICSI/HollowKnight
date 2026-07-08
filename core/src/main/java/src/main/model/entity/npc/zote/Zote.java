@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import src.main.model.entity.Entity;
 import src.main.model.entity.animation.AnimationSet;
-import src.main.view.GameAssetManager;
-import src.main.view.GameSettings;
+import src.main.view.config.TranslationManager;
+import src.main.view.manager.GameAssetManager;
+import src.main.view.config.GameSettings;
 
 import java.util.Random;
 
@@ -43,20 +44,20 @@ public class Zote extends Entity {
         setFacingRight(true);
 
         dialogues = new String[]{
-            "You dare approach me? I am Zote the Mighty!",
-            "I, Zote, will be the one to defeat the Radiance!",
-            "Stand aside, lest you be crushed by my greatness!"
+            TranslationManager.get("zote.line0"),
+            TranslationManager.get("zote.line1"),
+            TranslationManager.get("zote.line2")
         };
 
         precepts = new String[]{
-            "Precept One: Always win your battles.",
-            "Precept Two: Never let them laugh at you.",
-            "Precept Three: If you are stronger, protect the weak.",
-            "Precept Four: Remember your dreams.",
-            "Precept Five: Do not eat immediately before sleeping.",
-            "Precept Six: Strength has many forms.",
-            "Precept Seven: Let dreams be your guide.",
-            "Precept Eight: There is no shame in a quiet life."
+            TranslationManager.get("zote.precept1"),
+            TranslationManager.get("zote.precept2"),
+            TranslationManager.get("zote.precept3"),
+            TranslationManager.get("zote.precept4"),
+            TranslationManager.get("zote.precept5"),
+            TranslationManager.get("zote.precept6"),
+            TranslationManager.get("zote.precept7"),
+            TranslationManager.get("zote.precept8")
         };
 
         dialogueState = DialogueState.MAIN;

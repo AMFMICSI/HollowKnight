@@ -1,10 +1,11 @@
-package src.main.view;
+package src.main.view.ui.renderer;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import src.main.model.entity.animation.AnimationSet;
 import src.main.model.entity.hud.SoulFillStage;
+import src.main.view.manager.GameAssetManager;
 
 public class HudRenderer {
     private OrthographicCamera hudCamera;

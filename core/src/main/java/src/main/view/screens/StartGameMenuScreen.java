@@ -7,7 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import src.main.model.Game;
 import src.main.model.data.SaveData;
-import src.main.view.UiManager;
+import src.main.view.config.TranslationManager;
+import src.main.view.manager.UiManager;
+import src.main.view.manager.AchievementManager;
 
 public class StartGameMenuScreen extends AbstractScreen {
 
@@ -16,7 +18,7 @@ public class StartGameMenuScreen extends AbstractScreen {
         super.show();
         applyThemeBackground();
 
-        Label title = new Label("Select Slot", skin);
+        Label title = new Label(TranslationManager.get("slot.title"), skin);
 
         Table slotTable = new Table();
         slotTable.defaults().width(220).spaceBottom(8);
@@ -24,13 +26,15 @@ public class StartGameMenuScreen extends AbstractScreen {
         for (int i = 0; i < 4; i++) {
             int slot = i;
             boolean exists = SaveData.slotExists(i);
-            String label = exists ? "Slot " + (i+1) + " (Continue)" : "Slot " + (i+1) + " (Empty)";
+            String label = exists
+                ? TranslationManager.get("slot.prefix") + " " + (i+1) + " (" + TranslationManager.get("slot.continue") + ")"
+                : TranslationManager.get("slot.prefix") + " " + (i+1) + " (" + TranslationManager.get("slot.empty") + ")";
             TextButton btn = new TextButton(label, skin);
             btn.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     SaveData data = SaveData.load(slot);
-                    UiManager.achievements = new src.main.view.AchievementManager();
+                    UiManager.achievements = new AchievementManager();
                     Game game;
                     if (data != null) {
                         game = new Game(slot, data);
@@ -44,7 +48,7 @@ public class StartGameMenuScreen extends AbstractScreen {
             Table row = new Table();
             row.add(btn).width(200);
             if (exists) {
-                TextButton delBtn = new TextButton("X", skin);
+                TextButton delBtn = new TextButton(TranslationManager.get("slot.delete"), skin);
                 delBtn.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
@@ -59,24 +63,24 @@ public class StartGameMenuScreen extends AbstractScreen {
             slotTable.add(row).row();
         }
 
-        TextButton newGameBtn = new TextButton("New Game", skin);
+        TextButton newGameBtn = new TextButton(TranslationManager.get("slot.new_game"), skin);
         newGameBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 for (int i = 0; i < 4; i++) {
                     if (!SaveData.slotExists(i)) {
-                        UiManager.achievements = new src.main.view.AchievementManager();
+                        UiManager.achievements = new AchievementManager();
                         Game game = new Game();
                         game.setSaveSlot(i);
                         UiManager.setScreen(new GameScreen(game));
                         return;
                     }
                 }
-                openToast("All slots are full!");
+                openToast(TranslationManager.get("slot.all_full"));
             }
         });
 
-        TextButton backBtn = new TextButton("Back", skin);
+        TextButton backBtn = new TextButton(TranslationManager.get("slot.back"), skin);
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

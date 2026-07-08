@@ -1,12 +1,11 @@
 package src.main.model.entity.enemy.flyingEnemy.crystalHunter;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import src.main.model.entity.animation.AnimationSet;
 import src.main.model.entity.enemy.flyingEnemy.FlyingEnemy;
-import src.main.view.GameAssetManager;
+import src.main.view.manager.GameAssetManager;
 
 import java.util.ArrayList;
 import java.util.List;

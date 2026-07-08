@@ -6,10 +6,10 @@ import com.badlogic.gdx.InputProcessor;
 import src.main.model.Game;
 import src.main.model.data.KeyBindings;
 import src.main.model.entity.spell.SpellType;
-import src.main.view.GameSettings;
-import src.main.view.UiManager;
-import src.main.view.actors.modal.InventoryModal;
-import src.main.view.actors.modal.PauseModal;
+import src.main.view.config.GameSettings;
+import src.main.view.manager.UiManager;
+import src.main.view.ui.modal.InventoryModal;
+import src.main.view.ui.modal.PauseModal;
 import src.main.view.screens.MainMenuScreen;
 
 public class GameController implements InputProcessor {

@@ -5,8 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import src.main.view.GameMusic;
-import src.main.view.UiManager;
+import src.main.view.config.TranslationManager;
+import src.main.view.manager.GameMusic;
+import src.main.view.manager.UiManager;
 import src.main.view.screens.settings.SettingMenuScreen;
 
 public class MainMenuScreen extends AbstractScreen {
@@ -16,11 +17,11 @@ public class MainMenuScreen extends AbstractScreen {
         super.show();
         applyThemeBackground();
 
-        TextButton quitBtn = new TextButton("Quit", skin);
-        TextButton settingsBtn = new TextButton("Settings", skin);
-        TextButton guideBtn = new TextButton("Guide", skin);
-        TextButton startBtn = new TextButton("Start Game", skin);
-        TextButton achiveBtn = new TextButton("Achievements", skin);
+        TextButton quitBtn = new TextButton(TranslationManager.get("menu.quit"), skin);
+        TextButton settingsBtn = new TextButton(TranslationManager.get("menu.settings"), skin);
+        TextButton guideBtn = new TextButton(TranslationManager.get("menu.guide"), skin);
+        TextButton startBtn = new TextButton(TranslationManager.get("menu.start_game"), skin);
+        TextButton achiveBtn = new TextButton(TranslationManager.get("menu.achievements"), skin);
 
         Table topRow = new Table();
         topRow.add(guideBtn).width(100).left();

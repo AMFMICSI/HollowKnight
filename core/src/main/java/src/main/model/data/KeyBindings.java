@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
-import src.main.view.Phats;
+import src.main.view.config.Phats;
 
 import java.util.HashMap;
 import java.util.Map;

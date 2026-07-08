@@ -8,10 +8,10 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import src.main.view.GameAssetManager;
-import src.main.view.GameSettings;
-import src.main.view.Phats;
-import src.main.view.UiManager;
+import src.main.view.manager.GameAssetManager;
+import src.main.view.config.GameSettings;
+import src.main.view.config.Phats;
+import src.main.view.manager.UiManager;
 import src.main.view.screens.MainMenuScreen;
 
 /** {@link com.badlogic.gdx.Game} implementation shared by all platforms. */

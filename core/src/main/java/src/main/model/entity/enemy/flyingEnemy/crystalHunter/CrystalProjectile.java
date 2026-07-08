@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import src.main.view.GameAssetManager;
+import src.main.view.manager.GameAssetManager;
 
 public class CrystalProjectile {
     private Vector2 position = new Vector2();

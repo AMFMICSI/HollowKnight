@@ -9,7 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import src.main.view.Phats;
+import src.main.view.config.Phats;
 
 import java.util.ArrayList;
 import java.util.HashMap;

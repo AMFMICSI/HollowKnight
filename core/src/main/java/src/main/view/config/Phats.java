@@ -1,4 +1,4 @@
-package src.main.view;
+package src.main.view.config;
 
 public enum Phats {
     MenuPointerLeft("menus/menuPointer/MenuPointerLeft.png"),

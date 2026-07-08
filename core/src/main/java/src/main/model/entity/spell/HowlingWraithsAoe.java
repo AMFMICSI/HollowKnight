@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import src.main.view.GameAssetManager;
+import src.main.view.manager.GameAssetManager;
 
 public class HowlingWraithsAoe {
     private Rectangle bounds;

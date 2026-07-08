@@ -11,8 +11,8 @@ import src.main.model.entity.enemy.Enemy;
 import src.main.model.entity.Entity;
 import src.main.model.entity.spell.SpellType;
 import src.main.model.physics.PhysicsSystem;
-import src.main.view.GameAssetManager;
-import src.main.view.GameMusic;
+import src.main.view.manager.GameAssetManager;
+import src.main.view.manager.GameMusic;
 
 import java.util.Collections;
 import java.util.HashSet;

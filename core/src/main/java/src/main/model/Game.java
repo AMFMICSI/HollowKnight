@@ -26,13 +26,12 @@ import src.main.model.enviroment.Spike;
 import src.main.model.enviroment.CrackedWall;
 import src.main.model.physics.CollisionSystem;
 import src.main.model.physics.PhysicsSystem;
-import src.main.view.AchievementManager;
-import src.main.view.GameAssetManager;
-import src.main.view.UiManager;
+import src.main.view.config.TranslationManager;
+import src.main.view.manager.AchievementManager;
+import src.main.view.manager.UiManager;
 import src.main.model.data.SaveData;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Game {
@@ -186,7 +185,7 @@ public class Game {
         spellManager.updateProjectiles(delta);
         spellManager.updateAoes(delta);
         if (knight.consumePendingSoulToast()) {
-            pendingToast = "Not enough Soul!";
+            pendingToast = TranslationManager.get("toast.no_soul");
         }
         updateProjectiles(delta);
 
@@ -369,7 +368,7 @@ public class Game {
             knight.getBoundingBox().setPosition(spawnHiddenRoom.x, spawnHiddenRoom.y);
             if (!knight.isCharmEquipped(CharmType.VOID_HEART)) {
                 knight.equipCharm(CharmType.VOID_HEART);
-                pendingToast = "Void Heart acquired!";
+                pendingToast = TranslationManager.get("toast.void_heart");
             }
         } else {
             knight.getPosition().set(respawnAfterHiddenRoom.x, respawnAfterHiddenRoom.y);

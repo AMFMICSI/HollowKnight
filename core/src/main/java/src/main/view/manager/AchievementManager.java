@@ -1,4 +1,4 @@
-package src.main.view;
+package src.main.view.manager;
 
 import java.util.*;
 

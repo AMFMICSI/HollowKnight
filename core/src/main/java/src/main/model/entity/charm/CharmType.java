@@ -1,5 +1,7 @@
 package src.main.model.entity.charm;
 
+import src.main.view.config.TranslationManager;
+
 public enum CharmType {
     SOUL_CATCHER("Soul Catcher", "Increases soul gained from hitting enemies", 1),
     DASHMASTER("Dashmaster", "Reduces dash cooldown", 1),
@@ -20,7 +22,7 @@ public enum CharmType {
         this.notchCost = notchCost;
     }
 
-    public String getName() { return name; }
-    public String getDescription() { return description; }
+    public String getName() { return TranslationManager.get("charm." + name().toLowerCase()); }
+    public String getDescription() { return TranslationManager.get("charm_desc." + name().toLowerCase()); }
     public int getNotchCost() { return notchCost; }
 }

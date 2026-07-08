@@ -1,8 +1,10 @@
-package src.main.view;
+package src.main.view.manager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import src.main.view.config.GameSettings;
+import src.main.view.config.Phats;
 
 public enum GameMusic {
     MENU(Phats.TitleMusic, Type.MUSIC),
@@ -74,6 +76,23 @@ public enum GameMusic {
     public float getVolume() {
         if (type != Type.MUSIC) return 0;
         return getMusic().getVolume();
+    }
+
+    public static void setVolumeAll(float vol) {
+        for (GameMusic g : values()) {
+            if (g.type == Type.MUSIC && g.music != null) {
+                g.music.setVolume(vol);
+            }
+        }
+    }
+
+    public static void applyMuteToAll() {
+        boolean muted = GameSettings.getInstance().isMusicMuted();
+        for (GameMusic g : values()) {
+            if (g.type == Type.MUSIC && g.music != null) {
+                g.music.setVolume(muted ? 0 : GameSettings.getInstance().getMusicVolume());
+            }
+        }
     }
 
     public static void disposeAll() {

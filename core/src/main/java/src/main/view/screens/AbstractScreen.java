@@ -14,8 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import src.main.view.GameAssetManager;
-import src.main.view.GameSettings;
+import src.main.view.manager.GameAssetManager;
+import src.main.view.config.GameSettings;
 
 public abstract class AbstractScreen implements Screen {
     protected Stage stage;

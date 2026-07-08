@@ -7,7 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import src.main.model.data.KeyBindings;
-import src.main.view.UiManager;
+import src.main.view.config.TranslationManager;
+import src.main.view.manager.UiManager;
 import src.main.view.screens.AbstractScreen;
 
 public class KeyBindingScreen extends AbstractScreen implements InputProcessor {
@@ -34,23 +35,23 @@ public class KeyBindingScreen extends AbstractScreen implements InputProcessor {
     private void buildUI() {
         rootTable.clear();
 
-        Label title = new Label("Key Bindings", skin);
+        Label title = new Label(TranslationManager.get("keybind.title"), skin);
         rootTable.add(title).padBottom(20).row();
 
         String[][] actions = {
-            {"Move Left",           "MOVE_LEFT"},
-            {"Move Right",          "MOVE_RIGHT"},
-            {"Jump",                "JUMP"},
-            {"Dash",                "DASH"},
-            {"Attack (Nail)",       "ATTACK"},
-            {"Pogo (\u2193 + Attack)",   "POGO"},
-            {"Focus / Heal",        "FOCUS"},
-            {"Vengeful Spirit",     "SPELL_VENGEFUL"},
-            {"Howling Wraiths",     "SPELL_WRAITHS"},
-            {"Inventory",           "INVENTORY"},
-            {"Pause",               "PAUSE"},
-            {"Interact",            "INTERACT"},
-            {"Dialogue Next",       "DIALOGUE_NEXT"},
+            {TranslationManager.get("keybind.action_left"),   "MOVE_LEFT"},
+            {TranslationManager.get("keybind.action_right"),  "MOVE_RIGHT"},
+            {TranslationManager.get("keybind.action_jump"),   "JUMP"},
+            {TranslationManager.get("keybind.action_dash"),   "DASH"},
+            {TranslationManager.get("keybind.action_attack"), "ATTACK"},
+            {TranslationManager.get("keybind.action_pogo"),   "POGO"},
+            {TranslationManager.get("keybind.action_focus"),  "FOCUS"},
+            {TranslationManager.get("keybind.action_spell1"), "SPELL_VENGEFUL"},
+            {TranslationManager.get("keybind.action_spell2"), "SPELL_WRAITHS"},
+            {TranslationManager.get("keybind.action_inventory"), "INVENTORY"},
+            {TranslationManager.get("keybind.action_pause"),  "PAUSE"},
+            {TranslationManager.get("keybind.action_interact"), "INTERACT"},
+            {TranslationManager.get("keybind.action_dialogue"), "DIALOGUE_NEXT"},
         };
 
         Table scrollContent = new Table();
@@ -66,7 +67,7 @@ public class KeyBindingScreen extends AbstractScreen implements InputProcessor {
                 public void clicked(InputEvent e, float x, float y) {
                     pendingAction = action;
                     pendingButton = keyBtn;
-                    pendingButton.setText("...");
+                    pendingButton.setText(TranslationManager.get("keybind.waiting"));
                     Gdx.input.setInputProcessor(KeyBindingScreen.this);
                 }
             });
@@ -83,7 +84,7 @@ public class KeyBindingScreen extends AbstractScreen implements InputProcessor {
         rootTable.add(scrollPane).growX().height(350).padBottom(20).row();
 
         Table bottomRow = new Table();
-        TextButton resetBtn = new TextButton("Reset to Defaults", skin);
+        TextButton resetBtn = new TextButton(TranslationManager.get("keybind.reset"), skin);
         resetBtn.getLabel().setFontScale(0.65f);
         resetBtn.addListener(new ClickListener() {
             @Override
@@ -94,7 +95,7 @@ public class KeyBindingScreen extends AbstractScreen implements InputProcessor {
             }
         });
 
-        TextButton backBtn = new TextButton("Back to Settings", skin);
+        TextButton backBtn = new TextButton(TranslationManager.get("keybind.back"), skin);
         backBtn.getLabel().setFontScale(0.65f);
         backBtn.addListener(new ClickListener() {
             @Override

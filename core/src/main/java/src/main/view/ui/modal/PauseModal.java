@@ -1,4 +1,4 @@
-package src.main.view.actors.modal;
+package src.main.view.ui.modal;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -7,10 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import src.main.model.Game;
 import src.main.model.data.KeyBindings;
-import src.main.view.UiManager;
+import src.main.view.config.TranslationManager;
+import src.main.view.manager.UiManager;
 import src.main.view.screens.MainMenuScreen;
 import src.main.view.screens.settings.SettingMenuScreen;
-import src.main.view.screens.GameScreen;
 
 import static src.main.view.screens.GameScreen.getCurrentInstance;
 
@@ -21,10 +21,10 @@ public class PauseModal extends Modal {
         super();
         this.game = game;
 
-        TextButton resumeBtn = new TextButton("Resume", skin);
-        TextButton settingsBtn = new TextButton("Settings", skin);
-        TextButton saveQuitBtn = new TextButton("Save & Quit", skin);
-        TextButton exitBtn = new TextButton("Exit", skin);
+        TextButton resumeBtn = new TextButton(TranslationManager.get("pause.resume"), skin);
+        TextButton settingsBtn = new TextButton(TranslationManager.get("pause.settings"), skin);
+        TextButton saveQuitBtn = new TextButton(TranslationManager.get("pause.save_quit"), skin);
+        TextButton exitBtn = new TextButton(TranslationManager.get("pause.exit"), skin);
 
         defaults().space(5);
         add(resumeBtn).width(120).row();
@@ -36,17 +36,17 @@ public class PauseModal extends Modal {
         sep.setColor(0.6f, 0.6f, 0.6f, 1);
         add(sep).padTop(8).padBottom(4).row();
 
-        Label cheatTitle = new Label("-- Cheat Codes --", skin);
+        Label cheatTitle = new Label(TranslationManager.get("pause.cheats_title"), skin);
         add(cheatTitle).padBottom(6).row();
 
         KeyBindings keys = new KeyBindings();
         String[][] cheats = {
-            {"CHEAT_TELEPORT",  "Boss Arena Teleport"},
-            {"CHEAT_NOCLIP",    "Noclip / Spectator Mode"},
-            {"CHEAT_HEAL",      "Emergency Heal"},
-            {"CHEAT_SOUL",      "Refill Soul Vessel"},
-            {"CHEAT_GOD",       "God Mode (invincible)"},
-            {"CHEAT_INSTAKILL", "Insta-Kill"},
+            {"CHEAT_TELEPORT",  TranslationManager.get("cheat.teleport")},
+            {"CHEAT_NOCLIP",    TranslationManager.get("cheat.noclip")},
+            {"CHEAT_HEAL",      TranslationManager.get("cheat.heal")},
+            {"CHEAT_SOUL",      TranslationManager.get("cheat.soul")},
+            {"CHEAT_GOD",       TranslationManager.get("cheat.god")},
+            {"CHEAT_INSTAKILL", TranslationManager.get("cheat.instakill")},
         };
 
         for (String[] ch : cheats) {

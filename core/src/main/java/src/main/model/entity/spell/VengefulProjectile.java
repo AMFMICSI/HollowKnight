@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.enviroment.SolidBlock;
-import src.main.view.GameAssetManager;
+import src.main.view.manager.GameAssetManager;
 
 import java.util.HashSet;
 import java.util.List;

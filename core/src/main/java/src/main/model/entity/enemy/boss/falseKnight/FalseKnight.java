@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import src.main.model.entity.animation.AnimationSet;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.physics.PhysicsSystem;
-import src.main.view.GameAssetManager;
+import src.main.view.manager.GameAssetManager;
 
 public class FalseKnight extends Enemy {
 

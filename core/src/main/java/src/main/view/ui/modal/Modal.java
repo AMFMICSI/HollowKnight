@@ -1,4 +1,4 @@
-package src.main.view.actors.modal;
+package src.main.view.ui.modal;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -6,8 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import src.main.view.GameAssetManager;
-import src.main.view.UiManager;
+import src.main.view.manager.GameAssetManager;
+import src.main.view.manager.UiManager;
 
 public class Modal extends Table {
     protected Skin skin;

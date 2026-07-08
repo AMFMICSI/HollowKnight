@@ -8,7 +8,7 @@ import src.main.model.entity.animation.AnimationSet;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.physics.PhysicsSystem;
-import src.main.view.GameAssetManager;
+import src.main.view.manager.GameAssetManager;
 
 public class CrystalGuardian extends Enemy {
     private static final int MAX_HP = 8;
