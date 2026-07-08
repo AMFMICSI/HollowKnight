@@ -1,6 +1,5 @@
 package src.main.view;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -18,9 +17,14 @@ public class HudRenderer {
     private static final float MASK_SPACING = 4;
     private static final float MASK_X = SOUL_X + SOUL_SIZE + 4;
     private static final float MASK_Y = SOUL_Y + (SOUL_SIZE - MASK_SIZE) / 2f;
+    private static final float BREAK_DURATION = 0.48f;
 
     private TextureRegion emptyMask, filledMask;
     private AnimationSet<SoulFillStage> soulAnim;
+
+    private int prevHp = -1;
+    private int breakingMask = -1;
+    private float breakTimer = 0;
 
     public HudRenderer() {
         hudCamera = new OrthographicCamera();
@@ -31,23 +35,44 @@ public class HudRenderer {
         soulAnim = new AnimationSet<>(GameAssetManager.soulFillAnimations, SoulFillStage.EMPTY);
     }
 
-    public void render(SpriteBatch batch, int hp, int maxHp, int soul, int maxSoul) {
+    public void render(SpriteBatch batch, int hp, int maxHp, int soul, int maxSoul, float delta) {
         float fill = (float) soul / maxSoul;
         SoulFillStage stage = SoulFillStage.fromFill(fill);
         soulAnim.setAnimation(stage);
 
+        if (hp < prevHp && breakingMask < 0) {
+            breakingMask = hp;
+            breakTimer = 0;
+        }
+        prevHp = hp;
+
+        if (breakingMask >= 0) {
+            breakTimer += delta;
+            if (breakTimer >= BREAK_DURATION) {
+                breakingMask = -1;
+                breakTimer = 0;
+            }
+        }
+
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
 
-        float ms = MASK_SIZE / emptyMask.getRegionWidth();
         for (int i = 0; i < maxHp; i++) {
             float x = MASK_X + i * (MASK_SIZE + MASK_SPACING);
-            TextureRegion r = (i < hp) ? filledMask : emptyMask;
+            TextureRegion r;
+            float ms;
+            if (i == breakingMask) {
+                r = GameAssetManager.breakHealthAnim.getKeyFrame(breakTimer);
+                ms = MASK_SIZE / r.getRegionWidth();
+            } else {
+                r = (i < hp) ? filledMask : emptyMask;
+                ms = MASK_SIZE / r.getRegionWidth();
+            }
             batch.draw(r, x, MASK_Y, 0, 0,
                 r.getRegionWidth(), r.getRegionHeight(), ms, ms, 0);
         }
 
-        TextureRegion frame = soulAnim.getFrame(Gdx.graphics.getDeltaTime());
+        TextureRegion frame = soulAnim.getFrame(delta);
         float fw = frame.getRegionWidth();
         float fh = frame.getRegionHeight();
         float s = Math.min(SOUL_SIZE / fw, SOUL_SIZE / fh);

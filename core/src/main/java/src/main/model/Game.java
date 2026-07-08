@@ -69,6 +69,7 @@ public class Game {
     private boolean gameCompleted = false;
     private EndGameData pendingEndGameData = null;
     private String currentArea = null;
+    private boolean paused = false;
     private List<ButterflyParticle> butterflies = new ArrayList<>();
     private List<ButterflyParticle> ambientButterflies = new ArrayList<>();
     private List<Vector2> butterflySpawnPoints;
@@ -79,6 +80,8 @@ public class Game {
     public List<Enemy> getEnemies() { return enemies; }
     public Zote getZote() { return zote; }
     public boolean isDialogueActive() { return dialogueActive; }
+    public boolean isPaused() { return paused; }
+    public void setPaused(boolean p) { this.paused = p; }
     public String getCurrentDialogueText() { return currentDialogueText; }
     public void requestDialogueAdvance() { dialogueAdvanceRequested = true; }
     public boolean consumeDialogueAdvance() {
@@ -93,7 +96,7 @@ public class Game {
 
     public Game(int slot, SaveData data) {
         mapLoader = new MapLoader();
-        knight = new Knight(mapLoader.getSpawnPoint().x, mapLoader.getSpawnPoint().y);
+        knight = new Knight(mapLoader.getSpawnPoint().x, mapLoader.getSpawnPoint().y, keyBindings);
         enemies = new ArrayList<>();
         for (MapLoader.EnemySpawnInfo info : mapLoader.getEnemySpawnInfos()) {
             Enemy e = switch (info.enemyType) {
@@ -155,6 +158,7 @@ public class Game {
     }
 
     public void update(float delta) {
+        if (paused) return;
         playTime += delta;
 
         updateBossArena();
@@ -205,7 +209,12 @@ public class Game {
             return;
         }
         knight.update(delta);
-        if (!knight.isNoclipMode()) {
+        if (knight.isNoclipMode()) {
+            Vector2 pos = knight.getPosition();
+            pos.x += knight.getVelocityX() * delta;
+            pos.y += knight.getVelocityY() * delta;
+            knight.getBoundingBox().setPosition(pos.x, pos.y);
+        } else {
             CollisionSystem.resolve(knight, mapLoader.getSolidBlocks(),
                 mapLoader.getSpikes(), mapLoader.getClimbableWalls(), crackedWalls, delta);
         }

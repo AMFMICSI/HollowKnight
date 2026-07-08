@@ -94,6 +94,10 @@ task packEffects {
                 copy { from f.absolutePath; into tmpDir; rename { cleanName } }
             }
         }
+        // Single-frame effects (ShadowDash sprite)
+        file("assets/animation/Effects").eachFileMatch(~"ShadowDash\\.png") { f ->
+            copy { from f.absolutePath; into tmpDir }
+        }
 
         def settings = new com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings()
         settings.maxWidth = 4096
@@ -174,6 +178,34 @@ task packHud {
         settings.edgePadding = false
         com.badlogic.gdx.tools.texturepacker.TexturePacker.process(settings,
             hudTmpDir.absolutePath, outputDir.absolutePath, "hud")
+    }
+}
+
+task packHealthBar {
+    dependsOn buildscript.configurations.classpath
+    def outputDir = file("assets/atlases")
+    outputs.file file("$outputDir/healthBar.atlas")
+    outputs.file file("$outputDir/healthBar.png")
+    doLast {
+        def tmpDir = new File(project.buildDir, "tmp/healthbar-frames")
+        delete tmpDir
+        tmpDir.mkdirs()
+
+        file("assets/animation/HUD").eachFileMatch(~"BreakHealth.*\\.png") { f ->
+            copy { from f.absolutePath; into tmpDir }
+        }
+
+        def settings = new com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings()
+        settings.maxWidth = 1024
+        settings.maxHeight = 1024
+        settings.alias = false
+        settings.pot = false
+        settings.bleed = false
+        settings.useIndexes = false
+        settings.duplicatePadding = true
+        settings.edgePadding = false
+        com.badlogic.gdx.tools.texturepacker.TexturePacker.process(settings,
+            tmpDir.absolutePath, outputDir.absolutePath, "healthBar")
     }
 }
 

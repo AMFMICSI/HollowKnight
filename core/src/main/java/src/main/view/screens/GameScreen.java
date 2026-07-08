@@ -80,6 +80,8 @@ public class GameScreen extends AbstractScreen {
         super.show();
         GameMusic.MENU.stop();
 
+        if (game != null) game.setPaused(false);
+
         if (!resourcesCreated) {
             if (game == null) game = new Game();
             batch = new SpriteBatch();
@@ -280,7 +282,7 @@ public class GameScreen extends AbstractScreen {
         batch.end();
 
         hudRenderer.render(batch, game.getKnight().getHp(), game.getKnight().getMaxHp(),
-            game.getKnight().getSoul(), game.getKnight().getMaxSoul());
+            game.getKnight().getSoul(), game.getKnight().getMaxSoul(), delta);
 
         String toast = game.consumePendingToast();
         if (toast != null) {
@@ -318,18 +320,6 @@ public class GameScreen extends AbstractScreen {
 
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
-        if (game.getKnight().hasSharpShadow() && game.getKnight().isDashing()) {
-            Animation<TextureRegion> dashAnim = GameAssetManager.dashEffectAnim;
-            if (dashAnim != null) {
-                TextureRegion frame = dashAnim.getKeyFrame(game.getKnight().getDashTimer());
-                float s = 0.6f;
-                float w = frame.getRegionWidth() * s;
-                float h = frame.getRegionHeight() * s;
-                float kx = game.getKnight().getPosition().x;
-                float ky = game.getKnight().getPosition().y;
-                batch.draw(frame, kx, ky - 8, w, h);
-            }
-        }
         for (var p : game.getSpellManager().getProjectiles())
             p.draw(batch, delta);
         for (var aoe : game.getSpellManager().getAoes())

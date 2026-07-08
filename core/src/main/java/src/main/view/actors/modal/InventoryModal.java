@@ -1,5 +1,8 @@
 package src.main.view.actors.modal;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -30,6 +33,7 @@ public class InventoryModal extends Modal {
     private final Image[] notchIcons;
     private final TextButton equipBtn;
     private final Drawable highlightBg;
+    private final Drawable equippedBg;
 
     public InventoryModal(Game game) {
         super();
@@ -37,6 +41,12 @@ public class InventoryModal extends Modal {
         int maxNotches = game.getKnight().getMaxNotches();
         notchIcons = new Image[maxNotches];
         highlightBg = skin.getDrawable("bgGray");
+
+        Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pix.setColor(0.85f, 0.65f, 0.1f, 0.5f);
+        pix.fill();
+        equippedBg = new TextureRegionDrawable(new TextureRegion(new Texture(pix)));
+        pix.dispose();
 
         defaults().space(3);
         add(new Label("Inventory", skin)).colspan(2).center().padBottom(8).row();
@@ -158,11 +168,18 @@ public class InventoryModal extends Modal {
             CharmType charm = entry.getKey();
             ImageButton btn = entry.getValue();
             btn.setChecked(knight.isCharmEquipped(charm));
+            btn.setColor(Color.WHITE);
         }
         for (Map.Entry<CharmType, Table> entry : charmCells.entrySet()) {
             CharmType charm = entry.getKey();
             Table cell = entry.getValue();
-            cell.setBackground(charm == selectedCharm ? highlightBg : null);
+            if (charm == selectedCharm) {
+                cell.setBackground(highlightBg);
+            } else if (knight.isCharmEquipped(charm)) {
+                cell.setBackground(equippedBg);
+            } else {
+                cell.setBackground((Drawable) null);
+            }
         }
     }
 

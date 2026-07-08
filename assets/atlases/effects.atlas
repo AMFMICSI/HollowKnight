@@ -1,971 +1,1055 @@
 
 effects.png
-size: 3256, 3093
+size: 4030, 2854
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
 BallEnd_000
   rotate: false
-  xy: 920, 2950
+  xy: 2175, 368
   size: 317, 143
   orig: 317, 143
   offset: 0, 0
   index: -1
 BallEnd_001
   rotate: false
-  xy: 1239, 2950
+  xy: 2494, 240
   size: 317, 143
   orig: 317, 143
   offset: 0, 0
   index: -1
 BallEnd_002
   rotate: false
-  xy: 1558, 2950
+  xy: 3043, 6
   size: 317, 143
   orig: 317, 143
   offset: 0, 0
   index: -1
 Blast_000
   rotate: false
-  xy: 0, 933
+  xy: 1052, 1344
   size: 306, 289
   orig: 306, 289
   offset: 0, 0
   index: -1
 Blast_001
   rotate: false
-  xy: 308, 933
+  xy: 334, 996
   size: 306, 289
   orig: 306, 289
   offset: 0, 0
   index: -1
 Blast_002
   rotate: false
-  xy: 616, 933
+  xy: 1715, 1587
   size: 306, 289
   orig: 306, 289
   offset: 0, 0
   index: -1
 Blast_003
   rotate: false
-  xy: 924, 933
+  xy: 2023, 1587
   size: 306, 289
   orig: 306, 289
   offset: 0, 0
   index: -1
 Blast_004
   rotate: false
-  xy: 1232, 922
+  xy: 2331, 1587
   size: 306, 289
   orig: 306, 289
   offset: 0, 0
   index: -1
 Blast_005
   rotate: false
-  xy: 1540, 922
+  xy: 2639, 1587
   size: 306, 289
   orig: 306, 289
   offset: 0, 0
   index: -1
 Blast_006
   rotate: false
-  xy: 1848, 910
+  xy: 2947, 1587
   size: 306, 289
   orig: 306, 289
   offset: 0, 0
   index: -1
 Blast_007
   rotate: false
-  xy: 2156, 809
+  xy: 3255, 1473
   size: 306, 289
   orig: 306, 289
   offset: 0, 0
   index: -1
 CrystalLaser
   rotate: false
-  xy: 287, 2036
+  xy: 0, 2477
   size: 855, 189
   orig: 855, 189
   offset: 0, 0
   index: -1
 DashEffect_000
   rotate: false
-  xy: 1605, 1432
+  xy: 1715, 1368
   size: 401, 217
   orig: 401, 217
   offset: 0, 0
   index: -1
 DashEffect_001
   rotate: false
-  xy: 2436, 1319
+  xy: 2118, 1368
   size: 401, 217
   orig: 401, 217
   offset: 0, 0
   index: -1
 DashEffect_002
   rotate: false
-  xy: 2839, 1316
+  xy: 2521, 1368
   size: 401, 217
   orig: 401, 217
   offset: 0, 0
   index: -1
 DashEffect_003
   rotate: false
-  xy: 214, 1224
+  xy: 1711, 1149
   size: 401, 217
   orig: 401, 217
   offset: 0, 0
   index: -1
 DashEffect_004
   rotate: false
-  xy: 617, 1224
+  xy: 2114, 1149
   size: 401, 217
   orig: 401, 217
   offset: 0, 0
   index: -1
 DashEffect_005
   rotate: false
-  xy: 1448, 1213
+  xy: 2517, 1149
   size: 401, 217
   orig: 401, 217
   offset: 0, 0
   index: -1
 DashEffect_006
   rotate: false
-  xy: 2279, 1100
+  xy: 3558, 842
   size: 401, 217
   orig: 401, 217
   offset: 0, 0
   index: -1
 DashEffect_007
   rotate: false
-  xy: 2682, 1097
+  xy: 1704, 930
   size: 401, 217
   orig: 401, 217
   offset: 0, 0
   index: -1
 DeathAir_000
   rotate: false
-  xy: 2693, 2600
+  xy: 3745, 2016
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 DeathAir_001
   rotate: false
-  xy: 2971, 2302
+  xy: 3740, 1825
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 DeathAir_002
   rotate: false
-  xy: 2106, 2224
+  xy: 3740, 1634
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 DeathLand_000
   rotate: false
-  xy: 2393, 2221
+  xy: 3734, 1443
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 DeathLand_001
   rotate: false
-  xy: 2851, 2111
+  xy: 3734, 1252
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 DeathLand_002
   rotate: false
-  xy: 0, 2056
+  xy: 2924, 1396
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 DownSlashEffect_000
   rotate: false
-  xy: 287, 1443
+  xy: 3841, 2645
   size: 182, 209
   orig: 182, 209
   offset: 0, 0
   index: -1
 DownSlashEffect_001
   rotate: false
-  xy: 471, 1443
+  xy: 3385, 1975
   size: 182, 209
   orig: 182, 209
   offset: 0, 0
   index: -1
 DownSlashEffect_002
   rotate: false
-  xy: 655, 1443
+  xy: 3385, 1764
   size: 182, 209
   orig: 182, 209
   offset: 0, 0
   index: -1
 DownSlashEffect_003
   rotate: false
-  xy: 839, 1443
+  xy: 1777, 152
   size: 182, 209
   orig: 182, 209
   offset: 0, 0
   index: -1
 DownSlashEffect_004
   rotate: false
-  xy: 1023, 1443
+  xy: 1362, 40
   size: 182, 209
   orig: 182, 209
   offset: 0, 0
   index: -1
 DownSlashEffect_005
   rotate: false
-  xy: 1207, 1443
+  xy: 861, 2
   size: 182, 209
   orig: 182, 209
   offset: 0, 0
   index: -1
 Evade_000
   rotate: false
-  xy: 1144, 2036
+  xy: 3733, 1061
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Evade_001
   rotate: false
-  xy: 1431, 2036
+  xy: 2924, 1205
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Evade_002
   rotate: false
-  xy: 1718, 2036
+  xy: 334, 805
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Evade_003
   rotate: false
-  xy: 2005, 2033
+  xy: 0, 788
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Evade_004
   rotate: false
-  xy: 2292, 2030
+  xy: 2920, 1014
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Evade_005
   rotate: false
-  xy: 2750, 1920
+  xy: 287, 614
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Evade_006
   rotate: false
-  xy: 0, 1865
+  xy: 0, 597
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Idle_000
   rotate: false
-  xy: 287, 1845
+  xy: 2613, 958
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Idle_001
   rotate: false
-  xy: 574, 1845
+  xy: 2900, 823
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Idle_002
   rotate: false
-  xy: 861, 1845
+  xy: 2613, 767
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Idle_003
   rotate: false
-  xy: 1148, 1845
+  xy: 2900, 632
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Idle_004
   rotate: false
-  xy: 1435, 1845
+  xy: 287, 423
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 LaserCircle_000
   rotate: false
-  xy: 0, 2970
+  xy: 574, 3
   size: 228, 123
   orig: 228, 123
   offset: 0, 0
   index: -1
 LaserCircle_001
   rotate: false
-  xy: 230, 2970
+  xy: 2813, 125
   size: 228, 123
   orig: 228, 123
   offset: 0, 0
   index: -1
 LaserCircle_002
   rotate: false
-  xy: 460, 2970
+  xy: 2813, 0
   size: 228, 123
   orig: 228, 123
   offset: 0, 0
   index: -1
 LaserCircle_003
   rotate: false
-  xy: 690, 2970
+  xy: 1777, 27
   size: 228, 123
   orig: 228, 123
   offset: 0, 0
   index: -1
 QuakeBlast_000
   rotate: false
-  xy: 441, 2603
+  xy: 857, 2480
   size: 561, 186
   orig: 561, 186
   offset: 0, 0
   index: -1
 QuakeBlast_001
   rotate: false
-  xy: 1004, 2603
+  xy: 1420, 2480
   size: 561, 186
   orig: 561, 186
   offset: 0, 0
   index: -1
 QuakeBlast_002
   rotate: false
-  xy: 1567, 2603
+  xy: 1983, 2480
   size: 561, 186
   orig: 561, 186
   offset: 0, 0
   index: -1
 QuakeBlast_003
   rotate: false
-  xy: 2130, 2603
+  xy: 2546, 2480
   size: 561, 186
   orig: 561, 186
   offset: 0, 0
   index: -1
 QuakeBlast_004
   rotate: false
-  xy: 351, 2415
+  xy: 3109, 2480
   size: 561, 186
   orig: 561, 186
   offset: 0, 0
   index: -1
 QuakeBlast_005
   rotate: false
-  xy: 914, 2415
+  xy: 857, 2292
   size: 561, 186
   orig: 561, 186
   offset: 0, 0
   index: -1
 Run_000
   rotate: false
-  xy: 1722, 1842
+  xy: 0, 406
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Run_001
   rotate: false
-  xy: 2009, 1839
+  xy: 574, 319
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Run_002
   rotate: false
-  xy: 2638, 1729
+  xy: 287, 232
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Run_003
   rotate: false
-  xy: 2925, 1726
+  xy: 0, 215
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Run_004
   rotate: false
-  xy: 0, 1674
+  xy: 2561, 576
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Run_005
   rotate: false
-  xy: 287, 1654
+  xy: 2848, 441
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 ShadowBall_000
   rotate: false
-  xy: 0, 2811
+  xy: 2107, 990
   size: 504, 157
   orig: 504, 157
   offset: 0, 0
   index: -1
 ShadowBall_001
   rotate: false
-  xy: 506, 2791
+  xy: 2107, 831
   size: 504, 157
   orig: 504, 157
   offset: 0, 0
   index: -1
 ShadowBall_002
   rotate: false
-  xy: 1012, 2791
+  xy: 2055, 672
   size: 504, 157
   orig: 504, 157
   offset: 0, 0
   index: -1
 ShadowBall_003
   rotate: false
-  xy: 1518, 2791
+  xy: 3422, 307
   size: 504, 157
   orig: 504, 157
   offset: 0, 0
   index: -1
 ShadowBall_004
   rotate: false
-  xy: 2024, 2791
+  xy: 2046, 513
   size: 504, 157
   orig: 504, 157
   offset: 0, 0
   index: -1
 ShadowBall_005
   rotate: false
-  xy: 2530, 2791
+  xy: 3413, 148
   size: 504, 157
   orig: 504, 157
   offset: 0, 0
   index: -1
+ShadowDash
+  rotate: false
+  xy: 0, 2668
+  size: 3839, 186
+  orig: 3839, 186
+  offset: 0, 0
+  index: -1
+ShadowDash_000
+  rotate: false
+  xy: 1360, 1382
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+ShadowDash_001
+  rotate: false
+  xy: 1360, 1194
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+ShadowDash_002
+  rotate: false
+  xy: 1002, 1156
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+ShadowDash_003
+  rotate: false
+  xy: 3211, 1285
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+ShadowDash_004
+  rotate: false
+  xy: 3211, 1097
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+ShadowDash_005
+  rotate: false
+  xy: 1353, 1006
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+ShadowDash_006
+  rotate: false
+  xy: 1002, 968
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+ShadowDash_007
+  rotate: false
+  xy: 642, 886
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+ShadowDash_008
+  rotate: false
+  xy: 3207, 909
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+ShadowDash_009
+  rotate: false
+  xy: 1353, 818
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
+ShadowDash_010
+  rotate: false
+  xy: 993, 780
+  size: 349, 186
+  orig: 349, 186
+  offset: 0, 0
+  index: -1
 ShadowScream_000
   rotate: false
-  xy: 2464, 803
+  xy: 0, 2183
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShadowScream_001
   rotate: false
-  xy: 2823, 803
+  xy: 359, 2183
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShadowScream_002
   rotate: false
-  xy: 0, 639
+  xy: 1420, 2186
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShadowScream_003
   rotate: false
-  xy: 359, 639
+  xy: 808, 1998
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShadowScream_004
   rotate: false
-  xy: 718, 639
+  xy: 0, 1889
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShadowScream_005
   rotate: false
-  xy: 1077, 628
+  xy: 359, 1889
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShadowScream_006
   rotate: false
-  xy: 1436, 628
+  xy: 0, 1595
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShadowScream_007
   rotate: false
-  xy: 1795, 616
+  xy: 359, 1595
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShadowScream_008
   rotate: false
-  xy: 2154, 509
+  xy: 1779, 2186
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShadowScream_009
   rotate: false
-  xy: 2513, 509
+  xy: 2138, 2186
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShadowScream_010
   rotate: false
-  xy: 2872, 509
+  xy: 2497, 2186
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShadowScream_011
   rotate: false
-  xy: 0, 345
+  xy: 2856, 2186
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShadowScream_012
   rotate: false
-  xy: 359, 345
+  xy: 3215, 2186
   size: 357, 292
   orig: 357, 292
   offset: 0, 0
   index: -1
 ShockwaveSpurt_000
   rotate: false
-  xy: 3153, 2891
+  xy: 3672, 2464
   size: 88, 202
   orig: 88, 202
   offset: 0, 0
   index: -1
 ShockwaveSpurt_001
   rotate: false
-  xy: 3036, 2746
+  xy: 718, 2273
   size: 88, 202
   orig: 88, 202
   offset: 0, 0
   index: -1
 ShockwaveSpurt_002
   rotate: false
-  xy: 3126, 2687
+  xy: 718, 2069
   size: 88, 202
   orig: 88, 202
   offset: 0, 0
   index: -1
 ShockwaveSpurt_003
   rotate: false
-  xy: 351, 2607
+  xy: 718, 1865
   size: 88, 202
   orig: 88, 202
   offset: 0, 0
   index: -1
 ShockwaveSpurt_004
   rotate: false
-  xy: 2980, 2542
+  xy: 3574, 2276
   size: 88, 202
   orig: 88, 202
   offset: 0, 0
   index: -1
 ShockwaveSpurt_005
   rotate: false
-  xy: 2881, 2396
+  xy: 3664, 2260
   size: 88, 202
   orig: 88, 202
   offset: 0, 0
   index: -1
 Shockwave_000
   rotate: false
-  xy: 1391, 1435
+  xy: 3762, 2426
   size: 212, 217
   orig: 212, 217
   offset: 0, 0
   index: -1
 Shockwave_001
   rotate: false
-  xy: 2008, 1429
+  xy: 1167, 2073
   size: 212, 217
   orig: 212, 217
   offset: 0, 0
   index: -1
 Shockwave_002
   rotate: false
-  xy: 2222, 1420
+  xy: 3754, 2207
   size: 212, 217
   orig: 212, 217
   offset: 0, 0
   index: -1
 Shockwave_003
   rotate: false
-  xy: 0, 1264
+  xy: 1167, 1854
   size: 212, 217
   orig: 212, 217
   offset: 0, 0
   index: -1
 Shockwave_004
   rotate: false
-  xy: 1020, 1224
+  xy: 1142, 1635
   size: 212, 217
   orig: 212, 217
   offset: 0, 0
   index: -1
 Shockwave_005
   rotate: false
-  xy: 1234, 1216
+  xy: 1961, 294
   size: 212, 217
   orig: 212, 217
   offset: 0, 0
   index: -1
 Shockwave_006
   rotate: false
-  xy: 1851, 1210
+  xy: 1563, 144
   size: 212, 217
   orig: 212, 217
   offset: 0, 0
   index: -1
 Shockwave_007
   rotate: false
-  xy: 2065, 1201
+  xy: 1148, 32
   size: 212, 217
   orig: 212, 217
   offset: 0, 0
   index: -1
 Shoot_000
   rotate: false
-  xy: 574, 1654
+  xy: 3135, 342
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Shoot_001
   rotate: false
-  xy: 861, 1654
+  xy: 2552, 385
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Shoot_002
   rotate: false
-  xy: 1148, 1654
+  xy: 2839, 250
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Shoot_003
   rotate: false
-  xy: 1435, 1654
+  xy: 3126, 151
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Shoot_004
   rotate: false
-  xy: 1722, 1651
+  xy: 1674, 363
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Shoot_005
   rotate: false
-  xy: 2009, 1648
+  xy: 1276, 251
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Shoot_006
   rotate: false
-  xy: 2296, 1639
+  xy: 861, 213
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 SlashEffectAlt_000
   rotate: false
-  xy: 0, 2623
+  xy: 621, 698
   size: 349, 186
   orig: 349, 186
   offset: 0, 0
   index: -1
 SlashEffectAlt_001
   rotate: false
-  xy: 0, 2435
+  xy: 3187, 721
   size: 349, 186
   orig: 349, 186
   offset: 0, 0
   index: -1
 SlashEffectAlt_002
   rotate: false
-  xy: 1477, 2415
+  xy: 3538, 654
   size: 349, 186
   orig: 349, 186
   offset: 0, 0
   index: -1
 SlashEffectAlt_003
   rotate: false
-  xy: 1828, 2415
+  xy: 3187, 533
   size: 349, 186
   orig: 349, 186
   offset: 0, 0
   index: -1
 SlashEffectAlt_004
   rotate: false
-  xy: 2179, 2415
+  xy: 3538, 466
   size: 349, 186
   orig: 349, 186
   offset: 0, 0
   index: -1
 SlashEffectAlt_005
   rotate: false
-  xy: 2530, 2412
+  xy: 1704, 742
   size: 349, 186
   orig: 349, 186
   offset: 0, 0
   index: -1
 SlashEffect_000
   rotate: false
-  xy: 0, 2247
+  xy: 1344, 630
   size: 349, 186
   orig: 349, 186
   offset: 0, 0
   index: -1
 SlashEffect_001
   rotate: false
-  xy: 351, 2227
+  xy: 972, 592
   size: 349, 186
   orig: 349, 186
   offset: 0, 0
   index: -1
 SlashEffect_002
   rotate: false
-  xy: 702, 2227
+  xy: 574, 510
   size: 349, 186
   orig: 349, 186
   offset: 0, 0
   index: -1
 SlashEffect_003
   rotate: false
-  xy: 1053, 2227
+  xy: 1695, 554
   size: 349, 186
   orig: 349, 186
   offset: 0, 0
   index: -1
 SlashEffect_004
   rotate: false
-  xy: 1404, 2227
+  xy: 1323, 442
   size: 349, 186
   orig: 349, 186
   offset: 0, 0
   index: -1
 SlashEffect_005
   rotate: false
-  xy: 1755, 2227
+  xy: 925, 404
   size: 349, 186
   orig: 349, 186
   offset: 0, 0
   index: -1
 SoulBall_000
   rotate: false
-  xy: 1877, 2950
+  xy: 3362, 3
   size: 317, 143
   orig: 317, 143
   offset: 0, 0
   index: -1
 SoulBall_001
   rotate: false
-  xy: 2196, 2950
+  xy: 3681, 3
   size: 317, 143
   orig: 317, 143
   offset: 0, 0
   index: -1
 SoulBall_002
   rotate: false
-  xy: 2515, 2950
+  xy: 2175, 223
   size: 317, 143
   orig: 317, 143
   offset: 0, 0
   index: -1
 SoulBall_003
   rotate: false
-  xy: 2834, 2950
+  xy: 2494, 95
   size: 317, 143
   orig: 317, 143
   offset: 0, 0
   index: -1
 SoulScream_000
   rotate: false
-  xy: 718, 331
+  xy: 1381, 1878
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 SoulScream_001
   rotate: false
-  xy: 1052, 320
+  xy: 808, 1690
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 SoulScream_002
   rotate: false
-  xy: 1386, 320
+  xy: 1715, 1878
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 SoulScream_003
   rotate: false
-  xy: 1720, 308
+  xy: 2049, 1878
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 SoulScream_004
   rotate: false
-  xy: 2054, 201
+  xy: 2383, 1878
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 SoulScream_005
   rotate: false
-  xy: 2388, 201
+  xy: 2717, 1878
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 SoulScream_006
   rotate: false
-  xy: 2722, 201
+  xy: 3051, 1878
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 SoulScream_007
   rotate: false
-  xy: 0, 37
+  xy: 1381, 1570
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 SoulScream_008
   rotate: false
-  xy: 334, 37
+  xy: 718, 1382
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 SoulScream_009
   rotate: false
-  xy: 668, 23
+  xy: 0, 1287
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 SoulScream_010
   rotate: false
-  xy: 1002, 12
+  xy: 334, 1287
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 SoulScream_011
   rotate: false
-  xy: 1336, 12
+  xy: 668, 1074
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 SoulScream_012
   rotate: false
-  xy: 1670, 0
+  xy: 0, 979
   size: 332, 306
   orig: 332, 306
   offset: 0, 0
   index: -1
 Turn_000
   rotate: false
-  xy: 2583, 1538
+  xy: 574, 128
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Turn_001
   rotate: false
-  xy: 2870, 1535
+  xy: 287, 41
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 Turn_002
   rotate: false
-  xy: 0, 1483
+  xy: 0, 24
   size: 285, 189
   orig: 285, 189
   offset: 0, 0
   index: -1
 UpSlashEffect_000
   rotate: false
-  xy: 3070, 2493
+  xy: 3574, 2066
   size: 169, 192
   orig: 169, 192
   offset: 0, 0
   index: -1
 UpSlashEffect_001
   rotate: false
-  xy: 2680, 2218
+  xy: 3569, 1872
   size: 169, 192
   orig: 169, 192
   offset: 0, 0
   index: -1
 UpSlashEffect_002
   rotate: false
-  xy: 2579, 2024
+  xy: 3569, 1678
   size: 169, 192
   orig: 169, 192
   offset: 0, 0
   index: -1
 UpSlashEffect_003
   rotate: false
-  xy: 3037, 1917
+  xy: 3563, 1484
   size: 169, 192
   orig: 169, 192
   offset: 0, 0
   index: -1
 UpSlashEffect_004
   rotate: false
-  xy: 2296, 1836
+  xy: 3563, 1290
   size: 169, 192
   orig: 169, 192
   offset: 0, 0
   index: -1
 UpSlashEffect_005
   rotate: false
-  xy: 2467, 1830
+  xy: 3562, 1096
   size: 169, 192
   orig: 169, 192
   offset: 0, 0

@@ -44,6 +44,7 @@ public class GameAssetManager {
     public static Animation<TextureRegion> shadowProjectileAnim;
     public static Animation<TextureRegion> shadowScreamAnim;
     public static Animation<TextureRegion> dashEffectAnim;
+    public static Animation<TextureRegion> shadowDashAnim;
     public static Animation<TextureRegion> slashEffectAnim;
     public static Animation<TextureRegion> downSlashEffectAnim;
     public static Animation<TextureRegion> upSlashEffectAnim;
@@ -53,6 +54,8 @@ public class GameAssetManager {
     private static TextureAtlas falseKnightAtlas;
     public static Map<FalseKnightAnimationType, Animation<TextureRegion>> falseKnightAnimations;
     private static TextureAtlas hudAtlas;
+    private static TextureAtlas healthBarAtlas;
+    public static Animation<TextureRegion> breakHealthAnim;
     public static Map<SoulFillStage, Animation<TextureRegion>> soulFillAnimations;
     public static Sound zoteGrunt1;
     public static Sound zoteGrunt2;
@@ -84,6 +87,7 @@ public class GameAssetManager {
         loadFalseKnightAnimations();
         loadMenuPointers();
         loadHudAtlas();
+        loadHealthBarAtlas();
         loadSoulAnimations();
         loadZoteAnimations();
         loadZoteSounds();
@@ -147,8 +151,14 @@ public class GameAssetManager {
         TextureRegion[] deFrames = new TextureRegion[8];
         for (int i = 0; i < 8; i++)
             deFrames[i] = effectsAtlas.findRegion("DashEffect_" + String.format("%03d", i));
-        dashEffectAnim = new Animation<>(0.05f, deFrames);
+        dashEffectAnim = new Animation<>(0.03f, deFrames);
         dashEffectAnim.setPlayMode(Animation.PlayMode.NORMAL);
+
+        TextureRegion[] sdFrames = new TextureRegion[11];
+        for (int i = 0; i < 11; i++)
+            sdFrames[i] = effectsAtlas.findRegion("ShadowDash_" + String.format("%03d", i));
+        shadowDashAnim = new Animation<>(0.022f, sdFrames);
+        shadowDashAnim.setPlayMode(Animation.PlayMode.NORMAL);
 
         TextureRegion[] slashFrames = new TextureRegion[6];
         for (int i = 0; i < 6; i++)
@@ -244,6 +254,15 @@ public class GameAssetManager {
         hudAtlas = new TextureAtlas(Gdx.files.internal(Phats.HudAtlas.getText()));
     }
 
+    public static void loadHealthBarAtlas() {
+        healthBarAtlas = new TextureAtlas(Gdx.files.internal(Phats.HealthBarAtlas.getText()));
+        TextureRegion[] bhFrames = new TextureRegion[6];
+        for (int i = 0; i < 6; i++)
+            bhFrames[i] = healthBarAtlas.findRegion("BreakHealth_" + String.format("%03d", i));
+        breakHealthAnim = new Animation<>(0.08f, bhFrames);
+        breakHealthAnim.setPlayMode(Animation.PlayMode.NORMAL);
+    }
+
     public static void loadSoulAnimations() {
         soulFillAnimations = new HashMap<>();
         for (SoulFillStage stage : SoulFillStage.values()) {
@@ -277,6 +296,7 @@ public class GameAssetManager {
         if(charmsAtlas != null) charmsAtlas.dispose();
         if(falseKnightAtlas != null) falseKnightAtlas.dispose();
         if(hudAtlas != null) hudAtlas.dispose();
+        if(healthBarAtlas != null) healthBarAtlas.dispose();
         if (zoteAtlas != null) zoteAtlas.dispose();
         if (zoteGrunt1 != null) zoteGrunt1.dispose();
         if (zoteGrunt2 != null) zoteGrunt2.dispose();

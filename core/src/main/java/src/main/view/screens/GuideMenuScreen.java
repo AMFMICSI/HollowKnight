@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import src.main.model.data.KeyBindings;
 import src.main.view.UiManager;
+import src.main.view.screens.settings.KeyBindingScreen;
 
 public class GuideMenuScreen extends AbstractScreen {
 
@@ -88,14 +89,26 @@ public class GuideMenuScreen extends AbstractScreen {
 
         content.add().height(20).row();
 
+        TextButton keybindBtn = new TextButton("Key Bindings", skin);
         TextButton backBtn = new TextButton("Back", skin);
-        content.add(backBtn).width(200);
+
+        Table btnRow = new Table();
+        btnRow.add(keybindBtn).width(200).padRight(10);
+        btnRow.add(backBtn).width(200);
+        content.add(btnRow);
 
         ScrollPane scroll = new ScrollPane(content, skin);
         scroll.setFadeScrollBars(false);
         rootTable.add(scroll).grow().pad(20);
 
-        setupMenuPointer(backBtn);
+        setupMenuPointer(keybindBtn, backBtn);
+
+        keybindBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                UiManager.setScreen(new KeyBindingScreen());
+            }
+        });
 
         backBtn.addListener(new ClickListener() {
             @Override

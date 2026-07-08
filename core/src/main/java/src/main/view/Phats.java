@@ -18,6 +18,7 @@ public enum Phats {
     FalseKnightAtlas("atlases/falseKnight.atlas"),
     ZoteAtlas("atlases/zote.atlas"),
     HudAtlas("atlases/hud.atlas"),
+    HealthBarAtlas("atlases/healthBar.atlas"),
     ButterflyAtlas("atlases/blue_butterfly.atlas"),
     TitleMusic("music/Title.wav"),
     CharmClickSound("music/charm_click_in.wav"),

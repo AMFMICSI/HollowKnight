@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import src.main.model.data.KeyBindings;
 import src.main.model.entity.animation.AnimationSet;
 import src.main.model.entity.charm.CharmType;
 import src.main.model.entity.enemy.Enemy;
@@ -21,7 +22,7 @@ public class Knight extends Entity {
     private static final float MOVE_SPEED = 200f;
     private static final float JUMP_VELOCITY = 500f;
     private static final float DASH_SPEED = 500f;
-    private static final float DASH_DURATION = 0.2f;
+    private static final float DASH_DURATION = 0.5f;
     private static final float ATTACK_DURATION = 0.3f;
     private static final float POGO_BOUNCE = JUMP_VELOCITY * 0.7f;
     private static final float INVINCIBLE_DURATION = 1.0f;
@@ -91,8 +92,10 @@ public class Knight extends Entity {
     // Cheats
     private boolean noclipMode = false;
     private boolean godMode = false;
+    private KeyBindings keys;
 
-    public Knight(float x, float y) {
+    public Knight(float x, float y, KeyBindings keys) {
+        this.keys = keys;
         animationSet = new AnimationSet<KnightAnimationType>(GameAssetManager.knightAnimations, KnightAnimationType.IDLE);
         position.set(x, y);
         spawnX = x;
@@ -166,8 +169,10 @@ public class Knight extends Entity {
             velocity.x = 0;
             if (isMovingLeft()) velocity.x = -MOVE_SPEED * 2;
             if (isMovingRight()) velocity.x = MOVE_SPEED * 2;
-            if (Gdx.input.isKeyPressed(Input.Keys.UP)) velocity.y = MOVE_SPEED * 2;
-            if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) velocity.y = -MOVE_SPEED * 2;
+            if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(keys.get("JUMP")))
+                velocity.y = MOVE_SPEED * 2;
+            if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(keys.get("POGO")))
+                velocity.y = -MOVE_SPEED * 2;
         } else {
             if (!isDashing && !isFocusing && !isCasting) {
                 if (isOnWall) {
@@ -509,6 +514,7 @@ public class Knight extends Entity {
 
     public boolean isDashing() { return isDashing; }
     public float getDashTimer() { return dashTimer; }
+    public float getDashElapsed() { return DASH_DURATION * getDashLengthMultiplier() - dashTimer; }
 
     public float getDashLengthMultiplier() {
         return isCharmEquipped(CharmType.SHARP_SHADOW) ? 1.2f : 1.0f;
@@ -632,7 +638,13 @@ public class Knight extends Entity {
     @Override
     public void draw(SpriteBatch batch, float delta) {
         if (!isDead && invincibleTimer > 0 && (Math.floor(invincibleTimer * 10) % 2 == 0)) return;
-        TextureRegion frame = getFrame(delta);
+        TextureRegion frame;
+        if (hasSharpShadow() && isDashing) {
+            frame = GameAssetManager.shadowDashAnim.getKeyFrame(getDashElapsed());
+        } else {
+            frame = getFrame(delta);
+        }
+        if (frame == null) frame = getFrame(delta);
         float spriteW = boundingBox.width * DRAW_SCALE;
         float spriteH = spriteW * frame.getRegionHeight() / (float) frame.getRegionWidth();
         batch.draw(frame,

@@ -44,8 +44,8 @@ public class GameController implements InputProcessor {
         }
 
         if (keycode == keys.get("PAUSE")) {
+            game.setPaused(true);
             PauseModal pauseModal = new PauseModal(game) {
-                @Override public void onResume() { hide(); }
                 @Override public void onExit() { UiManager.setScreen(new MainMenuScreen()); }
             };
             pauseModal.show();
