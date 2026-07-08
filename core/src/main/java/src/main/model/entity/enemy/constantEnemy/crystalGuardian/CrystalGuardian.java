@@ -1,12 +1,10 @@
 package src.main.model.entity.enemy.constantEnemy.crystalGuardian;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import src.main.model.entity.animation.AnimationSet;
 import src.main.model.entity.enemy.Enemy;
-import src.main.model.enviroment.SolidBlock;
 import src.main.model.physics.PhysicsSystem;
 import src.main.view.manager.GameAssetManager;
 
@@ -18,8 +16,8 @@ public class CrystalGuardian extends Enemy {
     private CrystalGuardianState currentState = CrystalGuardianState.IDLE;
     private final AnimationSet<CrystalGuardianAnimationType> animSet;
     private float stateTimer;
-    private CrystalGuardianLaser laser;
-    private KnightRef knightRef;
+    private final CrystalGuardianLaser laser;
+    private final KnightRef knightRef;
 
     public interface KnightRef {
         Vector2 getPosition();
@@ -50,9 +48,15 @@ public class CrystalGuardian extends Enemy {
 
         stateTimer -= delta;
         Vector2 knightPos = knightRef.getPosition();
-        Rectangle knightBox = knightRef.getBoundingBox();
         boolean seePlayer = position.dst(knightPos) < 500f;
 
+        updateState(delta, knightPos, seePlayer);
+
+        boundingBox.setPosition(position);
+        laser.update(delta);
+    }
+
+    private void updateState(float delta, Vector2 knightPos, boolean seePlayer) {
         switch (currentState) {
             case IDLE:
                 animSet.setAnimation(CrystalGuardianAnimationType.IDLE);
@@ -97,22 +101,6 @@ public class CrystalGuardian extends Enemy {
                 }
                 break;
         }
-
-        boundingBox.setPosition(position);
-        laser.update(delta);
-    }
-
-    private boolean hasLineOfSight(Rectangle targetBounds) {
-        float sx = position.x + boundingBox.width / 2f;
-        float sy = position.y + boundingBox.height / 2f;
-        float tx = targetBounds.x + targetBounds.width / 2f;
-        float ty = targetBounds.y + targetBounds.height / 2f;
-        if (solidBlocks == null) return true;
-        for (SolidBlock block : solidBlocks) {
-            if (Intersector.intersectSegmentRectangle(sx, sy, tx, ty, block.getBounds()))
-                return false;
-        }
-        return true;
     }
 
     @Override
@@ -139,7 +127,6 @@ public class CrystalGuardian extends Enemy {
     }
 
     public CrystalGuardianLaser getLaser() { return laser; }
-    public boolean isDeadAnimationDone() { return deadAnimationDone; }
 
     @Override
     public TextureRegion getCorpseFrame() {

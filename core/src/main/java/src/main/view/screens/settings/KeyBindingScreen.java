@@ -38,6 +38,11 @@ public class KeyBindingScreen extends AbstractScreen implements InputProcessor {
         Label title = new Label(TranslationManager.get("keybind.title"), skin);
         rootTable.add(title).padBottom(20).row();
 
+        buildScrollContent();
+        buildBottomButtons();
+    }
+
+    private void buildScrollContent() {
         String[][] actions = {
             {TranslationManager.get("keybind.action_left"),   "MOVE_LEFT"},
             {TranslationManager.get("keybind.action_right"),  "MOVE_RIGHT"},
@@ -82,7 +87,9 @@ public class KeyBindingScreen extends AbstractScreen implements InputProcessor {
         scrollPane.setFadeScrollBars(false);
         scrollPane.setScrollingDisabled(true, false);
         rootTable.add(scrollPane).growX().height(350).padBottom(20).row();
+    }
 
+    private void buildBottomButtons() {
         Table bottomRow = new Table();
         TextButton resetBtn = new TextButton(TranslationManager.get("keybind.reset"), skin);
         resetBtn.getLabel().setFontScale(0.65f);

@@ -22,12 +22,4 @@ public class CrackedWall {
             hitCount++;
         }
     }
-
-    public int getHitCount() {
-        return hitCount;
-    }
-
-    public int getMaxHits() {
-        return MAX_HITS;
-    }
 }

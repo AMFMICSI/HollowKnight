@@ -106,6 +106,11 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void renderDebug() {
+        renderDebugShapes();
+        renderDebugText();
+    }
+
+    private void renderDebugShapes() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.GREEN);
         for (SolidBlock sb : game.getMapLoader().getSolidBlocks()) {
@@ -149,7 +154,9 @@ public class GameScreen extends AbstractScreen {
             }
         }
         shapeRenderer.end();
+    }
 
+    private void renderDebugText() {
         batch.begin();
         BitmapFont font = skin.getFont("default");
         font.draw(batch, "Knight: " + game.getKnight().getCurrentState().name(),
@@ -174,17 +181,34 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void render(float delta) {
         gameViewport.apply();
+        updateGameLogic(delta);
+        updateAreaMusic();
+        updateCamera();
+        renderMap();
+        renderEntities(delta);
+        renderHudAndDialogue(delta);
+        renderOverlays(delta);
+
+        if (GameSettings.getInstance().isDebugMode())
+            renderDebug();
+
+        stage.act(delta);
+        stage.draw();
+    }
+
+    private void updateGameLogic(float delta) {
         accumulator += delta;
         accumulator = Math.min(accumulator, STEP * MAX_STEPS);
         while (accumulator >= STEP) {
             game.update(STEP);
             accumulator -= STEP;
         }
-        updateAreaMusic();
+    }
+
+    private void updateCamera() {
         float targetX = game.getKnight().getPosition().x;
         float targetY = game.getKnight().getPosition().y + 30;
 
-        // Clamp target to boss arena or map bounds
         float halfW = camera.viewportWidth / 2f;
         float halfH = camera.viewportHeight / 2f;
         if (game.isInBossFight() && game.getBossArena() != null) {
@@ -204,11 +228,9 @@ public class GameScreen extends AbstractScreen {
             targetY = Math.min(Math.max(targetY, halfH), mapH - halfH);
         }
 
-        // Smooth camera follow (lerp)
         camera.position.x += (targetX - camera.position.x) * CAMERA_LERP;
         camera.position.y += (targetY - camera.position.y) * CAMERA_LERP;
 
-        // Camera shake (applied after lerp so it isn't smoothed out)
         if (game.getCameraShakeTimer() > 0) {
             float intensity = game.getCameraShakeIntensity();
             camera.position.x += (float) (Math.random() - 0.5f) * intensity * 2;
@@ -219,10 +241,14 @@ public class GameScreen extends AbstractScreen {
 
         batch.setProjectionMatrix(camera.combined);
         shapeRenderer.setProjectionMatrix(camera.combined);
+    }
 
+    private void renderMap() {
         mapRenderer.setView(camera);
         mapRenderer.render(new int[]{0, 1, 2});
+    }
 
+    private void renderEntities(float delta) {
         batch.begin();
         game.getKnight().draw(batch, delta);
         for (Enemy enemy : game.getEnemies()) {
@@ -241,43 +267,49 @@ public class GameScreen extends AbstractScreen {
                 game.getZote().getPosition().y + 40);
         }
 
-        if (game.getKnight().isAttacking()) {
-            Animation<TextureRegion> slashAnim;
-            float offX = 0, offY = 0;
-            if (game.getKnight().isAttackDown() || game.getKnight().isPogoAttack()) {
-                slashAnim = GameAssetManager.downSlashEffectAnim;
-                offY = -8;
-            } else if (game.getKnight().isAttackUp()) {
-                slashAnim = GameAssetManager.upSlashEffectAnim;
-                offY = 10;
-            } else {
-                slashAnim = GameAssetManager.slashEffectAnim;
-                offY = 4;
-            }
-            TextureRegion frame = slashAnim.getKeyFrame(game.getKnight().getAttackElapsed());
-            float s = 0.6f;
-            float w = frame.getRegionWidth() * s;
-            float h = frame.getRegionHeight() * s;
-            float bbox = game.getKnight().getBoundingBox().width;
-            if (slashAnim == GameAssetManager.slashEffectAnim) {
-                float drawScale = game.getKnight().getDrawScale();
-                if (game.getKnight().isFacingRight()) {
-                    offX = bbox * (1 + drawScale) / 2 - w / 2;
-                } else {
-                    offX = bbox * (1 - drawScale) / 2 - w / 2;
-                }
-            } else {
-                offX = (bbox - w) / 2f;
-            }
-            float flipX = game.getKnight().isFacingRight() ? -1 : 1;
-            batch.draw(frame,
-                game.getKnight().getPosition().x + offX,
-                game.getKnight().getPosition().y + offY,
-                w / 2, 0, w, h, flipX, 1, 0);
-        }
+        drawSlashEffect(delta);
 
         batch.end();
+    }
 
+    private void drawSlashEffect(float delta) {
+        if (!game.getKnight().isAttacking()) return;
+
+        Animation<TextureRegion> slashAnim;
+        float offX = 0, offY = 0;
+        if (game.getKnight().isAttackDown() || game.getKnight().isPogoAttack()) {
+            slashAnim = GameAssetManager.downSlashEffectAnim;
+            offY = -8;
+        } else if (game.getKnight().isAttackUp()) {
+            slashAnim = GameAssetManager.upSlashEffectAnim;
+            offY = 10;
+        } else {
+            slashAnim = GameAssetManager.slashEffectAnim;
+            offY = 4;
+        }
+        TextureRegion frame = slashAnim.getKeyFrame(game.getKnight().getAttackElapsed());
+        float s = 0.6f;
+        float w = frame.getRegionWidth() * s;
+        float h = frame.getRegionHeight() * s;
+        float bbox = game.getKnight().getBoundingBox().width;
+        if (slashAnim == GameAssetManager.slashEffectAnim) {
+            float drawScale = game.getKnight().getDrawScale();
+            if (game.getKnight().isFacingRight()) {
+                offX = bbox * (1 + drawScale) / 2 - w / 2;
+            } else {
+                offX = bbox * (1 - drawScale) / 2 - w / 2;
+            }
+        } else {
+            offX = (bbox - w) / 2f;
+        }
+        float flipX = game.getKnight().isFacingRight() ? -1 : 1;
+        batch.draw(frame,
+            game.getKnight().getPosition().x + offX,
+            game.getKnight().getPosition().y + offY,
+            w / 2, 0, w, h, flipX, 1, 0);
+    }
+
+    private void renderHudAndDialogue(float delta) {
         hudRenderer.render(batch, game.getKnight().getHp(), game.getKnight().getMaxHp(),
             game.getKnight().getSoul(), game.getKnight().getMaxSoul(), delta);
 
@@ -314,7 +346,9 @@ public class GameScreen extends AbstractScreen {
         }
 
         mapRenderer.render(new int[]{3});
+    }
 
+    private void renderOverlays(float delta) {
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
         for (var p : game.getSpellManager().getProjectiles())
@@ -324,12 +358,6 @@ public class GameScreen extends AbstractScreen {
         for (var p : game.getButterflies())
             p.draw(batch, GameAssetManager.butterflyAnim);
         batch.end();
-
-        if (GameSettings.getInstance().isDebugMode())
-            renderDebug();
-
-        stage.act(delta);
-        stage.draw();
     }
 
     private void updateAreaMusic() {

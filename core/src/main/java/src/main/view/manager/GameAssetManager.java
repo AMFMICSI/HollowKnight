@@ -44,7 +44,6 @@ public class GameAssetManager {
     public static Animation<TextureRegion> wraithsAoeAnim;
     public static Animation<TextureRegion> shadowProjectileAnim;
     public static Animation<TextureRegion> shadowScreamAnim;
-    public static Animation<TextureRegion> dashEffectAnim;
     public static Animation<TextureRegion> shadowDashAnim;
     public static Animation<TextureRegion> slashEffectAnim;
     public static Animation<TextureRegion> downSlashEffectAnim;
@@ -69,7 +68,6 @@ public class GameAssetManager {
     public static TextureRegion dashmasterIcon;
     public static TextureRegion sharpShadowIcon;
     public static TextureRegion voidHeartIcon;
-    public static TextureRegion charmNotch;
     public static TextureRegion notchLit;
     public static TextureRegion notchUnlit;
     private static TextureAtlas charmsAtlas;
@@ -125,42 +123,59 @@ public class GameAssetManager {
     public static void loadSpellTextures() {
         effectsAtlas = new TextureAtlas(Gdx.files.internal(Phats.EffectsAtlas.getText()));
 
+        loadVengefulProjectile();
+        loadWraithsAoe();
+        loadShadowProjectile();
+        loadShadowScream();
+        loadShadowDash();
+        loadSlashEffects();
+    }
+
+    private static void loadVengefulProjectile() {
         TextureRegion[] vFrames = new TextureRegion[4];
         for (int i = 0; i < 4; i++)
             vFrames[i] = effectsAtlas.findRegion("SoulBall_" + String.format("%03d", i));
         vengefulProjectileAnim = new Animation<>(0.1f, vFrames);
         vengefulProjectileAnim.setPlayMode(Animation.PlayMode.LOOP);
+    }
 
+    private static void loadWraithsAoe() {
         TextureRegion[] wFrames = new TextureRegion[13];
         for (int i = 0; i < 13; i++)
             wFrames[i] = effectsAtlas.findRegion("SoulScream_" + String.format("%03d", i));
         wraithsAoeAnim = new Animation<>(0.05f, wFrames);
         wraithsAoeAnim.setPlayMode(Animation.PlayMode.NORMAL);
+    }
 
+    private static void loadShadowProjectile() {
         TextureRegion[] spFrames = new TextureRegion[6];
         for (int i = 0; i < 6; i++)
             spFrames[i] = effectsAtlas.findRegion("ShadowBall_" + String.format("%03d", i));
         shadowProjectileAnim = new Animation<>(0.1f, spFrames);
         shadowProjectileAnim.setPlayMode(Animation.PlayMode.LOOP);
+    }
 
+    private static void loadShadowScream() {
         TextureRegion[] ssFrames = new TextureRegion[13];
         for (int i = 0; i < 13; i++)
             ssFrames[i] = effectsAtlas.findRegion("ShadowScream_" + String.format("%03d", i));
         shadowScreamAnim = new Animation<>(0.05f, ssFrames);
         shadowScreamAnim.setPlayMode(Animation.PlayMode.NORMAL);
+    }
 
+    private static void loadShadowDash() {
         TextureRegion[] deFrames = new TextureRegion[8];
         for (int i = 0; i < 8; i++)
             deFrames[i] = effectsAtlas.findRegion("DashEffect_" + String.format("%03d", i));
-        dashEffectAnim = new Animation<>(0.03f, deFrames);
-        dashEffectAnim.setPlayMode(Animation.PlayMode.NORMAL);
 
         TextureRegion[] sdFrames = new TextureRegion[11];
         for (int i = 0; i < 11; i++)
             sdFrames[i] = effectsAtlas.findRegion("ShadowDash_" + String.format("%03d", i));
         shadowDashAnim = new Animation<>(0.022f, sdFrames);
         shadowDashAnim.setPlayMode(Animation.PlayMode.NORMAL);
+    }
 
+    private static void loadSlashEffects() {
         TextureRegion[] slashFrames = new TextureRegion[6];
         for (int i = 0; i < 6; i++)
             slashFrames[i] = effectsAtlas.findRegion("SlashEffect_" + String.format("%03d", i));
@@ -199,7 +214,6 @@ public class GameAssetManager {
         dashmasterIcon = charmsAtlas.findRegion("dashmaster");
         sharpShadowIcon = charmsAtlas.findRegion("sharp_shadow");
         voidHeartIcon = charmsAtlas.findRegion("void_heart");
-        charmNotch = charmsAtlas.findRegion("charm_notch");
         notchLit = charmsAtlas.findRegion("notch_lit");
         notchUnlit = charmsAtlas.findRegion("notch_unlit");
     }
@@ -226,7 +240,8 @@ public class GameAssetManager {
 
     public static void loadCrystalGuardianAnimations() {
         crystalGuardianAtlas = new TextureAtlas(Gdx.files.internal(Phats.CrystalGuardianAtlas.getText()));
-        crystalGuardianAnimations = loadAnimations(crystalGuardianAtlas, CrystalGuardianAnimationType.values(), "%s_%03d");
+        crystalGuardianAnimations = loadAnimations(
+            crystalGuardianAtlas, CrystalGuardianAnimationType.values(), "%s_%03d");
         crystalLaserTexture = new Texture(Gdx.files.internal("animation/Effects/CrystalLaser.png"));
         laserRegion = new TextureRegion(crystalLaserTexture);
         TextureRegion[] lcFrames = new TextureRegion[4];

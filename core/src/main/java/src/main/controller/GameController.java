@@ -33,16 +33,24 @@ public class GameController implements InputProcessor {
             ctrlHeld = true;
         }
 
-        // Cheat codes (Ctrl + key)
-        if (ctrlHeld) {
-            if (keycode == keys.get("CHEAT_TELEPORT")) { game.teleportToBossArena(); game.setPendingToast("Teleported to Boss Arena"); return true; }
-            if (keycode == keys.get("CHEAT_NOCLIP")) { game.getKnight().toggleNoclip(); game.setPendingToast("Noclip: " + (game.getKnight().isNoclipMode() ? "ON" : "OFF")); return true; }
-            if (keycode == keys.get("CHEAT_HEAL")) { game.getKnight().emergencyHeal(); game.setPendingToast("Emergency Heal"); return true; }
-            if (keycode == keys.get("CHEAT_SOUL")) { game.getKnight().refillSoul(); game.setPendingToast("Soul Refilled"); return true; }
-            if (keycode == keys.get("CHEAT_GOD")) { game.getKnight().toggleGodMode(); game.setPendingToast("God Mode: " + (game.getKnight().isGodMode() ? "ON" : "OFF")); return true; }
-            if (keycode == keys.get("CHEAT_INSTAKILL")) { game.instaKillAllEnemies(); game.setPendingToast("Insta-Kill"); return true; }
-        }
+        if (ctrlHeld && handleCheatKeys(keycode)) return true;
 
+        if (handleSystemKeys(keycode)) return true;
+
+        if (keycode == keys.get("MOVE_RIGHT")) {
+            game.getKnight().setMovingRight(true);
+            game.getKnight().setFacingRight(true);
+            return true;
+        }
+        if (keycode == keys.get("MOVE_LEFT")) {
+            game.getKnight().setMovingLeft(true);
+            game.getKnight().setFacingRight(false);
+            return true;
+        }
+        return handleActionKeys(keycode);
+    }
+
+    private boolean handleSystemKeys(int keycode) {
         if (keycode == keys.get("PAUSE")) {
             game.setPaused(true);
             PauseModal pauseModal = new PauseModal(game) {
@@ -70,9 +78,44 @@ public class GameController implements InputProcessor {
             game.interact();
             return true;
         }
+        return false;
+    }
 
-        if (keycode == keys.get("MOVE_RIGHT")) { game.getKnight().setMovingRight(true); game.getKnight().setFacingRight(true); return true; }
-        if (keycode == keys.get("MOVE_LEFT")) { game.getKnight().setMovingLeft(true); game.getKnight().setFacingRight(false); return true; }
+    private boolean handleCheatKeys(int keycode) {
+        if (keycode == keys.get("CHEAT_TELEPORT")) {
+            game.teleportToBossArena();
+            game.setPendingToast("Teleported to Boss Arena");
+            return true;
+        }
+        if (keycode == keys.get("CHEAT_NOCLIP")) {
+            game.getKnight().toggleNoclip();
+            game.setPendingToast("Noclip: " + (game.getKnight().isNoclipMode() ? "ON" : "OFF"));
+            return true;
+        }
+        if (keycode == keys.get("CHEAT_HEAL")) {
+            game.getKnight().emergencyHeal();
+            game.setPendingToast("Emergency Heal");
+            return true;
+        }
+        if (keycode == keys.get("CHEAT_SOUL")) {
+            game.getKnight().refillSoul();
+            game.setPendingToast("Soul Refilled");
+            return true;
+        }
+        if (keycode == keys.get("CHEAT_GOD")) {
+            game.getKnight().toggleGodMode();
+            game.setPendingToast("God Mode: " + (game.getKnight().isGodMode() ? "ON" : "OFF"));
+            return true;
+        }
+        if (keycode == keys.get("CHEAT_INSTAKILL")) {
+            game.instaKillAllEnemies();
+            game.setPendingToast("Insta-Kill");
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleActionKeys(int keycode) {
         if (keycode == keys.get("JUMP")) { game.getKnight().jump(); return true; }
         else if (keycode == keys.get("DASH")) {
             if (Gdx.input.isKeyPressed(keys.get("POGO"))) {

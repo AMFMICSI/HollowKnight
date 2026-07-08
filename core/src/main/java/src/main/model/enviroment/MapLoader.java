@@ -62,6 +62,14 @@ public class MapLoader {
 
         MapObjects objects = tiledMap.getLayers().get("logical").getObjects();
 
+        loadRectangles(objects);
+        loadZones(objects);
+        loadBossGates(objects);
+        loadNamedZones(objects);
+        loadPoints(objects);
+    }
+
+    private void loadRectangles(MapObjects objects) {
         for (MapObject obj : objects) {
             if (obj instanceof RectangleMapObject r) {
                 String name = obj.getName();
@@ -78,24 +86,27 @@ public class MapLoader {
                     crackedWalls.add(new CrackedWall(rect.x, rect.y, rect.width, rect.height));
             }
         }
+    }
 
-        // Collect Zone rectangles once
+    private void loadZones(MapObjects objects) {
         for (MapObject obj : objects) {
             if (obj instanceof RectangleMapObject r && "Zone".equals(obj.getName())) {
                 Rectangle rect = r.getRectangle();
                 zoneRects.add(new Rectangle(rect));
             }
         }
+    }
 
-        // Collect BossGate rectangles
+    private void loadBossGates(MapObjects objects) {
         for (MapObject obj : objects) {
             if (obj instanceof RectangleMapObject r && "BossGate".equals(obj.getName())) {
                 Rectangle rect = r.getRectangle();
                 bossGates.add(new Rectangle(rect));
             }
         }
+    }
 
-        // Collect named zones (type="Zone" with a non-empty name like "Crystal Peaks")
+    private void loadNamedZones(MapObjects objects) {
         for (MapObject obj : objects) {
             String name = obj.getName();
             if (name == null || name.isEmpty() || "Zone".equals(name) || "SolidBlock".equals(name)) continue;
@@ -107,7 +118,9 @@ public class MapLoader {
                 }
             }
         }
+    }
 
+    private void loadPoints(MapObjects objects) {
         for (MapObject obj : objects) {
             if ("SpawnPlayer".equals(obj.getName()) && obj instanceof PointMapObject p) {
                 spawnPoint.set(p.getPoint().x, p.getPoint().y);

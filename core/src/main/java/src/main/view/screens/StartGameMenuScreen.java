@@ -20,6 +20,23 @@ public class StartGameMenuScreen extends AbstractScreen {
 
         Label title = new Label(TranslationManager.get("slot.title"), skin);
 
+        Table slotTable = buildSlotTable();
+        TextButton newGameBtn = buildNewGameButton();
+        TextButton backBtn = buildBackButton();
+
+        Table centerMenu = new Table();
+        centerMenu.defaults().width(200).spaceBottom(10);
+        centerMenu.add(title).padBottom(20).row();
+        centerMenu.add(slotTable).row();
+        centerMenu.add(newGameBtn).row();
+        centerMenu.add(backBtn).row();
+
+        rootTable.add(centerMenu).expand().center();
+
+        setupMenuPointer(newGameBtn, backBtn);
+    }
+
+    private Table buildSlotTable() {
         Table slotTable = new Table();
         slotTable.defaults().width(220).spaceBottom(8);
 
@@ -27,8 +44,10 @@ public class StartGameMenuScreen extends AbstractScreen {
             int slot = i;
             boolean exists = SaveData.slotExists(i);
             String label = exists
-                ? TranslationManager.get("slot.prefix") + " " + (i+1) + " (" + TranslationManager.get("slot.continue") + ")"
-                : TranslationManager.get("slot.prefix") + " " + (i+1) + " (" + TranslationManager.get("slot.empty") + ")";
+                ? TranslationManager.get("slot.prefix") + " " + (i + 1)
+                    + " (" + TranslationManager.get("slot.continue") + ")"
+                : TranslationManager.get("slot.prefix") + " " + (i + 1)
+                    + " (" + TranslationManager.get("slot.empty") + ")";
             TextButton btn = new TextButton(label, skin);
             btn.addListener(new ClickListener() {
                 @Override
@@ -62,7 +81,10 @@ public class StartGameMenuScreen extends AbstractScreen {
             }
             slotTable.add(row).row();
         }
+        return slotTable;
+    }
 
+    private TextButton buildNewGameButton() {
         TextButton newGameBtn = new TextButton(TranslationManager.get("slot.new_game"), skin);
         newGameBtn.addListener(new ClickListener() {
             @Override
@@ -79,7 +101,10 @@ public class StartGameMenuScreen extends AbstractScreen {
                 openToast(TranslationManager.get("slot.all_full"));
             }
         });
+        return newGameBtn;
+    }
 
+    private TextButton buildBackButton() {
         TextButton backBtn = new TextButton(TranslationManager.get("slot.back"), skin);
         backBtn.addListener(new ClickListener() {
             @Override
@@ -87,16 +112,6 @@ public class StartGameMenuScreen extends AbstractScreen {
                 UiManager.setScreen(new MainMenuScreen());
             }
         });
-
-        Table centerMenu = new Table();
-        centerMenu.defaults().width(200).spaceBottom(10);
-        centerMenu.add(title).padBottom(20).row();
-        centerMenu.add(slotTable).row();
-        centerMenu.add(newGameBtn).row();
-        centerMenu.add(backBtn).row();
-
-        rootTable.add(centerMenu).expand().center();
-
-        setupMenuPointer(newGameBtn, backBtn);
+        return backBtn;
     }
 }

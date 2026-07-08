@@ -22,6 +22,17 @@ public class GuideMenuScreen extends AbstractScreen {
         Label title = new Label(TranslationManager.get("guide.title"), skin, "title");
         content.add(title).padBottom(20).row();
 
+        buildControlsTable(content);
+        buildAbilitiesTable(content);
+        buildCheatsTable(content);
+        buildButtons(content);
+
+        ScrollPane scroll = new ScrollPane(content, skin);
+        scroll.setFadeScrollBars(false);
+        rootTable.add(scroll).grow().pad(20);
+    }
+
+    private void buildControlsTable(Table content) {
         KeyBindings keys = new KeyBindings();
         String[][] controls = {
             {TranslationManager.get("control.move_left"),       KeyBindings.keyName(keys.get("MOVE_LEFT"))},
@@ -44,9 +55,10 @@ public class GuideMenuScreen extends AbstractScreen {
             content.add(new Label(c[1], skin)).right().width(100);
             content.row();
         }
-
         content.add().height(15).row();
+    }
 
+    private void buildAbilitiesTable(Table content) {
         Label abilitiesTitle = new Label(TranslationManager.get("guide.abilities_title"), skin);
         content.add(abilitiesTitle).padBottom(10).row();
 
@@ -56,11 +68,12 @@ public class GuideMenuScreen extends AbstractScreen {
             {TranslationManager.get("ability.dash"),                TranslationManager.get("ability_desc.dash")},
             {TranslationManager.get("ability.pogo"),                TranslationManager.get("ability_desc.pogo")},
             {TranslationManager.get("ability.focus_heal"),          TranslationManager.get("ability_desc.focus_heal")},
-            {TranslationManager.get("ability.vengeful_spirit"),     TranslationManager.get("ability_desc.vengeful_spirit")},
-            {TranslationManager.get("ability.howling_wraiths"),     TranslationManager.get("ability_desc.howling_wraiths")},
-            {TranslationManager.get("ability.wall_slide"),          TranslationManager.get("ability_desc.wall_slide")},
-            {TranslationManager.get("ability.soul_system"),         TranslationManager.get("ability_desc.soul_system")},
-            {TranslationManager.get("ability.health_masks"),        TranslationManager.get("ability_desc.health_masks")},
+            {TranslationManager.get("ability.vengeful_spirit"),
+                TranslationManager.get("ability_desc.vengeful_spirit")},
+            {TranslationManager.get("ability.howling_wraiths"),
+                TranslationManager.get("ability_desc.howling_wraiths")},
+            {TranslationManager.get("ability.health_masks"),
+                TranslationManager.get("ability_desc.health_masks")},
         };
 
         for (String[] a : abilities) {
@@ -68,9 +81,10 @@ public class GuideMenuScreen extends AbstractScreen {
             content.add(new Label(a[1], skin)).left().width(350);
             content.row();
         }
-
         content.add().height(15).row();
+    }
 
+    private void buildCheatsTable(Table content) {
         Label cheatTitle = new Label(TranslationManager.get("guide.cheats_title"), skin);
         content.add(cheatTitle).padBottom(10).row();
 
@@ -87,9 +101,10 @@ public class GuideMenuScreen extends AbstractScreen {
             content.add(new Label(ch[1], skin)).left().width(350);
             content.row();
         }
-
         content.add().height(20).row();
+    }
 
+    private void buildButtons(Table content) {
         TextButton keybindBtn = new TextButton(TranslationManager.get("guide.key_bindings"), skin);
         TextButton backBtn = new TextButton(TranslationManager.get("guide.back"), skin);
 
@@ -97,10 +112,6 @@ public class GuideMenuScreen extends AbstractScreen {
         btnRow.add(keybindBtn).width(200).padRight(10);
         btnRow.add(backBtn).width(200);
         content.add(btnRow);
-
-        ScrollPane scroll = new ScrollPane(content, skin);
-        scroll.setFadeScrollBars(false);
-        rootTable.add(scroll).grow().pad(20);
 
         setupMenuPointer(keybindBtn, backBtn);
 

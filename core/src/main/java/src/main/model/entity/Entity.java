@@ -21,7 +21,6 @@ public abstract class Entity {
     public void moveLeft(float speed) { velocity.x = -speed; setFacingRight(false); }
     public void moveRight(float speed) { velocity.x = speed; setFacingRight(true); }
     public void stopX() { velocity.x = 0; }
-    public void applyGravity(float gravity, float delta) { velocity.y -= gravity * delta; }
     public Rectangle getBoundingBox() { return boundingBox; }
     public Vector2 getPosition() { return position; }
 

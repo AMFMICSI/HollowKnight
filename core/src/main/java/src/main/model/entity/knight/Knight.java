@@ -96,7 +96,8 @@ public class Knight extends Entity {
 
     public Knight(float x, float y, KeyBindings keys) {
         this.keys = keys;
-        animationSet = new AnimationSet<KnightAnimationType>(GameAssetManager.knightAnimations, KnightAnimationType.IDLE);
+        animationSet = new AnimationSet<KnightAnimationType>(
+            GameAssetManager.knightAnimations, KnightAnimationType.IDLE);
         position.set(x, y);
         spawnX = x;
         spawnY = y;
@@ -106,15 +107,29 @@ public class Knight extends Entity {
     @Override
     public void update(float delta) {
         if (isDead) {
-            deathTimer -= delta;
-            updateAnimationState();
-            if (deathTimer <= 0) {
-                isDead = false;
-                respawn();
-            }
+            updateDeath(delta);
             return;
         }
 
+        updateTimers(delta);
+        updateFocusAndCast(delta);
+        updateJumpHeight();
+        updateMovement(delta);
+
+        updateAnimationState();
+        boundingBox.setPosition(position.x, position.y);
+    }
+
+    private void updateDeath(float delta) {
+        deathTimer -= delta;
+        updateAnimationState();
+        if (deathTimer <= 0) {
+            isDead = false;
+            respawn();
+        }
+    }
+
+    private void updateTimers(float delta) {
         if (invincibleTimer > 0) invincibleTimer -= delta;
 
         if (isDashing) {
@@ -136,8 +151,9 @@ public class Knight extends Entity {
                 hitRegistered = false;
             }
         }
+    }
 
-        // Focus
+    private void updateFocusAndCast(float delta) {
         if (isFocusing) {
             focusTimer += delta;
             velocity.x = 0;
@@ -150,7 +166,6 @@ public class Knight extends Entity {
             }
         }
 
-        // Casting
         if (isCasting) {
             castTimer += delta;
             velocity.x = 0;
@@ -159,11 +174,14 @@ public class Knight extends Entity {
                 completeCast();
             }
         }
+    }
 
-        // Variable jump height
+    private void updateJumpHeight() {
         if (!jumpKeyHeld && velocity.y > 0)
             velocity.y *= 0.85f;
+    }
 
+    private void updateMovement(float delta) {
         if (noclipMode) {
             velocity.y = 0;
             velocity.x = 0;
@@ -186,9 +204,6 @@ public class Knight extends Entity {
             }
             if (!isDashing && !isOnWall) velocity.y -= PhysicsSystem.GRAVITY * delta;
         }
-
-        updateAnimationState();
-        boundingBox.setPosition(position.x, position.y);
     }
 
     public void updateAnimationState() {
@@ -202,6 +217,11 @@ public class Knight extends Entity {
             animationSet.setAnimation(KnightAnimationType.IDLE);
             return;
         }
+        updateCurrentState();
+        animationSet.setAnimation(selectAnimationType());
+    }
+
+    private void updateCurrentState() {
         if (isCasting) {
             // keep currentState as set by startCast (CASTING_VENGEFUL or CASTING_WRAITHS)
         } else if (isFocusing) {
@@ -223,8 +243,9 @@ public class Knight extends Entity {
         } else {
             currentState = KnightState.IDLE;
         }
+    }
 
-        KnightAnimationType animType;
+    private KnightAnimationType selectAnimationType() {
         switch (currentState) {
             case RUNNING:
                 if (!runStartPlayed
@@ -232,28 +253,25 @@ public class Knight extends Entity {
                     && animationSet.getStateTime() >= animationSet.getAnimationDuration()) {
                     runStartPlayed = true;
                 }
-                animType = runStartPlayed ? KnightAnimationType.RUN_LOOP : KnightAnimationType.RUN_START;
-                break;
-            case JUMPING:   animType = KnightAnimationType.AIRBORNE; break;
-            case DOUBLE_JUMPING: animType = KnightAnimationType.DOUBLE_JUMP; break;
-            case FALLING:   animType = KnightAnimationType.FALL; break;
-            case WALL_SLIDING:   animType = KnightAnimationType.FALL; break;
-            case ATTACKING:   animType = KnightAnimationType.SLASH; break;
-            case ATTACKING_DOWN: animType = KnightAnimationType.DOWN_SLASH; break;
-            case ATTACKING_UP:   animType = KnightAnimationType.UP_SLASH; break;
-            case DASHING:   animType = KnightAnimationType.DASH; break;
-            case CASTING_VENGEFUL: animType = KnightAnimationType.FIREBALL_CAST; break;
-            case CASTING_WRAITHS:  animType = KnightAnimationType.SCREAM; break;
+                return runStartPlayed ? KnightAnimationType.RUN_LOOP : KnightAnimationType.RUN_START;
+            case JUMPING:   return KnightAnimationType.AIRBORNE;
+            case DOUBLE_JUMPING: return KnightAnimationType.DOUBLE_JUMP;
+            case FALLING:   return KnightAnimationType.FALL;
+            case WALL_SLIDING:   return KnightAnimationType.FALL;
+            case ATTACKING:   return KnightAnimationType.SLASH;
+            case ATTACKING_DOWN: return KnightAnimationType.DOWN_SLASH;
+            case ATTACKING_UP:   return KnightAnimationType.UP_SLASH;
+            case DASHING:   return KnightAnimationType.DASH;
+            case CASTING_VENGEFUL: return KnightAnimationType.FIREBALL_CAST;
+            case CASTING_WRAITHS:  return KnightAnimationType.SCREAM;
             case FOCUSING:
-                if (focusTimer < 0.3f) animType = KnightAnimationType.FOCUS_START;
-                else if (focusTimer > getFocusDuration() - 0.2f) animType = KnightAnimationType.FOCUS_GET;
-                else animType = KnightAnimationType.FOCUS;
-                break;
+                if (focusTimer < 0.3f) return KnightAnimationType.FOCUS_START;
+                else if (focusTimer > getFocusDuration() - 0.2f) return KnightAnimationType.FOCUS_GET;
+                else return KnightAnimationType.FOCUS;
             default:
                 runStartPlayed = false;
-                animType = KnightAnimationType.IDLE;
+                return KnightAnimationType.IDLE;
         }
-        animationSet.setAnimation(animType);
     }
 
     // --- MOVEMENT ---
@@ -401,8 +419,6 @@ public class Knight extends Entity {
         if (onWall) setFacingRight(!wallLeft);
     }
 
-    public boolean isOnWall() { return isOnWall; }
-
     // --- CASTING ---
     public void startCast(SpellType type) {
         if (isDead) return;
@@ -449,8 +465,6 @@ public class Knight extends Entity {
         pendingSoulToast = false;
         return v;
     }
-
-    public boolean isCasting() { return isCasting; }
 
     // --- CHARMS ---
     public Set<CharmType> getEquippedCharms() {
@@ -512,8 +526,6 @@ public class Knight extends Entity {
         return isCharmEquipped(CharmType.SHARP_SHADOW);
     }
 
-    public boolean isDashing() { return isDashing; }
-    public float getDashTimer() { return dashTimer; }
     public float getDashElapsed() { return DASH_DURATION * getDashLengthMultiplier() - dashTimer; }
 
     public float getDashLengthMultiplier() {
@@ -683,8 +695,6 @@ public class Knight extends Entity {
     public void resetJump() { jumpCount = 0; }
     public int getHp() { return hp; }
     public int getMaxHp() { return MAX_HP; }
-    public float getInvincibleTimer() { return invincibleTimer; }
-    public void resetInvincibleTimer() { invincibleTimer = 0; }
     public KnightState getCurrentState() { return currentState; }
     public boolean isDead() { return isDead; }
     public void setHp(int hp) { this.hp = Math.min(hp, MAX_HP); }

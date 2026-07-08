@@ -23,7 +23,9 @@ public class EndGameModal extends Modal {
         add(new Label(TranslationManager.get("endgame.deaths") + " " + data.deathCount(), skin)).left().row();
         add(new Label(TranslationManager.get("endgame.killed") + " " + data.totalKilled(), skin)).left().row();
         int sec = (int) data.playTime();
-        add(new Label(TranslationManager.get("endgame.time") + " " + (sec / 60) + ":" + String.format("%02d", sec % 60), skin)).left().row();
+        add(new Label(
+            TranslationManager.get("endgame.time") + " " + (sec / 60) + ":" + String.format("%02d", sec % 60),
+            skin)).left().row();
 
         TextButton restartBtn = new TextButton(TranslationManager.get("endgame.restart"), skin);
         restartBtn.addListener(new ClickListener() {

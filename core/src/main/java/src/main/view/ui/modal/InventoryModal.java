@@ -27,11 +27,11 @@ public class InventoryModal extends Modal {
     private final Game game;
     private CharmType selectedCharm = null;
     private final Label descLabel;
-    private final Table notchTable;
+    private Table notchTable;
     private final Map<CharmType, ImageButton> charmButtons = new HashMap<>();
     private final Map<CharmType, Table> charmCells = new HashMap<>();
     private final Image[] notchIcons;
-    private final TextButton equipBtn;
+    private TextButton equipBtn;
     private final Drawable highlightBg;
     private final Drawable equippedBg;
 
@@ -51,6 +51,21 @@ public class InventoryModal extends Modal {
         defaults().space(3);
         add(new Label(TranslationManager.get("inventory.title"), skin)).colspan(2).center().padBottom(8).row();
 
+        buildCharmGrid();
+
+        descLabel = new Label(TranslationManager.get("inventory.select"), skin);
+        descLabel.setWrap(true);
+        add(descLabel).colspan(2).width(370).padTop(8).row();
+
+        buildNotchRow(maxNotches);
+        buildEquipButton();
+        buildCloseButton();
+
+        updateNotchDisplay();
+        updateButtonHighlights();
+    }
+
+    private void buildCharmGrid() {
         int col = 0;
         for (CharmType charm : CharmType.values()) {
             Table cell = new Table();
@@ -79,18 +94,18 @@ public class InventoryModal extends Modal {
             if (col % 2 == 0) row();
         }
         if (col % 2 != 0) row();
+    }
 
-        descLabel = new Label(TranslationManager.get("inventory.select"), skin);
-        descLabel.setWrap(true);
-        add(descLabel).colspan(2).width(370).padTop(8).row();
-
+    private void buildNotchRow(int maxNotches) {
         notchTable = new Table();
         for (int i = 0; i < maxNotches; i++) {
             notchIcons[i] = new Image();
             notchTable.add(notchIcons[i]).size(24).pad(2);
         }
         add(notchTable).colspan(2).padTop(4).row();
+    }
 
+    private void buildEquipButton() {
         equipBtn = new TextButton(TranslationManager.get("inventory.equip"), skin);
         equipBtn.addListener(new ClickListener() {
             @Override
@@ -99,7 +114,9 @@ public class InventoryModal extends Modal {
             }
         });
         add(equipBtn).colspan(2).width(150).padTop(4).row();
+    }
 
+    private void buildCloseButton() {
         TextButton closeBtn = new TextButton(TranslationManager.get("inventory.close"), skin);
         closeBtn.addListener(new ClickListener() {
             @Override
@@ -108,9 +125,6 @@ public class InventoryModal extends Modal {
             }
         });
         add(closeBtn).colspan(2).width(100);
-
-        updateNotchDisplay();
-        updateButtonHighlights();
     }
 
     private TextureRegion getCharmTexture(CharmType charm) {
@@ -130,7 +144,10 @@ public class InventoryModal extends Modal {
         selectedCharm = charm;
         descLabel.setText(charm.getName() + ": " + charm.getDescription());
         Knight knight = game.getKnight();
-        equipBtn.setText(knight.isCharmEquipped(charm) ? TranslationManager.get("inventory.unequip") : TranslationManager.get("inventory.equip"));
+        equipBtn.setText(
+            knight.isCharmEquipped(charm)
+                ? TranslationManager.get("inventory.unequip")
+                : TranslationManager.get("inventory.equip"));
         updateButtonHighlights();
     }
 
@@ -149,7 +166,10 @@ public class InventoryModal extends Modal {
         }
         updateNotchDisplay();
         updateButtonHighlights();
-        equipBtn.setText(knight.isCharmEquipped(selectedCharm) ? TranslationManager.get("inventory.unequip") : TranslationManager.get("inventory.equip"));
+        equipBtn.setText(
+            knight.isCharmEquipped(selectedCharm)
+                ? TranslationManager.get("inventory.unequip")
+                : TranslationManager.get("inventory.equip"));
     }
 
     private void updateNotchDisplay() {

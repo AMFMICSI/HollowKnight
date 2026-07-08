@@ -38,7 +38,10 @@ public class CrystalHunter extends FlyingEnemy {
     @Override
     protected void updateChase(float delta, Vector2 knightPos, float dist) {
         stateTimer -= delta;
+        handleChaseState(knightPos, dist);
+    }
 
+    private void handleChaseState(Vector2 knightPos, float dist) {
         switch (currentState) {
             case TRACKING:
                 animSet.setAnimation(CrystalHunterAnimationType.FLY);

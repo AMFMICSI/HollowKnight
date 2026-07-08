@@ -88,10 +88,12 @@ public class Zote extends Entity {
             proximityGruntTimer -= delta;
             if (proximityGruntTimer <= 0) {
                 playRandomGrunt();
-                proximityGruntTimer = PROXIMITY_GRUNT_MIN + random.nextFloat() * (PROXIMITY_GRUNT_MAX - PROXIMITY_GRUNT_MIN);
+                proximityGruntTimer = PROXIMITY_GRUNT_MIN
+                    + random.nextFloat() * (PROXIMITY_GRUNT_MAX - PROXIMITY_GRUNT_MIN);
             }
         } else {
-            proximityGruntTimer = PROXIMITY_GRUNT_MIN + random.nextFloat() * (PROXIMITY_GRUNT_MAX - PROXIMITY_GRUNT_MIN);
+            proximityGruntTimer = PROXIMITY_GRUNT_MIN
+                + random.nextFloat() * (PROXIMITY_GRUNT_MAX - PROXIMITY_GRUNT_MIN);
         }
     }
 

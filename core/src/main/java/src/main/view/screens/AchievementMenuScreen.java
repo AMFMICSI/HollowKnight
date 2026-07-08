@@ -31,7 +31,9 @@ public class AchievementMenuScreen extends AbstractScreen {
         }
 
         for (AchievementManager.AchievementDef d : am.getUnlockedDefs()) {
-            Label lbl = new Label(TranslationManager.get("achievement.unlocked") + " " + d.title + " - " + d.description, skin);
+            Label lbl = new Label(
+                TranslationManager.get("achievement.unlocked") + " " + d.title + " - " + d.description,
+                skin);
             listTable.add(lbl).row();
         }
 

@@ -96,6 +96,32 @@ public class Game {
     public Game(int slot, SaveData data) {
         mapLoader = new MapLoader();
         knight = new Knight(mapLoader.getSpawnPoint().x, mapLoader.getSpawnPoint().y, keyBindings);
+        spawnEnemies();
+        findBossArena();
+
+        Vector2 zs = mapLoader.getZoteSpawnPoint();
+        zote = new Zote(zs.x, zs.y);
+        safePoints = mapLoader.getSafePoints();
+        crackedWalls = mapLoader.getCrackedWalls();
+        spawnHiddenRoom = mapLoader.getSpawnHiddenRoom();
+        respawnAfterHiddenRoom = mapLoader.getRespawnAfterHiddenRoom();
+        butterflySpawnPoints = mapLoader.getButterflySpawnPoints();
+        for (Vector2 sp : butterflySpawnPoints)
+            ambientButterflies.add(new ButterflyParticle(sp.x, sp.y, true));
+
+        spellManager = new SpellManager(knight, enemies, mapLoader.getSolidBlocks());
+        spellManager.setOnKill(enemy -> {
+            totalEnemiesKilled++;
+            achievementManager.onEnemyKilled(enemy.getClass().getSimpleName());
+        });
+
+        if (slot >= 0 && data != null) {
+            saveSlot = slot;
+            data.applyTo(knight, achievementManager);
+        }
+    }
+
+    private void spawnEnemies() {
         enemies = new ArrayList<>();
         for (MapLoader.EnemySpawnInfo info : mapLoader.getEnemySpawnInfos()) {
             Enemy e = switch (info.enemyType) {
@@ -121,8 +147,9 @@ public class Game {
             enemies.add(e);
         }
         for (Enemy e : enemies) e.setSolidBlocks(mapLoader.getSolidBlocks());
+    }
 
-        // Find boss arena zone (the zone containing the FalseKnight spawn)
+    private void findBossArena() {
         bossArena = null;
         for (MapLoader.EnemySpawnInfo info : mapLoader.getEnemySpawnInfos()) {
             if ("FalseKnight".equals(info.enemyType) && info.zone != null) {
@@ -132,27 +159,6 @@ public class Game {
         }
         if (falseKnight != null && bossArena != null) {
             falseKnight.setZone(bossArena);
-        }
-
-        Vector2 zs = mapLoader.getZoteSpawnPoint();
-        zote = new Zote(zs.x, zs.y);
-        safePoints = mapLoader.getSafePoints();
-        crackedWalls = mapLoader.getCrackedWalls();
-        spawnHiddenRoom = mapLoader.getSpawnHiddenRoom();
-        respawnAfterHiddenRoom = mapLoader.getRespawnAfterHiddenRoom();
-        butterflySpawnPoints = mapLoader.getButterflySpawnPoints();
-        for (Vector2 sp : butterflySpawnPoints)
-            ambientButterflies.add(new ButterflyParticle(sp.x, sp.y, true));
-
-        spellManager = new SpellManager(knight, enemies, mapLoader.getSolidBlocks());
-        spellManager.setOnKill(enemy -> {
-            totalEnemiesKilled++;
-            achievementManager.onEnemyKilled(enemy.getClass().getSimpleName());
-        });
-
-        if (slot >= 0 && data != null) {
-            saveSlot = slot;
-            data.applyTo(knight, achievementManager);
         }
     }
 
@@ -287,76 +293,87 @@ public class Game {
     }
 
     private void updateCombat(float delta) {
-        if (knight.isAttacking() && !knight.isHitRegistered()) {
-            Rectangle hitbox;
-            if (knight.isPogoAttack()) {
-                hitbox = new Rectangle(
-                    knight.getBoundingBox().x + 2,
-                    knight.getBoundingBox().y - 28,
-                    knight.getBoundingBox().width - 4,
-                    28);
-            } else {
-                float hx = knight.isFacingRight()
-                    ? knight.getBoundingBox().x + knight.getBoundingBox().width
-                    : knight.getBoundingBox().x - 30;
-                hitbox = new Rectangle(hx, knight.getBoundingBox().y + 10, 30, 30);
-            }
+        if (!knight.isAttacking() || knight.isHitRegistered()) return;
 
-            for (Enemy enemy : enemies) {
-                if (enemy.isDead() || enemy.isDeadAnimationDone()) continue;
+        Rectangle hitbox = buildAttackHitbox();
+        checkEnemyHits(hitbox);
+        if (!knight.isHitRegistered()) checkZoteHit(hitbox);
+        if (!knight.isHitRegistered()) checkCrackedWallHit(hitbox);
+        if (knight.isPogoAttack() && !knight.isHitRegistered()) checkSpikeHit(hitbox);
+    }
 
-                if (enemy instanceof FalseKnight fk && fk.isStunned()) {
-                    if (hitbox.overlaps(fk.getStunHitbox())) {
-                        knight.setHitRegistered(true);
-                        fk.takeDamage(knight.getAttackDamage());
-                        knight.addSoul(knight.getSoulPerHit());
-                        applyHeavyBlowKnockback(enemy);
-                        if (knight.isPogoAttack()) knight.doPogoBounce();
-                        break;
-                    }
-                    continue;
-                }
+    private Rectangle buildAttackHitbox() {
+        if (knight.isPogoAttack()) {
+            return new Rectangle(
+                knight.getBoundingBox().x + 2,
+                knight.getBoundingBox().y - 28,
+                knight.getBoundingBox().width - 4,
+                28);
+        }
+        float hx = knight.isFacingRight()
+            ? knight.getBoundingBox().x + knight.getBoundingBox().width
+            : knight.getBoundingBox().x - 30;
+        return new Rectangle(hx, knight.getBoundingBox().y + 10, 30, 30);
+    }
 
-                if (hitbox.overlaps(enemy.getBoundingBox())) {
-                    knight.setHitRegistered(true);
-                    enemy.takeDamage(knight.getAttackDamage());
-                    knight.addSoul(knight.getSoulPerHit());
-                    applyHeavyBlowKnockback(enemy);
-                    if (knight.isPogoAttack()) knight.doPogoBounce();
-                    if (enemy.isDead()) {
-                        totalEnemiesKilled++;
-                        achievementManager.onEnemyKilled(enemy.getClass().getSimpleName());
-                    }
+    private void checkEnemyHits(Rectangle hitbox) {
+        for (Enemy enemy : enemies) {
+            if (enemy.isDead() || enemy.isDeadAnimationDone()) continue;
+
+            if (enemy instanceof FalseKnight fk && fk.isStunned()) {
+                if (hitbox.overlaps(fk.getStunHitbox())) {
+                    registerHit(enemy);
+                    fk.takeDamage(knight.getAttackDamage());
                     break;
                 }
+                continue;
             }
 
-            if (!knight.isHitRegistered() && hitbox.overlaps(zote.getBoundingBox())) {
+            if (hitbox.overlaps(enemy.getBoundingBox())) {
+                registerHit(enemy);
+                enemy.takeDamage(knight.getAttackDamage());
+                if (enemy.isDead()) {
+                    totalEnemiesKilled++;
+                    achievementManager.onEnemyKilled(enemy.getClass().getSimpleName());
+                }
+                break;
+            }
+        }
+    }
+
+    private void registerHit(Enemy enemy) {
+        knight.setHitRegistered(true);
+        knight.addSoul(knight.getSoulPerHit());
+        applyHeavyBlowKnockback(enemy);
+        if (knight.isPogoAttack()) knight.doPogoBounce();
+    }
+
+    private void checkZoteHit(Rectangle hitbox) {
+        if (hitbox.overlaps(zote.getBoundingBox())) {
+            knight.setHitRegistered(true);
+            zote.takeDamage();
+            zote.setFacingRight(knight.getPosition().x >= zote.getPosition().x);
+        }
+    }
+
+    private void checkCrackedWallHit(Rectangle hitbox) {
+        for (CrackedWall wall : crackedWalls) {
+            if (!wall.isIntact()) continue;
+            if (hitbox.overlaps(wall.getBounds())) {
                 knight.setHitRegistered(true);
-                zote.takeDamage();
-                zote.setFacingRight(knight.getPosition().x >= zote.getPosition().x);
+                wall.registerHit();
+                if (!wall.isIntact()) teleportForWall(wall);
+                break;
             }
+        }
+    }
 
-            if (!knight.isHitRegistered()) {
-                for (CrackedWall wall : crackedWalls) {
-                    if (!wall.isIntact()) continue;
-                    if (hitbox.overlaps(wall.getBounds())) {
-                        knight.setHitRegistered(true);
-                        wall.registerHit();
-                        if (!wall.isIntact()) teleportForWall(wall);
-                        break;
-                    }
-                }
-            }
-
-            if (knight.isPogoAttack() && !knight.isHitRegistered()) {
-                for (Spike spike : mapLoader.getSpikes()) {
-                    if (hitbox.overlaps(spike.getBounds())) {
-                        knight.setHitRegistered(true);
-                        knight.doPogoBounce();
-                        break;
-                    }
-                }
+    private void checkSpikeHit(Rectangle hitbox) {
+        for (Spike spike : mapLoader.getSpikes()) {
+            if (hitbox.overlaps(spike.getBounds())) {
+                knight.setHitRegistered(true);
+                knight.doPogoBounce();
+                break;
             }
         }
     }
@@ -398,58 +415,10 @@ public class Game {
     private void updateEnemies(float delta) {
         for (Enemy enemy : enemies) {
             if (enemy.isDead()) {
-                enemy.update(delta);
-                if (!(enemy instanceof FalseKnight) && !enemy.isDeadAnimationDone()) {
-                    if (!enemy.isOnGround()) {
-                        enemy.setVelocityY(enemy.getVelocityY() - PhysicsSystem.GRAVITY * delta);
-                    }
-                    CollisionSystem.resolve(enemy, mapLoader.getSolidBlocks(), delta);
-                }
+                updateDeadEnemy(enemy, delta);
                 continue;
             }
-            float prevVx = enemy.getVelocityX();
-            enemy.update(delta);
-            CollisionSystem.resolve(enemy, mapLoader.getSolidBlocks(), delta);
-            if (enemy instanceof GroundEnemy ge)
-                ge.onCollisionResolved(prevVx, mapLoader.getSolidBlocks());
-
-            if (enemy instanceof FalseKnight fk) {
-                // Clamp boss within its arena zone
-                Rectangle zone = fk.getZone();
-                if (zone != null) {
-                    float px = fk.getPosition().x;
-                    float py = fk.getPosition().y;
-                    if (px < zone.x) {
-                        fk.getPosition().x = zone.x;
-                        fk.setVelocityX(0);
-                    } else if (px + fk.getBoundingBox().width > zone.x + zone.width) {
-                        fk.getPosition().x = zone.x + zone.width - fk.getBoundingBox().width;
-                        fk.setVelocityX(0);
-                    }
-                    if (py < zone.y) {
-                        fk.getPosition().y = zone.y;
-                        fk.setVelocityY(0);
-                    } else if (py + fk.getBoundingBox().height > zone.y + zone.height) {
-                        fk.getPosition().y = zone.y + zone.height - fk.getBoundingBox().height;
-                        fk.setVelocityY(0);
-                    }
-                    fk.getBoundingBox().setPosition(fk.getPosition());
-                }
-
-                if (fk.getAttackHitbox().overlaps(knight.getBoundingBox())) {
-                    int dmg = fk.isPowerfulHitboxActive() ? 2 : 1;
-                    knight.takeDamage(dmg);
-                }
-                if ((fk.getCurrentState() == FalseKnightState.RUN
-                    || fk.getCurrentState() == FalseKnightState.RUN_ANTIC)
-                    && fk.getBoundingBox().overlaps(knight.getBoundingBox())) {
-                    knight.takeDamage();
-                }
-                // Camera shake on heavy attacks
-                if (fk.isShaking()) {
-                    triggerCameraShake(fk.getShakeIntensity(), fk.getShakeDuration());
-                }
-            }
+            updateAliveEnemy(enemy, delta);
 
             if (enemy.getBoundingBox().overlaps(knight.getBoundingBox()) && !enemy.isDead()) {
                 if (knight.trySharpShadowHit(enemy)) {
@@ -459,6 +428,64 @@ public class Game {
                     knight.takeDamage();
                 }
             }
+        }
+    }
+
+    private void updateDeadEnemy(Enemy enemy, float delta) {
+        enemy.update(delta);
+        if (!(enemy instanceof FalseKnight) && !enemy.isDeadAnimationDone()) {
+            if (!enemy.isOnGround()) {
+                enemy.setVelocityY(enemy.getVelocityY() - PhysicsSystem.GRAVITY * delta);
+            }
+            CollisionSystem.resolve(enemy, mapLoader.getSolidBlocks(), delta);
+        }
+    }
+
+    private void updateAliveEnemy(Enemy enemy, float delta) {
+        float prevVx = enemy.getVelocityX();
+        enemy.update(delta);
+        CollisionSystem.resolve(enemy, mapLoader.getSolidBlocks(), delta);
+        if (enemy instanceof GroundEnemy ge)
+            ge.onCollisionResolved(prevVx, mapLoader.getSolidBlocks());
+
+        if (enemy instanceof FalseKnight fk) {
+            updateFalseKnight(fk, delta);
+        }
+    }
+
+    private void updateFalseKnight(FalseKnight fk, float delta) {
+        Rectangle zone = fk.getZone();
+        if (zone != null) {
+            float px = fk.getPosition().x;
+            float py = fk.getPosition().y;
+            if (px < zone.x) {
+                fk.getPosition().x = zone.x;
+                fk.setVelocityX(0);
+            } else if (px + fk.getBoundingBox().width > zone.x + zone.width) {
+                fk.getPosition().x = zone.x + zone.width - fk.getBoundingBox().width;
+                fk.setVelocityX(0);
+            }
+            if (py < zone.y) {
+                fk.getPosition().y = zone.y;
+                fk.setVelocityY(0);
+            } else if (py + fk.getBoundingBox().height > zone.y + zone.height) {
+                fk.getPosition().y = zone.y + zone.height - fk.getBoundingBox().height;
+                fk.setVelocityY(0);
+            }
+            fk.getBoundingBox().setPosition(fk.getPosition());
+        }
+
+        if (fk.getAttackHitbox().overlaps(knight.getBoundingBox())) {
+            int dmg = fk.isPowerfulHitboxActive() ? 2 : 1;
+            knight.takeDamage(dmg);
+        }
+        if ((fk.getCurrentState() == FalseKnightState.RUN
+            || fk.getCurrentState() == FalseKnightState.RUN_ANTIC)
+            && fk.getBoundingBox().overlaps(knight.getBoundingBox())) {
+            knight.takeDamage();
+        }
+        if (fk.isShaking()) {
+            triggerCameraShake(fk.getShakeIntensity(), fk.getShakeDuration());
         }
     }
 

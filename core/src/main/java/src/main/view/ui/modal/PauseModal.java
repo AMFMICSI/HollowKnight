@@ -32,6 +32,12 @@ public class PauseModal extends Modal {
         add(saveQuitBtn).width(120).row();
         add(exitBtn).width(120).row();
 
+        buildCheatSection();
+
+        addButtonListeners(resumeBtn, settingsBtn, saveQuitBtn, exitBtn);
+    }
+
+    private void buildCheatSection() {
         Label sep = new Label("─────────────────────", skin);
         sep.setColor(0.6f, 0.6f, 0.6f, 1);
         add(sep).padTop(8).padBottom(4).row();
@@ -58,7 +64,10 @@ public class PauseModal extends Modal {
             row.add(new Label(ch[1], skin)).left();
             add(row).padBottom(2).row();
         }
+    }
 
+    private void addButtonListeners(TextButton resumeBtn, TextButton settingsBtn,
+                                     TextButton saveQuitBtn, TextButton exitBtn) {
         resumeBtn.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {

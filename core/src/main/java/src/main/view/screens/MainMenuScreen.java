@@ -46,7 +46,8 @@ public class MainMenuScreen extends AbstractScreen {
         GameMusic.MENU.play();
     }
 
-    private void listeners(TextButton quitBtn, TextButton settingsBtn, TextButton guideBtn, TextButton startBtn, TextButton achieveBtn) {
+    private void listeners(TextButton quitBtn, TextButton settingsBtn, TextButton guideBtn,
+                           TextButton startBtn, TextButton achieveBtn) {
         quitBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

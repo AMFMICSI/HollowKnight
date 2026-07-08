@@ -67,7 +67,9 @@ public class VengefulProjectile {
 
     public void draw(SpriteBatch batch, float delta) {
         if (dead) return;
-        Animation<TextureRegion> anim = shadow ? GameAssetManager.shadowProjectileAnim : GameAssetManager.vengefulProjectileAnim;
+        Animation<TextureRegion> anim = shadow
+            ? GameAssetManager.shadowProjectileAnim
+            : GameAssetManager.vengefulProjectileAnim;
         if (anim != null) {
             TextureRegion frame = anim.getKeyFrame(animTimer);
             float s = 0.5f;

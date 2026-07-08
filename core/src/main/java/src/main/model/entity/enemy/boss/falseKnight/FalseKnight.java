@@ -81,9 +81,7 @@ public class FalseKnight extends Enemy {
         }
 
         if (!active) {
-            if (!isOnGround()) velocity.y -= PhysicsSystem.GRAVITY * delta;
-            animSet.setAnimation(FalseKnightAnimationType.IDLE);
-            boundingBox.setPosition(position);
+            updateInactive(delta);
             return;
         }
 
@@ -91,6 +89,28 @@ public class FalseKnight extends Enemy {
         float animSpeed = isPhase2 ? PHASE2_SPEED_MULT : 1f;
         animSet.advanceStateTime(delta * animSpeed);
 
+        updateTimers(delta);
+
+        Vector2 knightPos = knightRef.getPosition();
+        float dx = knightPos.x - position.x;
+        float dst = position.dst(knightPos);
+
+        updateFacingAndStun(dx, dst);
+
+        if (!isOnGround()) velocity.y -= PhysicsSystem.GRAVITY * delta;
+
+        applyStateBehaviour(delta);
+
+        boundingBox.setPosition(position);
+    }
+
+    private void updateInactive(float delta) {
+        if (!isOnGround()) velocity.y -= PhysicsSystem.GRAVITY * delta;
+        animSet.setAnimation(FalseKnightAnimationType.IDLE);
+        boundingBox.setPosition(position);
+    }
+
+    private void updateTimers(float delta) {
         attackHitbox.setSize(0, 0);
         isPowerfulHitboxActive = false;
 
@@ -98,11 +118,9 @@ public class FalseKnight extends Enemy {
         decisionTimer -= delta;
         stunTimer -= delta;
         if (damageTakenTimer > 0) damageTakenTimer -= delta;
+    }
 
-        Vector2 knightPos = knightRef.getPosition();
-        float dx = knightPos.x - position.x;
-        float dst = position.dst(knightPos);
-
+    private void updateFacingAndStun(float dx, float dst) {
         if (!isStunned && currentState == FalseKnightState.IDLE) {
             setFacingRight(dx > 0);
         }
@@ -117,134 +135,171 @@ public class FalseKnight extends Enemy {
             || currentState == FalseKnightState.RUN)) {
             decideMove(dst, dx);
         }
+    }
 
-        if (!isOnGround()) velocity.y -= PhysicsSystem.GRAVITY * delta;
-
+    private void applyStateBehaviour(float delta) {
         switch (currentState) {
             case IDLE:
-                animSet.setAnimation(FalseKnightAnimationType.IDLE);
-                velocity.set(0, 0);
+                handleIdleState();
                 break;
-
             case RUN:
-                animSet.setAnimation(FalseKnightAnimationType.RUN);
-                if ("CHARGE".equals(lastMove)) {
-                    float s = isPhase2 ? CHARGE_SPEED * PHASE2_SPEED_MULT : CHARGE_SPEED;
-                    velocity.x = isFacingRight() ? s : -s;
-                } else {
-                    float s = isPhase2 ? WALK_SPEED * PHASE2_SPEED_MULT : WALK_SPEED;
-                    velocity.x = isFacingRight() ? s : -s;
-                }
+                handleRunState();
                 break;
-
             case RUN_ANTIC:
-                velocity.set(0, 0);
-                animSet.setAnimation(FalseKnightAnimationType.RUN_ANTIC);
-                if (animFinished()) changeState(FalseKnightState.RUN);
+                handleRunAnticState();
                 break;
-
             case ATTACK_ANTIC:
-                velocity.set(0, 0);
-                animSet.setAnimation(FalseKnightAnimationType.ATTACK_ANTIC);
-                if (animFinished()) changeState(FalseKnightState.ATTACK);
+                handleAttackAnticState();
                 break;
-
             case ATTACK:
-                velocity.set(0, 0);
-                animSet.setAnimation(FalseKnightAnimationType.ATTACK);
-                float t = animSet.getStateTime();
-                if (t > 0.15f && t < 0.3f) {
-                    attackHitbox.set(
-                        position.x + (isFacingRight() ? 30 : -80),
-                        position.y + 20, 80, 90);
-                }
-                if (t > 0.15f && t < 0.17f) {
-                    startShake(4f, 0.3f);
-                }
-                if (animFinished()) changeState(FalseKnightState.ATTACK_RECOVER);
+                handleAttackState();
                 break;
-
             case ATTACK_RECOVER:
-                velocity.set(0, 0);
-                animSet.setAnimation(FalseKnightAnimationType.ATTACK_RECOVER);
-                if (animFinished()) changeState(FalseKnightState.IDLE);
+                handleAttackRecoverState();
                 break;
-
             case JUMP:
-                animSet.setAnimation(FalseKnightAnimationType.JUMP);
-                if (isOnGround()) changeState(FalseKnightState.LAND);
+                handleJumpState();
                 break;
-
             case JUMP_ATTACK:
-                animSet.setAnimation(FalseKnightAnimationType.JUMP_ATTACK);
-                if (isOnGround()) {
-                    if (isPowerfulLanding) {
-                        attackHitbox.set(position.x - 30, position.y, 160, 100);
-                        isPowerfulHitboxActive = true;
-                        startShake(6f, 0.5f);
-                        isPowerfulLanding = false;
-                    }
-                    changeState(FalseKnightState.LAND);
-                }
+                handleJumpAttackState();
                 break;
-
             case LAND:
-                animSet.setAnimation(FalseKnightAnimationType.LAND);
-                velocity.set(0, 0);
-                if (animSet.getStateTime() > 0 && animSet.getStateTime() < 0.05f) {
-                    startShake(3f, 0.2f);
-                }
-                if (stateTimer <= 0 || animFinished()) changeState(FalseKnightState.IDLE);
+                handleLandState();
                 break;
-
             case TURN:
-                animSet.setAnimation(FalseKnightAnimationType.TURN);
-                if (animFinished()) changeState(FalseKnightState.IDLE);
+                handleTurnState();
                 break;
-
             case DEATH_FALL:
-                velocity.set(0, 0);
-                animSet.setAnimation(FalseKnightAnimationType.DEATH_FALL);
-                stunHitbox.set(position.x + 30, position.y + 10, 40, 30);
-                if (stunTimer <= 0) {
-                    changeState(FalseKnightState.STUN_RECOVER);
-                } else if (animFinished()) {
-                    changeState(FalseKnightState.BODY);
-                }
+                handleDeathFallState();
                 break;
-
             case BODY:
-                velocity.set(0, 0);
-                animSet.setAnimation(FalseKnightAnimationType.BODY);
-                stunHitbox.set(position.x + 30, position.y + 10, 40, 30);
-                if (stunTimer <= 0) {
-                    if (stunRecoverDelay < 0) stunRecoverDelay = STUN_RECOVER_DELAY;
-                    stunRecoverDelay -= delta;
-                    if (stunRecoverDelay <= 0) {
-                        changeState(FalseKnightState.STUN_RECOVER);
-                    }
-                }
+                handleBodyState(delta);
                 break;
-
             case STUN_RECOVER:
-                velocity.set(0, 0);
-                animSet.setAnimation(FalseKnightAnimationType.STUN_RECOVER);
-                stunHitbox.set(position.x + 30, position.y + 10, 40, 30);
-                if (animFinished() || stateTimer <= 0) {
-                    isPhase2 = true;
-                    isStunned = false;
-                    hp = MAX_HP;
-                    stunHitbox.setSize(0, 0);
-                    changeState(FalseKnightState.IDLE);
-                }
+                handleStunRecoverState();
                 break;
-
             case DEATH_HIT:
             case DEATH_LAND:
                 break;
         }
+    }
 
-        boundingBox.setPosition(position);
+    private void handleIdleState() {
+        animSet.setAnimation(FalseKnightAnimationType.IDLE);
+        velocity.set(0, 0);
+    }
+
+    private void handleRunState() {
+        animSet.setAnimation(FalseKnightAnimationType.RUN);
+        if ("CHARGE".equals(lastMove)) {
+            float s = isPhase2 ? CHARGE_SPEED * PHASE2_SPEED_MULT : CHARGE_SPEED;
+            velocity.x = isFacingRight() ? s : -s;
+        } else {
+            float s = isPhase2 ? WALK_SPEED * PHASE2_SPEED_MULT : WALK_SPEED;
+            velocity.x = isFacingRight() ? s : -s;
+        }
+    }
+
+    private void handleRunAnticState() {
+        velocity.set(0, 0);
+        animSet.setAnimation(FalseKnightAnimationType.RUN_ANTIC);
+        if (animFinished()) changeState(FalseKnightState.RUN);
+    }
+
+    private void handleAttackAnticState() {
+        velocity.set(0, 0);
+        animSet.setAnimation(FalseKnightAnimationType.ATTACK_ANTIC);
+        if (animFinished()) changeState(FalseKnightState.ATTACK);
+    }
+
+    private void handleAttackState() {
+        velocity.set(0, 0);
+        animSet.setAnimation(FalseKnightAnimationType.ATTACK);
+        float t = animSet.getStateTime();
+        if (t > 0.15f && t < 0.3f) {
+            attackHitbox.set(
+                position.x + (isFacingRight() ? 30 : -80),
+                position.y + 20, 80, 90);
+        }
+        if (t > 0.15f && t < 0.17f) {
+            startShake(4f, 0.3f);
+        }
+        if (animFinished()) changeState(FalseKnightState.ATTACK_RECOVER);
+    }
+
+    private void handleAttackRecoverState() {
+        velocity.set(0, 0);
+        animSet.setAnimation(FalseKnightAnimationType.ATTACK_RECOVER);
+        if (animFinished()) changeState(FalseKnightState.IDLE);
+    }
+
+    private void handleJumpState() {
+        animSet.setAnimation(FalseKnightAnimationType.JUMP);
+        if (isOnGround()) changeState(FalseKnightState.LAND);
+    }
+
+    private void handleJumpAttackState() {
+        animSet.setAnimation(FalseKnightAnimationType.JUMP_ATTACK);
+        if (isOnGround()) {
+            if (isPowerfulLanding) {
+                attackHitbox.set(position.x - 30, position.y, 160, 100);
+                isPowerfulHitboxActive = true;
+                startShake(6f, 0.5f);
+                isPowerfulLanding = false;
+            }
+            changeState(FalseKnightState.LAND);
+        }
+    }
+
+    private void handleLandState() {
+        animSet.setAnimation(FalseKnightAnimationType.LAND);
+        velocity.set(0, 0);
+        if (animSet.getStateTime() > 0 && animSet.getStateTime() < 0.05f) {
+            startShake(3f, 0.2f);
+        }
+        if (stateTimer <= 0 || animFinished()) changeState(FalseKnightState.IDLE);
+    }
+
+    private void handleTurnState() {
+        animSet.setAnimation(FalseKnightAnimationType.TURN);
+        if (animFinished()) changeState(FalseKnightState.IDLE);
+    }
+
+    private void handleDeathFallState() {
+        velocity.set(0, 0);
+        animSet.setAnimation(FalseKnightAnimationType.DEATH_FALL);
+        stunHitbox.set(position.x + 30, position.y + 10, 40, 30);
+        if (stunTimer <= 0) {
+            changeState(FalseKnightState.STUN_RECOVER);
+        } else if (animFinished()) {
+            changeState(FalseKnightState.BODY);
+        }
+    }
+
+    private void handleBodyState(float delta) {
+        velocity.set(0, 0);
+        animSet.setAnimation(FalseKnightAnimationType.BODY);
+        stunHitbox.set(position.x + 30, position.y + 10, 40, 30);
+        if (stunTimer <= 0) {
+            if (stunRecoverDelay < 0) stunRecoverDelay = STUN_RECOVER_DELAY;
+            stunRecoverDelay -= delta;
+            if (stunRecoverDelay <= 0) {
+                changeState(FalseKnightState.STUN_RECOVER);
+            }
+        }
+    }
+
+    private void handleStunRecoverState() {
+        velocity.set(0, 0);
+        animSet.setAnimation(FalseKnightAnimationType.STUN_RECOVER);
+        stunHitbox.set(position.x + 30, position.y + 10, 40, 30);
+        if (animFinished() || stateTimer <= 0) {
+            isPhase2 = true;
+            isStunned = false;
+            hp = MAX_HP;
+            stunHitbox.setSize(0, 0);
+            changeState(FalseKnightState.IDLE);
+        }
     }
 
     private void updateDeathAnimation(float delta) {
