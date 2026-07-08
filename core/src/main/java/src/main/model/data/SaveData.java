@@ -1,12 +1,9 @@
 package src.main.model.data;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import src.main.model.entity.charm.CharmType;
 import src.main.model.entity.knight.Knight;
 import src.main.view.AchievementManager;
-import src.main.view.Phats;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,25 +45,21 @@ public class SaveData {
         data.playTime = playTime;
 
         Json json = new Json();
-        Gdx.files.local(slotPath(slot)).writeString(json.toJson(data), false);
+        DatabaseManager.getInstance().saveGame(slot, json.toJson(data));
     }
 
     public static SaveData load(int slot) {
-        FileHandle file = Gdx.files.local(slotPath(slot));
-        if (!file.exists()) return null;
+        String dataJson = DatabaseManager.getInstance().loadGame(slot);
+        if (dataJson == null) return null;
         Json json = new Json();
-        return json.fromJson(SaveData.class, file.readString());
+        return json.fromJson(SaveData.class, dataJson);
     }
 
     public static boolean slotExists(int slot) {
-        return Gdx.files.local(slotPath(slot)).exists();
+        return DatabaseManager.getInstance().slotExists(slot);
     }
 
     public static void deleteSlot(int slot) {
-        Gdx.files.local(slotPath(slot)).delete();
-    }
-
-    private static String slotPath(int slot) {
-        return Phats.saveSlotPath(slot);
+        DatabaseManager.getInstance().deleteSlot(slot);
     }
 }
