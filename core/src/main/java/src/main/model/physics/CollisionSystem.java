@@ -54,10 +54,10 @@ public class CollisionSystem {
         // --- Spike ---
         for (Spike spike : spikes) {
             if (knight.getBoundingBox().overlaps(spike.getBounds())) {
-                float vx = knight.getVelocityX();
-                float vy = knight.getVelocityY();
                 knight.takeDamage();
-                spike.pushOut(knight, vx, vy);
+                knight.getPosition().x += knight.getVelocityX() * 0.3f;
+                knight.getPosition().y += knight.getVelocityY() * 0.3f;
+                knight.getBoundingBox().setPosition(knight.getPosition());
                 break;
             }
         }
