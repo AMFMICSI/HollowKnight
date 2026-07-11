@@ -305,86 +305,52 @@ public class Knight extends Entity {
     }
 
     public void dash() {
-        if (isDead) return;
-        if (!isDashing && !isCasting && dashCooldownTimer <= 0) {
-            isDashing = true;
-            dashTimer = DASH_DURATION * getDashLengthMultiplier();
-            velocity.x = isFacingRight() ? DASH_SPEED : -DASH_SPEED;
-            velocity.y = 0;
-            GameMusic.DASH.play();
-        }
+        startDash(isFacingRight() ? DASH_SPEED : -DASH_SPEED, 0);
     }
 
     public void dashDown() {
-        if (isDead) return;
-        if (!isDashing && !isCasting && dashCooldownTimer <= 0) {
-            isDashing = true;
-            dashTimer = DASH_DURATION * getDashLengthMultiplier();
-            velocity.x = isFacingRight() ? DASH_SPEED : -DASH_SPEED;
-            velocity.y = -DASH_SPEED;
-            GameMusic.DASH.play();
-        }
+        startDash(isFacingRight() ? DASH_SPEED : -DASH_SPEED, -DASH_SPEED);
     }
 
     public void dashUp() {
+        startDash(0, DASH_SPEED);
+    }
+
+    private void startDash(float vx, float vy) {
         if (isDead) return;
         if (!isDashing && !isCasting && dashCooldownTimer <= 0) {
             isDashing = true;
             dashTimer = DASH_DURATION * getDashLengthMultiplier();
-            velocity.x = 0;
-            velocity.y = DASH_SPEED;
+            velocity.set(vx, vy);
             GameMusic.DASH.play();
         }
     }
 
     // --- ATTACK ---
     public void attack() {
-        if (isDead) return;
-        if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
-            attackTimer = getAttackDuration();
-            velocity.x = 0;
-            isPogoAttack = false;
-            isAttackDown = false;
-            isAttackUp = false;
-            hitRegistered = false;
-            GameMusic.NAIL_SLASH.play();
-        }
+        startAttack(false, false, false);
     }
 
     public void attackDown() {
-        if (isDead) return;
-        if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
-            attackTimer = getAttackDuration();
-            velocity.x = 0;
-            isPogoAttack = false;
-            isAttackDown = true;
-            isAttackUp = false;
-            hitRegistered = false;
-            GameMusic.NAIL_SLASH.play();
-        }
+        startAttack(false, true, false);
     }
 
     public void attackUp() {
-        if (isDead) return;
-        if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
-            attackTimer = getAttackDuration();
-            velocity.x = 0;
-            isPogoAttack = false;
-            isAttackDown = false;
-            isAttackUp = true;
-            hitRegistered = false;
-            GameMusic.NAIL_SLASH.play();
-        }
+        startAttack(false, false, true);
     }
 
     public void pogoAttack() {
+        startAttack(true, false, false);
+    }
+
+    private void startAttack(boolean pogo, boolean down, boolean up) {
         if (isDead) return;
         if (attackTimer <= 0 && !isDashing && !isFocusing && !isCasting) {
             attackTimer = getAttackDuration();
             velocity.x = 0;
-            isPogoAttack = true;
-            isAttackDown = false;
-            isAttackUp = false;
+            isPogoAttack = pogo;
+            isAttackDown = down;
+            isAttackUp = up;
             hitRegistered = false;
             GameMusic.NAIL_SLASH.play();
         }

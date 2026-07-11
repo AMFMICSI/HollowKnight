@@ -22,33 +22,16 @@ public class CollisionSystem {
         // --- Cracked Wall (only when intact) ---
         for (CrackedWall wall : crackedWalls) {
             if (!wall.isIntact()) continue;
-            // Resolve X
             knight.getBoundingBox().setPosition(knight.getPosition().x, knight.getPosition().y);
-            if (knight.getBoundingBox().overlaps(wall.getBounds())) {
-                if (knight.getVelocityX() > 0)
-                    knight.getPosition().x = wall.getBounds().x - knight.getBoundingBox().width;
-                else if (knight.getVelocityX() < 0)
-                    knight.getPosition().x = wall.getBounds().x + wall.getBounds().width;
-                knight.setVelocityX(0);
-                knight.getBoundingBox().x = knight.getPosition().x;
-            }
-            // Resolve Y
+            if (knight.getBoundingBox().overlaps(wall.getBounds()))
+                resolveCollisionX(knight, wall.getBounds());
             knight.getBoundingBox().setPosition(knight.getPosition().x, knight.getPosition().y);
             boolean wasOnGroundBefore = knight.isOnGround();
             knight.setOnGround(false);
-            if (knight.getBoundingBox().overlaps(wall.getBounds())) {
-                if (knight.getVelocityY() > 0) {
-                    knight.getPosition().y = wall.getBounds().y - knight.getBoundingBox().height;
-                    knight.setVelocityY(0);
-                } else if (knight.getVelocityY() < 0) {
-                    knight.getPosition().y = wall.getBounds().y + wall.getBounds().height;
-                    knight.setVelocityY(0);
-                    knight.setOnGround(true);
-                }
-                knight.getBoundingBox().setPosition(knight.getPosition().x, knight.getPosition().y);
-            } else {
+            if (knight.getBoundingBox().overlaps(wall.getBounds()))
+                resolveCollisionY(knight, wall.getBounds());
+            else
                 knight.setOnGround(wasOnGroundBefore);
-            }
         }
 
         // --- Spike ---
@@ -96,30 +79,36 @@ public class CollisionSystem {
         entity.getPosition().x += entity.getVelocityX() * delta;
         entity.getBoundingBox().setPosition(entity.getPosition().x, entity.getPosition().y);
         for (SolidBlock block : blocks) {
-            if (entity.getBoundingBox().overlaps(block.getBounds())) {
-                if (entity.getVelocityX() > 0)
-                    entity.getPosition().x = block.getBounds().x - entity.getBoundingBox().width;
-                else if (entity.getVelocityX() < 0)
-                    entity.getPosition().x = block.getBounds().x + block.getBounds().width;
-                entity.setVelocityX(0);
-                entity.getBoundingBox().x = entity.getPosition().x;
-            }
+            if (entity.getBoundingBox().overlaps(block.getBounds()))
+                resolveCollisionX(entity, block.getBounds());
         }
         entity.getPosition().y += entity.getVelocityY() * delta;
         entity.getBoundingBox().setPosition(entity.getPosition().x, entity.getPosition().y);
         entity.setOnGround(false);
         for (SolidBlock block : blocks) {
-            if (entity.getBoundingBox().overlaps(block.getBounds())) {
-                if (entity.getVelocityY() > 0) {
-                    entity.getPosition().y = block.getBounds().y - entity.getBoundingBox().height;
-                    entity.setVelocityY(0);
-                } else if (entity.getVelocityY() < 0) {
-                    entity.getPosition().y = block.getBounds().y + block.getBounds().height;
-                    entity.setVelocityY(0);
-                    entity.setOnGround(true);
-                }
-                entity.getBoundingBox().setPosition(entity.getPosition().x, entity.getPosition().y);
-            }
+            if (entity.getBoundingBox().overlaps(block.getBounds()))
+                resolveCollisionY(entity, block.getBounds());
         }
+    }
+
+    private static void resolveCollisionX(Entity entity, Rectangle bounds) {
+        if (entity.getVelocityX() > 0)
+            entity.getPosition().x = bounds.x - entity.getBoundingBox().width;
+        else if (entity.getVelocityX() < 0)
+            entity.getPosition().x = bounds.x + bounds.width;
+        entity.setVelocityX(0);
+        entity.getBoundingBox().x = entity.getPosition().x;
+    }
+
+    private static void resolveCollisionY(Entity entity, Rectangle bounds) {
+        if (entity.getVelocityY() > 0) {
+            entity.getPosition().y = bounds.y - entity.getBoundingBox().height;
+            entity.setVelocityY(0);
+        } else if (entity.getVelocityY() < 0) {
+            entity.getPosition().y = bounds.y + bounds.height;
+            entity.setVelocityY(0);
+            entity.setOnGround(true);
+        }
+        entity.getBoundingBox().setPosition(entity.getPosition().x, entity.getPosition().y);
     }
 }
