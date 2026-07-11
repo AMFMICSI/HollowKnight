@@ -34,16 +34,17 @@ import src.main.model.data.SaveData;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused") // کپسوله کردن هشدارهای متدهای فریمورک و پرفورمنس
 public class Game {
     public record EndGameData(int deathCount, int totalKilled, float playTime) {}
 
     private static final float SAFE_POINT_INTERACT_RANGE = 40f;
 
-    private Knight knight;
-    private KeyBindings keyBindings = new KeyBindings();
-    private MapLoader mapLoader;
+    private final Knight knight;
+    private final KeyBindings keyBindings = new KeyBindings();
+    private final MapLoader mapLoader;
     private List<Enemy> enemies;
-    private Zote zote;
+    private final Zote zote;
     private boolean dialogueActive;
     private String currentDialogueText;
     private boolean dialogueAdvanceRequested;
@@ -53,14 +54,14 @@ public class Game {
     private float cameraShakeIntensity = 0;
     private boolean gatesActivated = false;
     private FalseKnight falseKnight;
-    private List<SolidBlock> bossGateBlocks = new ArrayList<>();
+    private final List<SolidBlock> bossGateBlocks = new ArrayList<>();
     private String pendingToast = null;
-    private SpellManager spellManager;
-    private List<Vector2> safePoints;
-    private List<CrackedWall> crackedWalls;
-    private Vector2 spawnHiddenRoom;
-    private Vector2 respawnAfterHiddenRoom;
-    private AchievementManager achievementManager = UiManager.achievements;
+    private final SpellManager spellManager;
+    private final List<Vector2> safePoints;
+    private final List<CrackedWall> crackedWalls;
+    private final Vector2 spawnHiddenRoom;
+    private final Vector2 respawnAfterHiddenRoom;
+    private final AchievementManager achievementManager = UiManager.achievements;
     private int saveSlot = -1;
     private float playTime = 0;
     private int deathCount = 0;
@@ -69,9 +70,9 @@ public class Game {
     private EndGameData pendingEndGameData = null;
     private String currentArea = null;
     private boolean paused = false;
-    private List<ButterflyParticle> butterflies = new ArrayList<>();
-    private List<ButterflyParticle> ambientButterflies = new ArrayList<>();
-    private List<Vector2> butterflySpawnPoints;
+    private final List<ButterflyParticle> butterflies = new ArrayList<>();
+    private final List<ButterflyParticle> ambientButterflies = new ArrayList<>();
+    private final List<Vector2> butterflySpawnPoints;
 
     public Knight getKnight() { return knight; }
     public KeyBindings getKeyBindings() { return keyBindings; }
@@ -126,19 +127,19 @@ public class Game {
         for (MapLoader.EnemySpawnInfo info : mapLoader.getEnemySpawnInfos()) {
             Enemy e = switch (info.enemyType) {
                 case "Crawlid" -> new Crawlid(
-                    info.position.x, info.position.y, info.zone, () -> knight.getPosition());
+                    info.position.x, info.position.y, info.zone, knight::getPosition);
                 case "CrystalHunter" -> new CrystalHunter(
-                    info.position.x, info.position.y, info.zone, () -> knight.getPosition());
+                    info.position.x, info.position.y, info.zone, knight::getPosition);
                 case "HuskHornhead" -> new HuskHornhead(
-                    info.position.x, info.position.y, () -> knight.getPosition());
+                    info.position.x, info.position.y, knight::getPosition);
                 case "CrystalGuardian" -> new CrystalGuardian(
                     info.position.x, info.position.y, info.zone, new CrystalGuardian.KnightRef() {
-                        public Vector2 getPosition() { return knight.getPosition(); }
-                        public Rectangle getBoundingBox() { return knight.getBoundingBox(); }
-                    });
+                    public Vector2 getPosition() { return knight.getPosition(); }
+                    public Rectangle getBoundingBox() { return knight.getBoundingBox(); }
+                });
                 case "FalseKnight" -> {
                     FalseKnight fk = new FalseKnight(
-                        info.position.x, info.position.y, () -> knight.getPosition());
+                        info.position.x, info.position.y, knight::getPosition);
                     falseKnight = fk;
                     yield fk;
                 }
@@ -182,7 +183,7 @@ public class Game {
             if (inBossFight) releaseBossFight();
         }
 
-        updateCombat(delta);
+        updateCombat(); // اصلاح پارامتر بلااستفاده
         checkCrackedWallTeleport();
         updateEnemies(delta);
         SpellType castType = knight.consumePendingCastResult();
@@ -292,7 +293,7 @@ public class Game {
         zote.updateProximity(knight.getPosition(), delta);
     }
 
-    private void updateCombat(float delta) {
+    private void updateCombat() { // اصلاح متد با حذف پارامتر اضافی دمیج
         if (!knight.isAttacking() || knight.isHitRegistered()) return;
 
         Rectangle hitbox = buildAttackHitbox();
@@ -441,6 +442,10 @@ public class Game {
         }
     }
 
+    private void updateDeltaParam(Enemy enemy, float delta) {
+        // متد کمکی برای پر کردن آپدیت‌های درونی
+    }
+
     private void updateAliveEnemy(Enemy enemy, float delta) {
         float prevVx = enemy.getVelocityX();
         enemy.update(delta);
@@ -449,11 +454,11 @@ public class Game {
             ge.onCollisionResolved(prevVx, mapLoader.getSolidBlocks());
 
         if (enemy instanceof FalseKnight fk) {
-            updateFalseKnight(fk, delta);
+            updateFalseKnight(fk); // اصلاح پارامتر بلااستفاده
         }
     }
 
-    private void updateFalseKnight(FalseKnight fk, float delta) {
+    private void updateFalseKnight(FalseKnight fk) { // حذف پارامتر بلااستفاده delta
         Rectangle zone = fk.getZone();
         if (zone != null) {
             float px = fk.getPosition().x;
@@ -538,7 +543,6 @@ public class Game {
         }
     }
 
-    // --- CHEATS ---
     public void teleportToBossArena() {
         if (bossArena == null) return;
         knight.getPosition().set(bossArena.x + bossArena.width / 2f, bossArena.y + bossArena.height / 2f);

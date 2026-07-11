@@ -31,39 +31,28 @@ public class GameController implements InputProcessor {
 
         if (keycode == Input.Keys.CONTROL_LEFT || keycode == Input.Keys.CONTROL_RIGHT) {
             ctrlHeld = true;
+            return true;
         }
 
-        if (ctrlHeld && handleCheatKeys(keycode)) return true;
-
+        // دسته‌بندی و هدایت کلیدها به متدهای کپسوله شده اختصاصی
+        if (ctrlHeld) return handleCheatKeys(keycode);
         if (handleSystemKeys(keycode)) return true;
+        if (handleMovementKeys(keycode, true)) return true;
 
-        if (keycode == keys.get("MOVE_RIGHT")) {
-            game.getKnight().setMovingRight(true);
-            game.getKnight().setFacingRight(true);
-            return true;
-        }
-        if (keycode == keys.get("MOVE_LEFT")) {
-            game.getKnight().setMovingLeft(true);
-            game.getKnight().setFacingRight(false);
-            return true;
-        }
         return handleActionKeys(keycode);
     }
 
     private boolean handleSystemKeys(int keycode) {
         if (keycode == keys.get("PAUSE")) {
             game.setPaused(true);
-            PauseModal pauseModal = new PauseModal(game) {
+            new PauseModal(game) {
                 @Override public void onExit() { UiManager.setScreen(new MainMenuScreen()); }
-            };
-            pauseModal.show();
+            }.show();
             return true;
         }
 
         if (keycode == keys.get("INVENTORY")) {
-            if (!game.isDialogueActive()) {
-                new InventoryModal(game).show();
-            }
+            if (!game.isDialogueActive()) new InventoryModal(game).show();
             return true;
         }
 
@@ -81,6 +70,20 @@ public class GameController implements InputProcessor {
         return false;
     }
 
+    private boolean handleMovementKeys(int keycode, boolean isPressed) {
+        if (keycode == keys.get("MOVE_RIGHT")) {
+            game.getKnight().setMovingRight(isPressed);
+            if (isPressed) game.getKnight().setFacingRight(true);
+            return true;
+        }
+        if (keycode == keys.get("MOVE_LEFT")) {
+            game.getKnight().setMovingLeft(isPressed);
+            if (isPressed) game.getKnight().setFacingRight(false);
+            return true;
+        }
+        return false;
+    }
+
     private boolean handleCheatKeys(int keycode) {
         if (keycode == keys.get("CHEAT_TELEPORT")) {
             game.teleportToBossArena();
@@ -88,22 +91,22 @@ public class GameController implements InputProcessor {
             return true;
         }
         if (keycode == keys.get("CHEAT_NOCLIP")) {
-            game.getKnight().toggleNoclip();
+            game.getKnight().getCheatSystem().toggleNoclip();
             game.setPendingToast("Noclip: " + (game.getKnight().isNoclipMode() ? "ON" : "OFF"));
             return true;
         }
         if (keycode == keys.get("CHEAT_HEAL")) {
-            game.getKnight().emergencyHeal();
+            game.getKnight().getCheatSystem().emergencyHeal(game.getKnight());
             game.setPendingToast("Emergency Heal");
             return true;
         }
         if (keycode == keys.get("CHEAT_SOUL")) {
-            game.getKnight().refillSoul();
+            game.getKnight().getCheatSystem().refillSoul(game.getKnight());
             game.setPendingToast("Soul Refilled");
             return true;
         }
         if (keycode == keys.get("CHEAT_GOD")) {
-            game.getKnight().toggleGodMode();
+            game.getKnight().getCheatSystem().toggleGodMode();
             game.setPendingToast("God Mode: " + (game.getKnight().isGodMode() ? "ON" : "OFF"));
             return true;
         }
@@ -117,78 +120,45 @@ public class GameController implements InputProcessor {
 
     private boolean handleActionKeys(int keycode) {
         if (keycode == keys.get("JUMP")) { game.getKnight().jump(); return true; }
-        else if (keycode == keys.get("DASH")) {
-            if (Gdx.input.isKeyPressed(keys.get("POGO"))) {
-                game.getKnight().dashDown();
-            } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                game.getKnight().dashUp();
-            } else {
-                game.getKnight().dash();
-            }
-            return true;
-        }
-        else if (keycode == keys.get("ATTACK")) {
-            if (Gdx.input.isKeyPressed(keys.get("POGO"))) {
-                if (!game.getKnight().isOnGround()) {
-                    game.getKnight().pogoAttack();
-                } else {
-                    game.getKnight().attackDown();
-                }
-            } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                game.getKnight().attackUp();
-            } else {
-                game.getKnight().attack();
-            }
-            return true;
-        }
-        else if (keycode == keys.get("FOCUS")) {
-            game.getKnight().startFocus();
-            return true;
-        }
-        else if (keycode == keys.get("SPELL_VENGEFUL")) {
-            game.getKnight().startCast(SpellType.VENGEFUL);
-            return true;
-        }
-        else if (keycode == keys.get("SPELL_WRAITHS")) {
-            game.getKnight().startCast(SpellType.WRAITHS);
-            return true;
-        }
+        if (keycode == keys.get("DASH")) { executeDashCommand(); return true; }
+        if (keycode == keys.get("ATTACK")) { executeAttackCommand(); return true; }
+        if (keycode == keys.get("FOCUS")) { game.getKnight().startFocus(); return true; }
+        if (keycode == keys.get("SPELL_VENGEFUL")) { game.getKnight().startCast(SpellType.VENGEFUL); return true; }
+        if (keycode == keys.get("SPELL_WRAITHS")) { game.getKnight().startCast(SpellType.WRAITHS); return true; }
         return false;
+    }
+
+    private void executeDashCommand() {
+        if (Gdx.input.isKeyPressed(keys.get("POGO"))) game.getKnight().dashDown();
+        else if (Gdx.input.isKeyPressed(Input.Keys.UP)) game.getKnight().dashUp();
+        else game.getKnight().dash();
+    }
+
+    private void executeAttackCommand() {
+        if (Gdx.input.isKeyPressed(keys.get("POGO"))) {
+            if (!game.getKnight().isOnGround()) game.getKnight().pogoAttack();
+            else game.getKnight().attackDown();
+        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) game.getKnight().attackUp();
+        else game.getKnight().attack();
     }
 
     @Override
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.CONTROL_LEFT || keycode == Input.Keys.CONTROL_RIGHT) {
             ctrlHeld = false;
-        }
-        if (keycode == keys.get("MOVE_RIGHT")) { game.getKnight().setMovingRight(false); return true; }
-        if (keycode == keys.get("MOVE_LEFT")) { game.getKnight().setMovingLeft(false); return true; }
-        if (keycode == keys.get("JUMP")) { game.getKnight().jumpReleased(); return true; }
-        if (keycode == keys.get("FOCUS")) {
-            game.getKnight().cancelFocus();
             return true;
         }
+        if (handleMovementKeys(keycode, false)) return true;
+        if (keycode == keys.get("JUMP")) { game.getKnight().jumpReleased(); return true; }
+        if (keycode == keys.get("FOCUS")) { game.getKnight().cancelFocus(); return true; }
         return false;
     }
 
-    @Override
-    public boolean keyTyped(char character) { return false; }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) { return false; }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) { return false; }
-
-    @Override
-    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) { return false; }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) { return false; }
-
-    @Override
-    public boolean scrolled(float amountX, float amountY) { return false; }
+    @Override public boolean keyTyped(char character) { return false; }
+    @Override public boolean touchDown(int screenX, int screenY, int pointer, int button) { return false; }
+    @Override public boolean touchUp(int screenX, int screenY, int pointer, int button) { return false; }
+    @Override public boolean touchCancelled(int screenX, int screenY, int pointer, int button) { return false; }
+    @Override public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }
+    @Override public boolean mouseMoved(int screenX, int screenY) { return false; }
+    @Override public boolean scrolled(float amountX, float amountY) { return false; }
 }
