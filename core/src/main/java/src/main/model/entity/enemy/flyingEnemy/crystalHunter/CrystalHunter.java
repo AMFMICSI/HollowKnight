@@ -20,6 +20,16 @@ public class CrystalHunter extends FlyingEnemy {
     private float stateTimer;
     private boolean projectileSpawned;
 
+    @Override
+    public void respawn() {
+        super.respawn();
+        currentState = CrystalHunterState.TRACKING;
+        projectileSpawned = false;
+        projectiles.clear();
+        stateTimer = 0;
+        animState.reset();
+    }
+
     public CrystalHunter(float x, float y, Rectangle zone, KnightRef knightRef) {
         DRAW_SCALE = 2f;
         spawnPosition.set(x, y);
@@ -27,7 +37,6 @@ public class CrystalHunter extends FlyingEnemy {
         position.set(x, y);
         boundingBox.setSize(24, 20);
         chaseSpeed = FLY_SPEED;
-        respawnDistance = 2500f;
         this.knightRef = knightRef;
         setFacingRight(true);
         setZone(zone);
@@ -89,6 +98,7 @@ public class CrystalHunter extends FlyingEnemy {
             case ATTACK_RECOVER -> 0.4f;
             default -> 0;
         };
+        if (newState == CrystalHunterState.ATTACKING) projectileSpawned = false;
         animState.reset();
     }
 

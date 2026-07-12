@@ -74,6 +74,14 @@ public abstract class GroundEnemy extends Enemy {
     public boolean isTurning() { return state == GroundState.TURN; }
 
     @Override
+    public void respawn() {
+        super.respawn();
+        state = GroundState.WALK;
+        turnTimer = 0;
+        diedInAir = false;
+    }
+
+    @Override
     public void takeDamage(int amount) {
         if (!isDead) diedInAir = !isOnGround();
         super.takeDamage(amount);

@@ -67,7 +67,6 @@ public class MapLoader {
         loadBossGates(objects);
         loadNamedZones(objects);
         loadPoints(objects);
-        applyDefaultSpawnPoints();
     }
 
     private void loadRectangles(MapObjects objects) {
@@ -162,15 +161,6 @@ public class MapLoader {
                 }
                 enemySpawnInfos.add(info);
             }
-        }
-    }
-
-    private void applyDefaultSpawnPoints() {
-        if (spawnPoint.x == 0 && spawnPoint.y == 0) {
-            spawnPoint.set(700, 1050);
-        }
-        if (zoteSpawnPoint.x == 0 && zoteSpawnPoint.y == 0) {
-            zoteSpawnPoint.set(1200, 1050);
         }
     }
 

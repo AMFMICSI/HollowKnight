@@ -8,6 +8,7 @@ import src.main.model.entity.enemy.Enemy;
 import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardian;
 import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardianLaser;
 import src.main.model.entity.enemy.groundEnemy.huskHornhead.HuskHornhead;
+import src.main.model.entity.enemy.flyingEnemy.FlyingEnemy;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalHunter;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalProjectile;
 import src.main.model.entity.enemy.boss.falseKnight.FalseKnight;
@@ -449,9 +450,15 @@ public class Game {
     private void updateAliveEnemy(Enemy enemy, float delta) {
         float prevVx = enemy.getVelocityX();
         enemy.update(delta);
-        CollisionSystem.resolve(enemy, mapLoader.getSolidBlocks(), delta);
-        if (enemy instanceof GroundEnemy ge)
-            ge.onCollisionResolved(prevVx, mapLoader.getSolidBlocks());
+        if (enemy instanceof FlyingEnemy) {
+            enemy.getPosition().x += enemy.getVelocityX() * delta;
+            enemy.getPosition().y += enemy.getVelocityY() * delta;
+            enemy.getBoundingBox().setPosition(enemy.getPosition());
+        } else {
+            CollisionSystem.resolve(enemy, mapLoader.getSolidBlocks(), delta);
+            if (enemy instanceof GroundEnemy ge)
+                ge.onCollisionResolved(prevVx, mapLoader.getSolidBlocks());
+        }
 
         if (enemy instanceof FalseKnight fk) {
             updateFalseKnight(fk); // اصلاح پارامتر بلااستفاده

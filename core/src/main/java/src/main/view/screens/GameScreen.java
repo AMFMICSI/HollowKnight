@@ -104,9 +104,6 @@ public class GameScreen extends AbstractScreen {
             mapH = layer.getHeight() * layer.getTileHeight();
 
             gameViewport = new ExtendViewport(mapW/5f, mapH/10f, camera);
-            camera.position.set(game.getKnight().getPosition().x,
-                game.getKnight().getPosition().y + 30, 0);
-            camera.update();
             mapRenderer = new OrthogonalTiledMapRenderer(map);
             knightRenderer = new KnightRenderer();
             enemyRenderer = new EnemyRenderer();
@@ -403,12 +400,7 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void resize(int width, int height) {
-        gameViewport.update(width, height, false);
-        if (game != null) {
-            camera.position.set(game.getKnight().getPosition().x,
-                game.getKnight().getPosition().y + 30, 0);
-            camera.update();
-        }
+        gameViewport.update(width, height, true);
         stage.getViewport().update(width, height, true);
     }
 

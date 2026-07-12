@@ -123,5 +123,14 @@ public class CrystalGuardian extends Enemy {
     }
     public float getStateTime() { return animState.getStateTime(); }
 
+    @Override
+    public void respawn() {
+        super.respawn();
+        currentState = CrystalGuardianState.IDLE;
+        stateTimer = 0;
+        laser.deactivate();
+        animState.reset();
+    }
+
     public CrystalGuardianLaser getLaser() { return laser; }
 }

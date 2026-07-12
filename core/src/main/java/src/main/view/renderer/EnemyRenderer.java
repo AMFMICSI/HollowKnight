@@ -32,21 +32,15 @@ public class EnemyRenderer {
     }
 
     public void render(SpriteBatch batch, Enemy enemy, float delta) {
-        if (enemy.isDeadAnimationDone() && !(enemy instanceof FalseKnight)) return;
-
         TextureRegion frame = null;
 
         if (enemy instanceof Crawlid c) {
-            if (c.isDead() && c.isDeadAnimationDone()) return;
             frame = getCrawlidFrame(c);
         } else if (enemy instanceof HuskHornhead h) {
-            if (h.isDead() && h.isDeadAnimationDone()) return;
             frame = getHuskFrame(h);
         } else if (enemy instanceof CrystalHunter h) {
-            if (h.isDead() && h.isDeadAnimationDone()) return;
             frame = getHunterFrame(h);
         } else if (enemy instanceof CrystalGuardian g) {
-            if (g.isDead() && g.isDeadAnimationDone()) return;
             frame = getGuardianFrame(g);
         } else if (enemy instanceof FalseKnight fk) {
             frame = getFalseKnightFrame(fk);

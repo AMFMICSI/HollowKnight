@@ -13,7 +13,7 @@ public abstract class Enemy extends Entity {
     protected float deathTimer;
     protected Rectangle zone;
     protected Vector2 spawnPosition = new Vector2();
-    public float respawnDistance = 2500f;
+    public float respawnDistance = 900f;
     protected List<SolidBlock> solidBlocks;
 
     public void takeDamage(int amount) {
@@ -44,6 +44,7 @@ public abstract class Enemy extends Entity {
         hp = maxHp;
         deathTimer = 0;
         position.set(spawnPosition);
+        boundingBox.setPosition(spawnPosition);
         velocity.set(0, 0);
     }
 

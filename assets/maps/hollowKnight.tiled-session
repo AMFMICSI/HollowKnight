@@ -20,11 +20,11 @@
             }
         },
         "MainMap.tmx": {
-            "scale": 0.5969,
+            "scale": 0.5,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 2896.632601775842,
-                "y": 2449.3214943876696
+                "x": 2000,
+                "y": 2001
             }
         },
         "MainMap.tmx#927-2@2x": {
@@ -38,7 +38,7 @@
             "scaleInDock": 0.5
         },
         "MainMap.tmx#SpriteAtlasTexture": {
-            "scaleInDock": 0.25
+            "scaleInDock": 0.1556
         },
         "MainMap.tmx#SpriteAtlasTexture-WP_hanging_lamp-512x512-fmt12": {
             "scaleInDock": 1,
@@ -85,6 +85,9 @@
             "scaleInDock": 1
         },
         "MainMap.tmx#royal_garden_slide_door": {
+            "scaleInDock": 1
+        },
+        "MainMap.tmx#temple_int_stone": {
             "scaleInDock": 1
         },
         "MainMap.tmx#vil_lamp_01": {

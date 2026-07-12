@@ -146,6 +146,14 @@ public class HuskHornhead extends GroundEnemy {
         }
     }
 
+    @Override
+    public void respawn() {
+        super.respawn();
+        currentState = HuskHornheadState.PATROL;
+        stateTimer = WALK_DURATION;
+        animState.reset();
+    }
+
     public HuskHornheadAnimationType getAnimType() {
         if (isDead) return HuskHornheadAnimationType.DEATH_LAND;
         else switch (currentState) {
