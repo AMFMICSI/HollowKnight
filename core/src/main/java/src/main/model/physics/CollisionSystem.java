@@ -40,7 +40,7 @@ public class CollisionSystem {
                 knight.takeDamage();
                 knight.getPosition().x += knight.getVelocityX() * 0.3f;
                 knight.getPosition().y += knight.getVelocityY() * 0.3f;
-                knight.getBoundingBox().setPosition(knight.getPosition());
+                knight.teleportToLastSafePosition();
                 break;
             }
         }
@@ -108,6 +108,7 @@ public class CollisionSystem {
             entity.getPosition().y = bounds.y + bounds.height;
             entity.setVelocityY(0);
             entity.setOnGround(true);
+            if (entity instanceof Knight k) k.updateLastSafePosition();
         }
         entity.getBoundingBox().setPosition(entity.getPosition().x, entity.getPosition().y);
     }

@@ -49,6 +49,7 @@ public class Knight extends Entity {
 
     private final CheatSystem cheatSystem = new CheatSystem();
     private final HealthSystem healthSystem = new HealthSystem(this, MAX_HP);
+    private final com.badlogic.gdx.math.Vector2 lastSafePosition = new com.badlogic.gdx.math.Vector2();
 
     private boolean jumpKeyHeld = false;
     private float dashTimer = 0;
@@ -472,10 +473,19 @@ public class Knight extends Entity {
     public void respawn() { healthSystem.respawn(); }
     public boolean consumeJustRespawned() { return healthSystem.consumeJustRespawned(); }
 
-    // متد عمومی برای تنظیم نقطه اسپان مجدد پادشاهی کدهای تو
     public void setSpawnPoint(float x, float y) {
         this.spawnX = x;
         this.spawnY = y;
+    }
+
+    public void updateLastSafePosition() {
+        this.lastSafePosition.set(position.x, position.y);
+    }
+
+    public void teleportToLastSafePosition() {
+        this.position.set(lastSafePosition.x, lastSafePosition.y);
+        this.boundingBox.setPosition(position.x, position.y);
+        this.velocity.set(0, 0);
     }
 
     public void resetJump() { jumpCount = 0; }
