@@ -102,6 +102,7 @@ public class Knight extends Entity {
         if (healthSystem.isDead()) {
             healthSystem.updateTimers(delta);
             updateAnimationState();
+            animState.advanceTime(delta);
             return;
         }
 

@@ -16,7 +16,6 @@ public class KnightRenderer {
     }
 
     public void render(SpriteBatch batch, Knight knight, float delta) {
-        if (knight.isDead()) return;
         if (!knight.isDead() && knight.getInvincibleTimer() > 0
             && (Math.floor(knight.getInvincibleTimer() * 10) % 2 == 0)) return;
 

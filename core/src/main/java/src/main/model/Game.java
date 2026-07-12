@@ -439,7 +439,13 @@ public class Game {
             if (!enemy.isOnGround()) {
                 enemy.setVelocityY(enemy.getVelocityY() - PhysicsSystem.GRAVITY * delta);
             }
-            CollisionSystem.resolve(enemy, mapLoader.getSolidBlocks(), delta);
+            if (enemy instanceof FlyingEnemy) {
+                enemy.getPosition().x += enemy.getVelocityX() * delta;
+                enemy.getPosition().y += enemy.getVelocityY() * delta;
+                enemy.getBoundingBox().setPosition(enemy.getPosition());
+            } else {
+                CollisionSystem.resolve(enemy, mapLoader.getSolidBlocks(), delta);
+            }
         }
     }
 
