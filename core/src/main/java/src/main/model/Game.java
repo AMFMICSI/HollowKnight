@@ -439,13 +439,7 @@ public class Game {
             if (!enemy.isOnGround()) {
                 enemy.setVelocityY(enemy.getVelocityY() - PhysicsSystem.GRAVITY * delta);
             }
-            if (enemy instanceof FlyingEnemy) {
-                enemy.getPosition().x += enemy.getVelocityX() * delta;
-                enemy.getPosition().y += enemy.getVelocityY() * delta;
-                enemy.getBoundingBox().setPosition(enemy.getPosition());
-            } else {
-                CollisionSystem.resolve(enemy, mapLoader.getSolidBlocks(), delta);
-            }
+            CollisionSystem.resolve(enemy, mapLoader.getSolidBlocks(), delta);
         }
     }
 
@@ -521,9 +515,6 @@ public class Game {
         for (CrystalProjectile p : ch.getProjectiles()) {
             if (p.isDead()) continue;
             p.update(delta);
-            for (SolidBlock sb : mapLoader.getSolidBlocks()) {
-                if (p.getBoundingBox().overlaps(sb.getBounds())) { p.destroy(); break; }
-            }
             if (!p.isDead() && p.getBoundingBox().overlaps(knight.getBoundingBox())) {
                 knight.takeDamage();
                 p.destroy();
