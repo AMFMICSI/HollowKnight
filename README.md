@@ -62,7 +62,7 @@ A high-performance recreation of the *Hollow Knight* universe, engineered with a
 ### Execution
 1. Clone the repository:
 ```bash
-git clone [https://github.com/your-username/hollow-knight-mvc.git](https://github.com/your-username/hollow-knight-mvc.git)
+git clone https://github.com/AMFMICSI/HollowKnight
 ```
 2. Run the application:
 ```bash
