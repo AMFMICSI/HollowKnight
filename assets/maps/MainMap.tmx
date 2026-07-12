@@ -2194,7 +2194,7 @@
   </object>
   <object id="8" name="Zone" type="Zone" x="1858" y="1374" width="352.333" height="82.6667"/>
   <object id="17" name="SolidBlock" type="SolidBlock" x="1340" y="828" width="94.6667" height="37.3333"/>
-  <object id="19" name="CrystalHunter_01" type="EnemySpawn" x="2349.79" y="813.3">
+  <object id="19" name="CrystalHunter_01" type="EnemySpawn" x="2345.79" y="859.3">
    <properties>
     <property name="enemyType" value="CrystalHunter"/>
     <property name="zoneRef" type="object" value="35"/>
