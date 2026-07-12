@@ -435,7 +435,7 @@ public class Game {
 
     private void updateDeadEnemy(Enemy enemy, float delta) {
         enemy.update(delta);
-        if (!(enemy instanceof FalseKnight) && !enemy.isDeadAnimationDone()) {
+        if (!(enemy instanceof FalseKnight) && !(enemy instanceof FlyingEnemy) && !enemy.isDeadAnimationDone()) {
             if (!enemy.isOnGround()) {
                 enemy.setVelocityY(enemy.getVelocityY() - PhysicsSystem.GRAVITY * delta);
             }

@@ -43,6 +43,17 @@ public class CrystalHunter extends FlyingEnemy {
     }
 
     @Override
+    public void update(float delta) {
+        if (isDead) {
+            deathTimer -= delta;
+            if (deathTimer <= 0) deadAnimationDone = true;
+            animState.advanceTime(delta);
+            return;
+        }
+        super.update(delta);
+    }
+
+    @Override
     protected void updateChase(float delta, Vector2 knightPos, float dist) {
         animState.advanceTime(delta);
         stateTimer -= delta;

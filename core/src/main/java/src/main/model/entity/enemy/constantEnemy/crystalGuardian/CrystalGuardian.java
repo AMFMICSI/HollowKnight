@@ -39,6 +39,7 @@ public class CrystalGuardian extends Enemy {
         if (isDead) {
             deathTimer -= delta;
             if (deathTimer <= 0) deadAnimationDone = true;
+            animState.advanceTime(delta);
             return;
         }
 

@@ -44,6 +44,7 @@ public class HuskHornhead extends GroundEnemy {
         if (isDead) {
             deathTimer -= delta;
             if (deathTimer <= 0) deadAnimationDone = true;
+            animState.advanceTime(delta);
             return;
         }
 
