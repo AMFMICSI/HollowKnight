@@ -1,10 +1,7 @@
 package src.main.model.entity.enemy.flyingEnemy.crystalHunter;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import src.main.view.manager.GameAssetManager;
 
 public class CrystalProjectile {
     private Vector2 position = new Vector2();
@@ -23,21 +20,6 @@ public class CrystalProjectile {
         position.x += velocity.x * delta;
         position.y += velocity.y * delta;
         boundingBox.setPosition(position);
-    }
-
-    public TextureRegion getFrame(float delta) {
-        return GameAssetManager.crystalProjectileRegion;
-    }
-
-    private static final float DRAW_SCALE = 5f;
-
-    public void draw(SpriteBatch batch, float delta) {
-        if (dead) return;
-        TextureRegion frame = getFrame(delta);
-        float pw = boundingBox.width * DRAW_SCALE;
-        float ph = pw * frame.getRegionHeight() / (float) frame.getRegionWidth();
-        batch.draw(frame, position.x, position.y,
-            pw / 2f, 0, pw, ph, 1, 1, 0);
     }
 
     public boolean isDead() { return dead; }

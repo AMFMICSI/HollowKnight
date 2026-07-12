@@ -1,7 +1,5 @@
 package src.main.model.entity;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -15,8 +13,6 @@ public abstract class Entity {
     protected Rectangle boundingBox = new Rectangle();
 
     public abstract void update(float delta);
-    public abstract TextureRegion getFrame(float delta);
-    public abstract void draw(SpriteBatch batch, float delta);
 
     public void moveLeft(float speed) { velocity.x = -speed; setFacingRight(false); }
     public void moveRight(float speed) { velocity.x = speed; setFacingRight(true); }

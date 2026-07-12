@@ -1,15 +1,11 @@
 package src.main.model.entity.enemy;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import src.main.model.entity.Entity;
-
-import com.badlogic.gdx.math.Rectangle;
 import src.main.model.enviroment.SolidBlock;
 
 import java.util.List;
-
 
 public abstract class Enemy extends Entity {
     protected int hp, maxHp;
@@ -19,39 +15,6 @@ public abstract class Enemy extends Entity {
     protected Vector2 spawnPosition = new Vector2();
     public float respawnDistance = 2500f;
     protected List<SolidBlock> solidBlocks;
-
-    public void draw(SpriteBatch batch, float delta) {
-        if (isDeadAnimationDone()) {
-            drawCorpse(batch, delta);
-            return;
-        }
-        TextureRegion frame = getFrame(delta);
-        float spriteW = boundingBox.width * DRAW_SCALE;
-        float spriteH = spriteW * frame.getRegionHeight() / (float) frame.getRegionWidth();
-        batch.draw(frame,
-            boundingBox.x + (boundingBox.width - spriteW) / 2f,
-            boundingBox.y,
-            spriteW / 2f, 0,
-            spriteW, spriteH,
-            isFacingRight() ? -1 : 1, 1, 0);
-    }
-
-    public abstract TextureRegion getFrame(float delta);
-
-    public void drawCorpse(SpriteBatch batch, float delta) {
-        TextureRegion frame = getCorpseFrame();
-        if (frame == null) return;
-        float spriteW = boundingBox.width * DRAW_SCALE;
-        float spriteH = spriteW * frame.getRegionHeight() / (float) frame.getRegionWidth();
-        batch.draw(frame,
-            boundingBox.x + (boundingBox.width - spriteW) / 2f,
-            boundingBox.y,
-            spriteW / 2f, 0,
-            spriteW, spriteH,
-            isFacingRight() ? -1 : 1, 1, 0);
-    }
-
-    public abstract TextureRegion getCorpseFrame();
 
     public void takeDamage(int amount) {
         if (isDead) return;

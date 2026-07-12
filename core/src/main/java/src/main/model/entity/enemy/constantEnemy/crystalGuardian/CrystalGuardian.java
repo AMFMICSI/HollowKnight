@@ -1,12 +1,10 @@
 package src.main.model.entity.enemy.constantEnemy.crystalGuardian;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import src.main.model.entity.animation.AnimationSet;
+import src.main.model.entity.animation.AnimStateTracker;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.physics.PhysicsSystem;
-import src.main.view.manager.GameAssetManager;
 
 public class CrystalGuardian extends Enemy {
     private static final int MAX_HP = 8;
@@ -14,7 +12,8 @@ public class CrystalGuardian extends Enemy {
     private static final float COOLDOWN_DURATION = 1.5f;
 
     private CrystalGuardianState currentState = CrystalGuardianState.IDLE;
-    private final AnimationSet<CrystalGuardianAnimationType> animSet;
+    private final AnimStateTracker<CrystalGuardianAnimationType> animState =
+        new AnimStateTracker<>(CrystalGuardianAnimationType.IDLE);
     private float stateTimer;
     private final CrystalGuardianLaser laser;
     private final KnightRef knightRef;
@@ -31,7 +30,6 @@ public class CrystalGuardian extends Enemy {
         this.knightRef = knightRef;
         this.zone = zone;
         boundingBox.setSize(32, 48);
-        animSet = new AnimationSet<>(GameAssetManager.crystalGuardianAnimations, CrystalGuardianAnimationType.IDLE);
         laser = new CrystalGuardianLaser();
         setFacingRight(true);
     }
@@ -46,6 +44,7 @@ public class CrystalGuardian extends Enemy {
 
         if (!isOnGround()) velocity.y -= PhysicsSystem.GRAVITY * delta;
 
+        animState.advanceTime(delta);
         stateTimer -= delta;
         Vector2 knightPos = knightRef.getPosition();
         boolean seePlayer = position.dst(knightPos) < 500f;
@@ -59,19 +58,19 @@ public class CrystalGuardian extends Enemy {
     private void updateState(float delta, Vector2 knightPos, boolean seePlayer) {
         switch (currentState) {
             case IDLE:
-                animSet.setAnimation(CrystalGuardianAnimationType.IDLE);
+                animState.setAnimation(CrystalGuardianAnimationType.IDLE);
                 velocity.x = 0;
                 if (seePlayer) {
                     currentState = CrystalGuardianState.SHOOT;
                     stateTimer = 0.5f;
-                    animSet.resetAnimation();
+                    animState.reset();
                 }
                 break;
 
             case SHOOT:
-                animSet.setAnimation(CrystalGuardianAnimationType.SHOOT);
+                animState.setAnimation(CrystalGuardianAnimationType.SHOOT);
                 velocity.x = 0;
-                if (stateTimer <= 0 && animSet.getStateTime() >= 0.3f) {
+                if (stateTimer <= 0 && animState.getStateTime() >= 0.3f) {
                     setFacingRight(knightPos.x > position.x);
                     laser.fire(
                         isFacingRight() ? position.x + boundingBox.width : position.x,
@@ -84,7 +83,7 @@ public class CrystalGuardian extends Enemy {
                 break;
 
             case ENRAGED:
-                animSet.setAnimation(CrystalGuardianAnimationType.RUN);
+                animState.setAnimation(CrystalGuardianAnimationType.RUN);
                 velocity.x = isFacingRight() ? ENRAGED_SPEED : -ENRAGED_SPEED;
                 if (stateTimer <= 0) {
                     currentState = CrystalGuardianState.COOLDOWN;
@@ -94,7 +93,7 @@ public class CrystalGuardian extends Enemy {
                 break;
 
             case COOLDOWN:
-                animSet.setAnimation(CrystalGuardianAnimationType.IDLE);
+                animState.setAnimation(CrystalGuardianAnimationType.IDLE);
                 velocity.x = 0;
                 if (stateTimer <= 0) {
                     currentState = CrystalGuardianState.IDLE;
@@ -118,19 +117,11 @@ public class CrystalGuardian extends Enemy {
         }
     }
 
-    @Override
-    public TextureRegion getFrame(float delta) {
-        if (isDead) {
-            animSet.setAnimation(CrystalGuardianAnimationType.DEATH_LAND);
-        }
-        return animSet.getFrame(delta);
+    public CrystalGuardianAnimationType getAnimType() {
+        if (isDead) return CrystalGuardianAnimationType.DEATH_LAND;
+        return animState.getCurrentType();
     }
+    public float getStateTime() { return animState.getStateTime(); }
 
     public CrystalGuardianLaser getLaser() { return laser; }
-
-    @Override
-    public TextureRegion getCorpseFrame() {
-        animSet.setAnimation(CrystalGuardianAnimationType.DEATH_LAND);
-        return animSet.getFrame(0);
-    }
 }

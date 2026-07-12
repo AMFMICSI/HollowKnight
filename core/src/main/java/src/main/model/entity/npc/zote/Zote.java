@@ -1,11 +1,9 @@
 package src.main.model.entity.npc.zote;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import src.main.model.entity.Entity;
-import src.main.model.entity.animation.AnimationSet;
+import src.main.model.entity.animation.AnimStateTracker;
 import src.main.view.config.TranslationManager;
 import src.main.view.manager.GameAssetManager;
 import src.main.view.config.GameSettings;
@@ -21,7 +19,8 @@ public class Zote extends Entity {
 
     private enum DialogueState { MAIN, PRECEPT }
 
-    private final AnimationSet<ZoteAnimationType> animSet;
+    private final AnimStateTracker<ZoteAnimationType> animState =
+        new AnimStateTracker<>(ZoteAnimationType.IDLE);
     private final String[] dialogues;
     private final String[] precepts;
     private int dialogueIndex;
@@ -40,7 +39,6 @@ public class Zote extends Entity {
     public Zote(float x, float y) {
         position.set(x, y);
         boundingBox.setSize(20, 24);
-        animSet = new AnimationSet<>(GameAssetManager.zoteAnimations, ZoteAnimationType.IDLE);
         setFacingRight(true);
 
         dialogues = new String[]{
@@ -68,6 +66,7 @@ public class Zote extends Entity {
     @Override
     public void update(float delta) {
         boundingBox.setPosition(position);
+        animState.advanceTime(delta);
 
         if (agitated) {
             agitationTimer -= delta;
@@ -104,29 +103,12 @@ public class Zote extends Entity {
         if (s != null) s.play(vol);
     }
 
-    @Override
-    public TextureRegion getFrame(float delta) {
-        if (attacking)
-            animSet.setAnimation(ZoteAnimationType.ATTACK);
-        else if (talking)
-            animSet.setAnimation(ZoteAnimationType.TALK);
-        else
-            animSet.setAnimation(ZoteAnimationType.IDLE);
-        return animSet.getFrame(delta);
+    public ZoteAnimationType getAnimType() {
+        if (attacking) return ZoteAnimationType.ATTACK;
+        else if (talking) return ZoteAnimationType.TALK;
+        else return ZoteAnimationType.IDLE;
     }
-
-    @Override
-    public void draw(SpriteBatch batch, float delta) {
-        TextureRegion frame = getFrame(delta);
-        float spriteW = boundingBox.width * DRAW_SCALE;
-        float spriteH = spriteW * frame.getRegionHeight() / (float) frame.getRegionWidth();
-        batch.draw(frame,
-            boundingBox.x + (boundingBox.width - spriteW) / 2f,
-            boundingBox.y,
-            spriteW / 2f, 0,
-            spriteW, spriteH,
-            isFacingRight() ? -1 : 1, 1, 0);
-    }
+    public float getStateTime() { return animState.getStateTime(); }
 
     public boolean isInRange(Vector2 playerPos) {
         return Vector2.dst(position.x, position.y, playerPos.x, playerPos.y) < INTERACTION_RANGE;
@@ -173,4 +155,5 @@ public class Zote extends Entity {
     }
 
     public boolean isAgitated() { return agitated; }
+    public boolean isAttacking() { return attacking; }
 }

@@ -55,6 +55,11 @@ public class ButterflyParticle {
 
     public boolean isDead() { return elapsed >= lifetime; }
     public boolean isAmbient() { return ambient; }
+    public float getStateTime() { return stateTime; }
+    public float getElapsed() { return elapsed; }
+    public float getLifetime() { return lifetime; }
+    public float getX() { return x; }
+    public float getY() { return y; }
 
     public void draw(SpriteBatch batch, Animation<TextureRegion> anim) {
         TextureRegion frame = anim.getKeyFrame(stateTime);

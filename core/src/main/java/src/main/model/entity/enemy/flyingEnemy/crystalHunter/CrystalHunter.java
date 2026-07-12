@@ -1,11 +1,9 @@
 package src.main.model.entity.enemy.flyingEnemy.crystalHunter;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import src.main.model.entity.animation.AnimationSet;
+import src.main.model.entity.animation.AnimStateTracker;
 import src.main.model.entity.enemy.flyingEnemy.FlyingEnemy;
-import src.main.view.manager.GameAssetManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +13,8 @@ public class CrystalHunter extends FlyingEnemy {
     private static final int MAX_HP = 3;
     private static final float ATTACK_RANGE = 250f;
 
-    private final AnimationSet<CrystalHunterAnimationType> animSet;
+    private final AnimStateTracker<CrystalHunterAnimationType> animState =
+        new AnimStateTracker<>(CrystalHunterAnimationType.FLY);
     private CrystalHunterState currentState = CrystalHunterState.TRACKING;
     private final List<CrystalProjectile> projectiles = new ArrayList<>();
     private float stateTimer;
@@ -29,7 +28,6 @@ public class CrystalHunter extends FlyingEnemy {
         boundingBox.setSize(24, 20);
         chaseSpeed = FLY_SPEED;
         respawnDistance = 2500f;
-        animSet = new AnimationSet<>(GameAssetManager.crystalHunterAnimations, CrystalHunterAnimationType.FLY);
         this.knightRef = knightRef;
         setFacingRight(true);
         setZone(zone);
@@ -37,6 +35,7 @@ public class CrystalHunter extends FlyingEnemy {
 
     @Override
     protected void updateChase(float delta, Vector2 knightPos, float dist) {
+        animState.advanceTime(delta);
         stateTimer -= delta;
         handleChaseState(knightPos, dist);
     }
@@ -44,7 +43,7 @@ public class CrystalHunter extends FlyingEnemy {
     private void handleChaseState(Vector2 knightPos, float dist) {
         switch (currentState) {
             case TRACKING:
-                animSet.setAnimation(CrystalHunterAnimationType.FLY);
+                animState.setAnimation(CrystalHunterAnimationType.FLY);
                 if (dist < ATTACK_RANGE) {
                     changeState(CrystalHunterState.ATTACK_ANTICIPATE);
                 } else {
@@ -54,36 +53,29 @@ public class CrystalHunter extends FlyingEnemy {
 
             case ATTACK_ANTICIPATE:
                 velocity.set(0, 0);
-                if (animSet.getCurrentType() != CrystalHunterAnimationType.TURN_TO_FLY) {
-                    animSet.setAnimation(CrystalHunterAnimationType.TURN_TO_FLY);
-                }
-                if (animSet.getAnimationDuration() <= 0 || animSet.getStateTime() >= animSet.getAnimationDuration()) {
+                animState.setAnimation(CrystalHunterAnimationType.TURN_TO_FLY);
+                if (animState.isFinished()) {
                     changeState(CrystalHunterState.ATTACKING);
                 }
                 break;
 
             case ATTACKING:
                 velocity.set(0, 0);
-                if (animSet.getCurrentType() != CrystalHunterAnimationType.ATTACK) {
-                    animSet.setAnimation(CrystalHunterAnimationType.ATTACK);
-                    projectileSpawned = false;
-                }
-                if (!projectileSpawned && animSet.getStateTime() >= 0.15f) {
+                animState.setAnimation(CrystalHunterAnimationType.ATTACK);
+                if (!projectileSpawned && animState.getStateTime() >= 0.15f) {
                     projectileSpawned = true;
                     projectiles.add(new CrystalProjectile(
                         position.x, position.y + boundingBox.height / 2,
                         knightPos.x, knightPos.y));
                 }
-                if (animSet.getAnimationDuration() <= 0 || animSet.getStateTime() >= animSet.getAnimationDuration()) {
+                if (animState.isFinished()) {
                     changeState(CrystalHunterState.ATTACK_RECOVER);
                 }
                 break;
 
             case ATTACK_RECOVER:
                 velocity.set(0, 0);
-                if (animSet.getCurrentType() != CrystalHunterAnimationType.ATTACK_RECOVER) {
-                    animSet.setAnimation(CrystalHunterAnimationType.ATTACK_RECOVER);
-                }
+                animState.setAnimation(CrystalHunterAnimationType.ATTACK_RECOVER);
                 if (stateTimer <= 0) {
                     changeState(CrystalHunterState.TRACKING);
                 }
@@ -97,24 +89,14 @@ public class CrystalHunter extends FlyingEnemy {
             case ATTACK_RECOVER -> 0.4f;
             default -> 0;
         };
-        animSet.resetAnimation();
+        animState.reset();
     }
 
-    @Override
-    public TextureRegion getFrame(float delta) {
-        CrystalHunterAnimationType type;
-        if (isDead) type = diedInAir ? CrystalHunterAnimationType.DEATH_AIR : CrystalHunterAnimationType.DEATH_LAND;
-        else type = animSet.getCurrentType();
-        animSet.setAnimation(type);
-        return animSet.getFrame(delta);
+    public CrystalHunterAnimationType getAnimType() {
+        if (isDead) return diedInAir ? CrystalHunterAnimationType.DEATH_AIR : CrystalHunterAnimationType.DEATH_LAND;
+        return animState.getCurrentType();
     }
+    public float getStateTime() { return animState.getStateTime(); }
 
     public List<CrystalProjectile> getProjectiles() { return projectiles; }
-
-    @Override
-    public TextureRegion getCorpseFrame() {
-        return GameAssetManager.crystalHunterAnimations.get(
-            diedInAir ? CrystalHunterAnimationType.DEATH_AIR : CrystalHunterAnimationType.DEATH_LAND
-        ).getKeyFrame(0);
-    }
 }

@@ -1,8 +1,5 @@
 package src.main.model.entity.enemy.constantEnemy.crystalGuardian;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 public class CrystalGuardianLaser {
@@ -49,23 +46,13 @@ public class CrystalGuardianLaser {
         if (lifeTimer <= 0) active = false;
     }
 
-    public void draw(SpriteBatch batch, TextureRegion region, Animation<TextureRegion> impactAnim) {
-        if (!active) return;
-        if (facingRight) {
-            batch.draw(region, startX, startY, 0, 0, width, height, 1, 1, 0);
-        } else {
-            batch.draw(region, startX, startY, 0, 0, width, height, -1, 1, 0);
-        }
-        if (impactAnim != null && impactTimer <= IMPACT_DURATION) {
-            TextureRegion impactFrame = impactAnim.getKeyFrame(impactTimer);
-            float ix = facingRight ? startX + width : startX - width;
-            float iy = startY + height / 2f - impactFrame.getRegionHeight() * 0.5f;
-            batch.draw(impactFrame, ix, iy,
-                impactFrame.getRegionWidth() * 0.5f, impactFrame.getRegionHeight() * 0.5f);
-        }
-    }
-
     public boolean isActive() { return active; }
     public Rectangle getBounds() { return bounds; }
     public void deactivate() { active = false; }
+    public float getLength() { return width; }
+    public float getWidth() { return height; }
+    public float getStartX() { return startX; }
+    public float getStartY() { return startY; }
+    public float getAnimTime() { return impactTimer; }
+    public boolean isFacingRight() { return facingRight; }
 }

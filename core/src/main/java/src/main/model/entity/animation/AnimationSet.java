@@ -39,6 +39,8 @@ public class AnimationSet<T> {
 
     public float getStateTime() { return stateTime; }
 
+    public void syncStateTime(float time) { stateTime = time; }
+
     public void resetAnimation() { stateTime = 0; }
 
     public float getAnimationDuration() {

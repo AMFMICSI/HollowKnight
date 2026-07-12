@@ -1,10 +1,6 @@
 package src.main.model.entity.spell;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import src.main.view.manager.GameAssetManager;
 
 public class HowlingWraithsAoe {
     private Rectangle bounds;
@@ -31,20 +27,8 @@ public class HowlingWraithsAoe {
     public int getTickCount() { return tickCount; }
 
     public boolean isDone() { return done; }
-
-    public void draw(SpriteBatch batch, float delta) {
-        if (done) return;
-        Animation<TextureRegion> anim = shadow ? GameAssetManager.shadowScreamAnim : GameAssetManager.wraithsAoeAnim;
-        if (anim != null) {
-            TextureRegion frame = anim.getKeyFrame(timer);
-            float s = 0.5f;
-            float w = frame.getRegionWidth() * s;
-            float h = frame.getRegionHeight() * s;
-            float cx = bounds.x + bounds.width / 2f;
-            float cy = bounds.y + bounds.height / 2f;
-            batch.draw(frame, cx - w / 2f, cy - h / 2f, w, h);
-        }
-    }
+    public boolean isShadow() { return shadow; }
+    public float getTimer() { return timer; }
 
     public Rectangle getBounds() { return bounds; }
 }

@@ -1,13 +1,9 @@
 package src.main.model.entity.spell;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.enviroment.SolidBlock;
-import src.main.view.manager.GameAssetManager;
 
 import java.util.HashSet;
 import java.util.List;
@@ -65,24 +61,11 @@ public class VengefulProjectile {
         return true;
     }
 
-    public void draw(SpriteBatch batch, float delta) {
-        if (dead) return;
-        Animation<TextureRegion> anim = shadow
-            ? GameAssetManager.shadowProjectileAnim
-            : GameAssetManager.vengefulProjectileAnim;
-        if (anim != null) {
-            TextureRegion frame = anim.getKeyFrame(animTimer);
-            float s = 0.5f;
-            float w = frame.getRegionWidth() * s;
-            float h = frame.getRegionHeight() * s;
-            if (facingRight)
-                batch.draw(frame, position.x, position.y, w, h);
-            else
-                batch.draw(frame, position.x + w, position.y, -w, h);
-        }
-    }
-
     public boolean isDead() { return dead; }
     public void destroy() { dead = true; }
     public Rectangle getBoundingBox() { return boundingBox; }
+    public boolean isShadow() { return shadow; }
+    public float getAnimTimer() { return animTimer; }
+    public boolean isFacingRight() { return facingRight; }
+    public Vector2 getPosition() { return position; }
 }

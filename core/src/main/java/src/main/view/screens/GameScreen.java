@@ -20,7 +20,6 @@ import src.main.model.Game;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.entity.enemy.boss.falseKnight.FalseKnight;
 import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalHunter;
-import src.main.model.entity.enemy.flyingEnemy.crystalHunter.CrystalProjectile;
 import src.main.model.entity.enemy.constantEnemy.crystalGuardian.CrystalGuardian;
 import src.main.model.enviroment.ClimbableWall;
 import src.main.model.enviroment.SolidBlock;
@@ -28,6 +27,12 @@ import src.main.model.enviroment.Spike;
 import src.main.view.manager.GameAssetManager;
 import src.main.view.manager.GameMusic;
 import src.main.view.config.GameSettings;
+import src.main.view.renderer.EnemyRenderer;
+import src.main.view.renderer.KnightRenderer;
+import src.main.view.renderer.ZoteRenderer;
+import src.main.view.renderer.ProjectileRenderer;
+import src.main.view.renderer.SpellRenderer;
+import src.main.view.renderer.ParticleRenderer;
 import src.main.view.ui.renderer.HudRenderer;
 import src.main.view.popup.AchievementPopup;
 import src.main.view.ui.modal.DialogueBox;
@@ -52,6 +57,13 @@ public class GameScreen extends AbstractScreen {
     private float accumulator;
     private float mapW, mapH;
     private static final float CAMERA_LERP = 0.15f;
+
+    private KnightRenderer knightRenderer;
+    private EnemyRenderer enemyRenderer;
+    private ZoteRenderer zoteRenderer;
+    private ProjectileRenderer projectileRenderer;
+    private SpellRenderer spellRenderer;
+    private ParticleRenderer particleRenderer;
 
     private DialogueBox dialogueBox;
     private boolean resourcesCreated;
@@ -93,6 +105,12 @@ public class GameScreen extends AbstractScreen {
 
             gameViewport = new ExtendViewport(mapW/5f, mapH/10f, camera);
             mapRenderer = new OrthogonalTiledMapRenderer(map);
+            knightRenderer = new KnightRenderer();
+            enemyRenderer = new EnemyRenderer();
+            zoteRenderer = new ZoteRenderer();
+            projectileRenderer = new ProjectileRenderer();
+            spellRenderer = new SpellRenderer();
+            particleRenderer = new ParticleRenderer();
             resourcesCreated = true;
         }
 
@@ -250,17 +268,15 @@ public class GameScreen extends AbstractScreen {
 
     private void renderEntities(float delta) {
         batch.begin();
-        game.getKnight().draw(batch, delta);
+        knightRenderer.render(batch, game.getKnight(), delta);
         for (Enemy enemy : game.getEnemies()) {
-            enemy.draw(batch, delta);
-            if (enemy instanceof CrystalHunter ch) {
-                for (CrystalProjectile p : ch.getProjectiles())
-                    p.draw(batch, delta);
-            }
+            enemyRenderer.render(batch, enemy, delta);
+            if (enemy instanceof CrystalHunter ch)
+                projectileRenderer.renderCrystalProjectiles(batch, ch, delta);
             if (enemy instanceof CrystalGuardian cg)
-                cg.getLaser().draw(batch, GameAssetManager.laserRegion, GameAssetManager.laserCircleAnim);
+                projectileRenderer.renderLaser(batch, cg, delta, GameAssetManager.laserRegion, GameAssetManager.laserCircleAnim);
         }
-        game.getZote().draw(batch, delta);
+        zoteRenderer.render(batch, game.getZote(), delta);
         if (game.getZote().isInRange(game.getKnight().getPosition()) && !game.isDialogueActive()) {
             skin.getFont("default").draw(batch, "[E] Talk",
                 game.getZote().getPosition().x - 20,
@@ -352,11 +368,11 @@ public class GameScreen extends AbstractScreen {
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
         for (var p : game.getSpellManager().getProjectiles())
-            p.draw(batch, delta);
+            spellRenderer.renderProjectile(batch, p, delta);
         for (var aoe : game.getSpellManager().getAoes())
-            aoe.draw(batch, delta);
+            spellRenderer.renderAoe(batch, aoe, delta);
         for (var p : game.getButterflies())
-            p.draw(batch, GameAssetManager.butterflyAnim);
+            particleRenderer.renderButterfly(batch, p, GameAssetManager.butterflyAnim);
         batch.end();
     }
 

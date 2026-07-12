@@ -2,17 +2,14 @@ package src.main.model.entity.knight;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import src.main.model.data.KeyBindings;
-import src.main.model.entity.animation.AnimationSet;
+import src.main.model.entity.animation.AnimStateTracker;
 import src.main.model.entity.charm.CharmType;
 import src.main.model.entity.charm.CharmEffectCalculator;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.entity.Entity;
 import src.main.model.entity.spell.SpellType;
 import src.main.model.physics.PhysicsSystem;
-import src.main.view.manager.GameAssetManager;
 import src.main.view.manager.GameMusic;
 
 import java.util.Collections;
@@ -46,7 +43,8 @@ public class Knight extends Entity {
     private static final float FOCUS_START_THRESHOLD = 0.3f;
     private static final float FOCUS_GET_THRESHOLD = 0.2f;
 
-    private final AnimationSet<KnightAnimationType> animationSet;
+    private final AnimStateTracker<KnightAnimationType> animState =
+        new AnimStateTracker<>(KnightAnimationType.IDLE);
     private KnightState currentState = KnightState.IDLE;
 
     private final CheatSystem cheatSystem = new CheatSystem();
@@ -92,8 +90,6 @@ public class Knight extends Entity {
 
     public Knight(float x, float y, KeyBindings keys) {
         this.keys = keys;
-        this.animationSet = new AnimationSet<>(
-            GameAssetManager.knightAnimations, KnightAnimationType.IDLE);
         this.position.set(x, y);
         this.spawnX = x;
         this.spawnY = y;
@@ -114,6 +110,7 @@ public class Knight extends Entity {
         updateMovement(delta);
 
         updateAnimationState();
+        animState.advanceTime(delta);
         boundingBox.setPosition(position.x, position.y);
     }
 
@@ -197,16 +194,16 @@ public class Knight extends Entity {
     public void updateAnimationState() {
         if (healthSystem.isDead()) {
             currentState = KnightState.DEAD;
-            animationSet.setAnimation(KnightAnimationType.DEATH);
+            animState.setAnimation(KnightAnimationType.DEATH);
             return;
         }
         if (cheatSystem.isNoclipMode() && attackTimer <= 0 && !isFocusing && !isCasting && !isDashing) {
             currentState = KnightState.IDLE;
-            animationSet.setAnimation(KnightAnimationType.IDLE);
+            animState.setAnimation(KnightAnimationType.IDLE);
             return;
         }
         updateCurrentState();
-        animationSet.setAnimation(selectAnimationType());
+        animState.setAnimation(selectAnimationType());
     }
 
     private void updateCurrentState() {
@@ -237,8 +234,8 @@ public class Knight extends Entity {
         switch (currentState) {
             case RUNNING:
                 if (!runStartPlayed
-                    && animationSet.getCurrentType() == KnightAnimationType.RUN_START
-                    && animationSet.getStateTime() >= animationSet.getAnimationDuration()) {
+                    && animState.getCurrentType() == KnightAnimationType.RUN_START
+                    && animState.getStateTime() >= animState.getDuration()) {
                     runStartPlayed = true;
                 }
                 return runStartPlayed ? KnightAnimationType.RUN_LOOP : KnightAnimationType.RUN_START;
@@ -453,6 +450,7 @@ public class Knight extends Entity {
 
     public boolean isFocusing() { return isFocusing; }
     public boolean isCasting() { return isCasting; }
+    public boolean isDashing() { return isDashing; }
 
     public void addSoul(int amount) {
         soul = Math.min(soul + amount, MAX_SOUL);
@@ -480,29 +478,6 @@ public class Knight extends Entity {
         this.spawnY = y;
     }
 
-    @Override
-    public TextureRegion getFrame(float delta) { return animationSet.getFrame(delta); }
-
-    @Override
-    public void draw(SpriteBatch batch, float delta) {
-        if (!healthSystem.isDead() && healthSystem.getInvincibleTimer() > 0 && (Math.floor(healthSystem.getInvincibleTimer() * 10) % 2 == 0)) return;
-        TextureRegion frame;
-        if (hasSharpShadow() && isDashing) {
-            frame = GameAssetManager.shadowDashAnim.getKeyFrame(getDashElapsed());
-        } else {
-            frame = getFrame(delta);
-        }
-        if (frame == null) frame = getFrame(delta);
-        float spriteW = boundingBox.width * DRAW_SCALE;
-        float spriteH = spriteW * frame.getRegionHeight() / (float) frame.getRegionWidth();
-        batch.draw(frame,
-            position.x + (boundingBox.width - spriteW) / 2f,
-            position.y,
-            spriteW / 2f, 0,
-            spriteW, spriteH,
-            isFacingRight() ? -1 : 1, 1, 0);
-    }
-
     public void resetJump() { jumpCount = 0; }
     public void stopDashing() {
         isDashing = false;
@@ -512,6 +487,10 @@ public class Knight extends Entity {
     public void clearSharpShadowHitEnemies() { sharpShadowHitEnemies.clear(); }
     public float getSpawnX() { return spawnX; }
     public float getSpawnY() { return spawnY; }
+
+    public KnightAnimationType getAnimType() { return animState.getCurrentType(); }
+    public float getStateTime() { return animState.getStateTime(); }
+    public float getInvincibleTimer() { return healthSystem.getInvincibleTimer(); }
 
     public CheatSystem getCheatSystem() { return cheatSystem; }
     public int getHp() { return healthSystem.getHp(); }

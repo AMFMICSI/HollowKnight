@@ -1,14 +1,11 @@
 package src.main.model.entity.enemy.groundEnemy.huskHornhead;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
-import src.main.model.entity.animation.AnimationSet;
+import src.main.model.entity.animation.AnimStateTracker;
 import src.main.model.entity.enemy.groundEnemy.GroundEnemy;
 import src.main.model.enviroment.SolidBlock;
 import src.main.model.physics.PhysicsSystem;
-import src.main.view.manager.GameAssetManager;
-
 import java.util.List;
 
 public class HuskHornhead extends GroundEnemy {
@@ -22,7 +19,8 @@ public class HuskHornhead extends GroundEnemy {
 
     private float stateTimer;
     private HuskHornheadState currentState = HuskHornheadState.PATROL;
-    private final AnimationSet<HuskHornheadAnimationType> animSet;
+    private final AnimStateTracker<HuskHornheadAnimationType> animState =
+        new AnimStateTracker<>(HuskHornheadAnimationType.WALK);
     private final KnightRef knightRef;
 
     @FunctionalInterface
@@ -37,7 +35,6 @@ public class HuskHornhead extends GroundEnemy {
         this.knightRef = knightRef;
         boundingBox.setSize(28, 40);
         walkSpeed = WALK_SPEED;
-        animSet = new AnimationSet<>(GameAssetManager.huskHornheadAnimations, HuskHornheadAnimationType.WALK);
         setFacingRight(true);
         stateTimer = WALK_DURATION;
     }
@@ -91,6 +88,7 @@ public class HuskHornhead extends GroundEnemy {
         }
 
         boundingBox.setPosition(position);
+        animState.advanceTime(delta);
     }
 
     @Override
@@ -148,24 +146,15 @@ public class HuskHornhead extends GroundEnemy {
         }
     }
 
-    @Override
-    public TextureRegion getFrame(float delta) {
-        HuskHornheadAnimationType type;
-        if (isDead) type = HuskHornheadAnimationType.DEATH_LAND;
+    public HuskHornheadAnimationType getAnimType() {
+        if (isDead) return HuskHornheadAnimationType.DEATH_LAND;
         else switch (currentState) {
-            case PATROL:   type = HuskHornheadAnimationType.WALK; break;
-            case REST:     type = HuskHornheadAnimationType.IDLE; break;
-            case ALERT:    type = HuskHornheadAnimationType.ATTACK_ANTICIPATE; break;
-            case CHARGING: type = HuskHornheadAnimationType.ATTACK_LUNGE; break;
-            default:       type = HuskHornheadAnimationType.IDLE;
+            case PATROL:   return HuskHornheadAnimationType.WALK;
+            case REST:     return HuskHornheadAnimationType.IDLE;
+            case ALERT:    return HuskHornheadAnimationType.ATTACK_ANTICIPATE;
+            case CHARGING: return HuskHornheadAnimationType.ATTACK_LUNGE;
+            default:       return HuskHornheadAnimationType.IDLE;
         }
-        animSet.setAnimation(type);
-        return animSet.getFrame(delta);
     }
-
-    @Override
-    public TextureRegion getCorpseFrame() {
-        animSet.setAnimation(HuskHornheadAnimationType.DEATH_LAND);
-        return animSet.getFrame(0);
-    }
+    public float getStateTime() { return animState.getStateTime(); }
 }

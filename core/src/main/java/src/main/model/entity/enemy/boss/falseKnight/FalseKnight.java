@@ -1,13 +1,10 @@
 package src.main.model.entity.enemy.boss.falseKnight;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import src.main.model.entity.animation.AnimationSet;
+import src.main.model.entity.animation.AnimStateTracker;
 import src.main.model.entity.enemy.Enemy;
 import src.main.model.physics.PhysicsSystem;
-import src.main.view.manager.GameAssetManager;
 
 public class FalseKnight extends Enemy {
 
@@ -32,7 +29,8 @@ public class FalseKnight extends Enemy {
     private static final float STUN_RECOVER_DELAY = 3.0f;
     private static final float DAMAGE_WINDOW = 0.5f;
 
-    private final AnimationSet<FalseKnightAnimationType> animSet;
+    private final AnimStateTracker<FalseKnightAnimationType> animState =
+        new AnimStateTracker<>(FalseKnightAnimationType.IDLE);
     private final KnightRef knightRef;
     private FalseKnightState currentState = FalseKnightState.IDLE;
     private float stateTimer;
@@ -68,7 +66,6 @@ public class FalseKnight extends Enemy {
         position.set(x, y);
         boundingBox.setSize(100, 140);
         this.knightRef = knightRef;
-        animSet = new AnimationSet<>(GameAssetManager.falseKnightAnimations, FalseKnightAnimationType.IDLE);
         decisionTimer = 1.0f;
         setFacingRight(true);
     }
@@ -87,7 +84,7 @@ public class FalseKnight extends Enemy {
 
         float freq = isPhase2 ? PHASE2_FREQ_MULT : 1f;
         float animSpeed = isPhase2 ? PHASE2_SPEED_MULT : 1f;
-        animSet.advanceStateTime(delta * animSpeed);
+        animState.advanceTime(delta * animSpeed);
 
         updateTimers(delta);
 
@@ -106,7 +103,7 @@ public class FalseKnight extends Enemy {
 
     private void updateInactive(float delta) {
         if (!isOnGround()) velocity.y -= PhysicsSystem.GRAVITY * delta;
-        animSet.setAnimation(FalseKnightAnimationType.IDLE);
+        animState.setAnimation(FalseKnightAnimationType.IDLE);
         boundingBox.setPosition(position);
     }
 
@@ -185,13 +182,13 @@ public class FalseKnight extends Enemy {
     }
 
     private void handleIdleState() {
-        animSet.setAnimation(FalseKnightAnimationType.IDLE);
+        animState.setAnimation(FalseKnightAnimationType.IDLE);
         velocity.set(0, 0);
     }
 
     private void handleRunState() {
-        animSet.setAnimation(FalseKnightAnimationType.RUN);
-        if ("CHARGE".equals(lastMove)) {
+animState.setAnimation(FalseKnightAnimationType.RUN);
+            if ("CHARGE".equals(lastMove)) {
             float s = isPhase2 ? CHARGE_SPEED * PHASE2_SPEED_MULT : CHARGE_SPEED;
             velocity.x = isFacingRight() ? s : -s;
         } else {
@@ -202,20 +199,20 @@ public class FalseKnight extends Enemy {
 
     private void handleRunAnticState() {
         velocity.set(0, 0);
-        animSet.setAnimation(FalseKnightAnimationType.RUN_ANTIC);
+        animState.setAnimation(FalseKnightAnimationType.RUN_ANTIC);
         if (animFinished()) changeState(FalseKnightState.RUN);
     }
 
     private void handleAttackAnticState() {
         velocity.set(0, 0);
-        animSet.setAnimation(FalseKnightAnimationType.ATTACK_ANTIC);
+        animState.setAnimation(FalseKnightAnimationType.ATTACK_ANTIC);
         if (animFinished()) changeState(FalseKnightState.ATTACK);
     }
 
     private void handleAttackState() {
         velocity.set(0, 0);
-        animSet.setAnimation(FalseKnightAnimationType.ATTACK);
-        float t = animSet.getStateTime();
+        animState.setAnimation(FalseKnightAnimationType.ATTACK);
+        float t = animState.getStateTime();
         if (t > 0.15f && t < 0.3f) {
             attackHitbox.set(
                 position.x + (isFacingRight() ? 30 : -80),
@@ -229,17 +226,17 @@ public class FalseKnight extends Enemy {
 
     private void handleAttackRecoverState() {
         velocity.set(0, 0);
-        animSet.setAnimation(FalseKnightAnimationType.ATTACK_RECOVER);
+        animState.setAnimation(FalseKnightAnimationType.ATTACK_RECOVER);
         if (animFinished()) changeState(FalseKnightState.IDLE);
     }
 
     private void handleJumpState() {
-        animSet.setAnimation(FalseKnightAnimationType.JUMP);
+        animState.setAnimation(FalseKnightAnimationType.JUMP);
         if (isOnGround()) changeState(FalseKnightState.LAND);
     }
 
     private void handleJumpAttackState() {
-        animSet.setAnimation(FalseKnightAnimationType.JUMP_ATTACK);
+        animState.setAnimation(FalseKnightAnimationType.JUMP_ATTACK);
         if (isOnGround()) {
             if (isPowerfulLanding) {
                 attackHitbox.set(position.x - 30, position.y, 160, 100);
@@ -252,22 +249,22 @@ public class FalseKnight extends Enemy {
     }
 
     private void handleLandState() {
-        animSet.setAnimation(FalseKnightAnimationType.LAND);
+        animState.setAnimation(FalseKnightAnimationType.LAND);
         velocity.set(0, 0);
-        if (animSet.getStateTime() > 0 && animSet.getStateTime() < 0.05f) {
+        if (animState.getStateTime() > 0 && animState.getStateTime() < 0.05f) {
             startShake(3f, 0.2f);
         }
         if (stateTimer <= 0 || animFinished()) changeState(FalseKnightState.IDLE);
     }
 
     private void handleTurnState() {
-        animSet.setAnimation(FalseKnightAnimationType.TURN);
+        animState.setAnimation(FalseKnightAnimationType.TURN);
         if (animFinished()) changeState(FalseKnightState.IDLE);
     }
 
     private void handleDeathFallState() {
         velocity.set(0, 0);
-        animSet.setAnimation(FalseKnightAnimationType.DEATH_FALL);
+        animState.setAnimation(FalseKnightAnimationType.DEATH_FALL);
         stunHitbox.set(position.x + 30, position.y + 10, 40, 30);
         if (stunTimer <= 0) {
             changeState(FalseKnightState.STUN_RECOVER);
@@ -278,7 +275,7 @@ public class FalseKnight extends Enemy {
 
     private void handleBodyState(float delta) {
         velocity.set(0, 0);
-        animSet.setAnimation(FalseKnightAnimationType.BODY);
+        animState.setAnimation(FalseKnightAnimationType.BODY);
         stunHitbox.set(position.x + 30, position.y + 10, 40, 30);
         if (stunTimer <= 0) {
             if (stunRecoverDelay < 0) stunRecoverDelay = STUN_RECOVER_DELAY;
@@ -291,7 +288,7 @@ public class FalseKnight extends Enemy {
 
     private void handleStunRecoverState() {
         velocity.set(0, 0);
-        animSet.setAnimation(FalseKnightAnimationType.STUN_RECOVER);
+        animState.setAnimation(FalseKnightAnimationType.STUN_RECOVER);
         stunHitbox.set(position.x + 30, position.y + 10, 40, 30);
         if (animFinished() || stateTimer <= 0) {
             isPhase2 = true;
@@ -303,7 +300,7 @@ public class FalseKnight extends Enemy {
     }
 
     private void updateDeathAnimation(float delta) {
-        animSet.advanceStateTime(delta);
+        animState.advanceTime(delta);
         switch (currentState) {
             case DEATH_FALL:
                 if (animFinished()) changeState(FalseKnightState.DEATH_HIT);
@@ -445,21 +442,14 @@ public class FalseKnight extends Enemy {
         if (newState == FalseKnightState.IDLE || newState == FalseKnightState.RUN) {
             decisionTimer = (DECISION_INTERVAL + (float) Math.random()) / freq;
         }
-        animSet.resetAnimation();
+        animState.reset();
     }
 
     private boolean animFinished() {
-        return animSet.getAnimationDuration() <= 0
-            || animSet.getStateTime() >= animSet.getAnimationDuration();
+        return animState.isFinished();
     }
 
-    @Override
-    public TextureRegion getFrame(float delta) {
-        animSet.setAnimation(getCurrentAnimType());
-        return animSet.getCurrentFrame();
-    }
-
-    private FalseKnightAnimationType getCurrentAnimType() {
+    public FalseKnightAnimationType getAnimType() {
         if (isDead) {
             return switch (currentState) {
                 case DEATH_FALL -> FalseKnightAnimationType.DEATH_FALL;
@@ -486,13 +476,7 @@ public class FalseKnight extends Enemy {
             case DEATH_LAND -> FalseKnightAnimationType.DEATH_LAND;
         };
     }
-
-    @Override
-    public TextureRegion getCorpseFrame() {
-        Animation<TextureRegion> anim = GameAssetManager.falseKnightAnimations
-            .get(FalseKnightAnimationType.DEATH_LAND);
-        return anim.getKeyFrames()[anim.getKeyFrames().length - 1];
-    }
+    public float getStateTime() { return animState.getStateTime(); }
 
     @Override
     public void takeDamage(int amount) {
