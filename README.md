@@ -1,69 +1,139 @@
-# Hollow Knight 
-Pure MVC Implementation (Java & LibGDX)
+# Hollow Knight Clone
 
-A high-performance recreation of the *Hollow Knight* universe, engineered with a strict **Pure Model-View-Controller (MVC) Architecture** for the Advanced Programming course at Sharif University. [cite_start]This project enforces complete separation of concerns, ensuring core game physics are entirely independent of the presentation framework[cite: 364].
+A 2D action-platformer inspired by *Hollow Knight*, built with **Java & LibGDX**
+and following strict **Model-View-Controller (MVC) architecture**.
 
----
+**Sharif University of Technology** — Faculty of Computer Engineering
+Advanced Programming Course (Spring 2025)
+- Instructor: Dr. Mohammad Amin Fazli
+- Teaching Assistant: Amirhossein Mirzaei
+- Graphics TA: Hamed Alinzhad
+- Graphics Designers: Hamed Alinzhad, Shahab Ahmadloo, Sepehr Kardel
 
-## 🏗️ Architecture Overview
+## Prerequisites
+- Java JDK 17+
+- Gradle (wrapper included)
 
-[cite_start]The core paradigm relies on the absolute decoupling of state mathematics from the LibGDX rendering framework[cite: 365].
-
-```text
- ┌──────────────────────────┐
- │        Controller        │ ── Intercepts Inputs
- └────────────┬─────────────┘
-              │ Mutates State
-              ▼
- ┌──────────────────────────┐                  ┌──────────────────────────┐
- │          Model           │ ◄─────────────── │           View           │
- │ (Pure Mathematical Engine)│   Pulls State    │ (LibGDX Render & Audio)  │
- └──────────────────────────┘                  └──────────────────────────┘
-
-```
-
-*
-**Model (`src.main.model`):** Houses spatial reality (`Rectangle` bounds), rigid body physics, velocities, and numerical attributes. It contains **0% graphical imports**—making it entirely framework-agnostic.
-
-
-*
-**View (`src.main.view`):** Contains dedicated polling engines (`KnightRenderer`, `EnemyRenderer`) that extract atomic model data and coordinate rendering frames, particles, and multi-zone dynamic BGM transitions.
-
-
-*
-**Controller (`src.main.controller`):** Inherits LibGDX's `InputProcessor`. It maps raw keystrokes into context-aware semantic calls, preventing architectural leaks.
-
-
-
----
-
-## 🎮 Core Features
-
-
-**⚔️ Advanced Combat & Physics:** Pixel-perfect pogo jumping (downward hazard slashes reset dash/jump cooldowns with explosive recoil) , smooth wall-sliding, and a robust axis-separated collision resolution layout.
-
-
-
-**👾 Tailored Boss & Enemy AI:** * *False Knight:* Comprehensive 5-state automation lifecycle featuring transition recovery timers, structural shockwaves, and exposed stagger phases.
-
-
-**🎒 Comprehensive Gameplay Loop:** Real-time inventory slots with notch tracking (`Dashmaster`, `Soul Catcher`, `Void Heart`) , spellcasting projectiles , and dynamic UI management.
-
-
-
-**💾 Infrastructure:** Full JSON serialization supporting 4 separate gameplay state tracking save slots , along with dynamic multi-language localization.
----
-
-## 🚀 Run & Start
-
-### Prerequisites
-**Java JDK 17** or higher
-**Gradle** (Wrapper included)
-### Execution
-1. Clone the repository:
+## Run
 ```bash
-git clone https://github.com/AMFMICSI/HollowKnight
-```
-2. Run the application:
-```bash
+git clone <repo-url>
+cd HollowKnight
 ./gradlew run
+```
+
+## Architecture
+Pure MVC with complete separation of concerns — the Model layer has **zero graphical imports**:
+
+```
+┌──────────────────────┐
+│     Controller       │  ← Intercepts raw input
+│   (InputProcessor)   │
+└──────────┬───────────┘
+           │ Mutates state
+           ▼
+┌──────────────────────┐                  ┌──────────────────────┐
+│       Model          │ ◄──── Pulls ──── │        View          │
+│  (Physics, State,    │       State      │  (Render, Audio,     │
+│   Game Logic)        │                  │   UI, Particles)     │
+└──────────────────────┘                  └──────────────────────┘
+```
+
+## Controls
+| Key | Action |
+|-----|--------|
+| Arrow Keys | Move left / right |
+| Z | Jump / Double Jump |
+| X | Attack with Nail |
+| C | Dash |
+| A (hold) | Focus — heal HP |
+| Down + X (mid-air) | Pogo bounce |
+| I | Open Inventory |
+| ESC | Pause |
+
+## Features
+
+### Movement & Platforming
+- Variable jump height (hold longer to jump higher)
+- Double jump with dedicated animation
+- Wall slide (Mantis Claw) on vertical surfaces
+- Pogo bouncing — downward slash on spikes/enemies resets dash & jump
+- Smooth collision resolution with no edge-snagging
+
+### Combat & Spells
+- **Nail** — melee slash in 4 directions with slash VFX
+- **Vengeful Spirit** — horizontal magic projectile (pierces enemies)
+- **Howling Wraiths** — aerial AoE burst dealing 3 rapid ticks
+- **Soul System** — gain 11 soul per Nail hit, spend 33 to cast spells or heal
+- **Knockback** on both player and enemies
+
+### Enemies & AI
+| Enemy | Type | Behavior |
+|-------|------|----------|
+| Crawlid | Ground | Walks, turns at walls/cliffs |
+| HuskHornhead | Ground | Patrols, detects knight, charges at high speed |
+| CrystalHunter | Flying | Flies through solids, shoots crystal projectile |
+| CrystalGuardian | Stationary | Fires laser, then enrages and charges |
+
+- Dead enemies leave visible corpses on the ground
+- Enemies respawn when knight moves far enough away
+
+### Boss: False Knight
+- 5 attack patterns: Mace Slam, Charge Run, Offensive Leap, Defensive Leap, Power Slam
+- Distance-based AI with randomization and anti-spam
+- Stun phase at 50% HP — armor breaks, inner creature exposed
+- Phase 2: increased speed, new Power Slam shockwave attack
+
+### Charms & Inventory
+| Charm | Effect | Notch Cost |
+|-------|--------|------------|
+| Soul Catcher | More soul per hit | 1 |
+| Dashmaster | Shorter dash cooldown | 1 |
+| Unbreakable Strength | Increased nail damage | 1 |
+| Quick Slash | Faster attack speed | 1 |
+| Quick Focus | Faster healing | 1 |
+| Heavy Blow | Increased knockback | 1 |
+| Sharp Shadow | Dash through enemies + 20% longer dash | 2 |
+| Void Heart | +50% spell damage, black spell VFX | 2 |
+
+- 3 notch limit — manage your loadout in the Inventory menu
+
+### Menus
+- **Main Menu** — New Game, Load Game (4 slots), Settings, Guide, Achievements
+- **Pause Menu** — Continue, Save & Quit, Settings, Cheat Codes
+- **Inventory** — Equip/unequip charms with notch tracking
+- **Guide** — Dynamic keybindings, ability descriptions, cheat code list
+- **Settings** — Volume, SFX, brightness, key rebinding, language switch
+
+### Cheat Codes
+| Code | Effect |
+|------|--------|
+| Ctrl + B | Teleport to boss arena |
+| Ctrl + N | Noclip / fly mode |
+| Ctrl + H | Emergency heal |
+| Ctrl + R | Refill soul |
+| Ctrl + G | God mode |
+
+### Save System
+- 4 save slots with JSON serialization
+- SQLite database as secure backup
+- Saves: position, HP, soul, equipped charms, achievements, play time
+
+### Audio & Visuals
+- Dynamic area-based BGM with crossfade transitions
+- Event SFX: nail slash, damage, soul gain, focus
+- Screen shake on hits and boss attacks
+- Invincibility blink effect after taking damage
+- Particle effects (butterflies, etc.)
+
+### Localization
+- English (default) & French
+- Dynamic switching from Settings menu
+
+## Achievements
+| Achievement | Condition |
+|-------------|-----------|
+| Completion | Finish the game |
+| Speedrun | Finish in under 5 minutes |
+| True Hunter | Kill every enemy type |
+| Defeat False Knight | Beat the boss |
+| Airborne | 3 consecutive pogo bounces without landing |
