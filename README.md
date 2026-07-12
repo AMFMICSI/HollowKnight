@@ -1,4 +1,5 @@
-# 🏛️ Hollow Knight - Pure MVC Implementation (Java & LibGDX)
+# Hollow Knight 
+Pure MVC Implementation (Java & LibGDX)
 
 A high-performance recreation of the *Hollow Knight* universe, engineered with a strict **Pure Model-View-Controller (MVC) Architecture** for the Advanced Programming course at Sharif University. [cite_start]This project enforces complete separation of concerns, ensuring core game physics are entirely independent of the presentation framework[cite: 364].
 
