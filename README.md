@@ -5,7 +5,8 @@ and following strict **Model-View-Controller (MVC) architecture**.
 
 **Sharif University of Technology** — Faculty of Computer Engineering
 Advanced Programming Course (Spring 2025)
--**Author:** Fatemeh Mostafavi
+
+**Author:** Fatemeh Mostafavi
 - Instructor: Dr. Mohammad Amin Fazli
 - Teaching Assistant: Amirhossein Mirzaei
 - Graphics TA: Hamed Alinzhad
